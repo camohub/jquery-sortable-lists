@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="">
+	<title>NETTE APPLICATION SKELETON</title>
+	<style type="text/css">
+		html, body, ul, li { margin:0; padding:0; }
+		body { font-family:verdana; background: #3d4f61; color:#fff; }
+		ul, li { list-style-type:none; padding:3px; color:#000; border:1px solid #000; }
+		ul { padding:10px; }
+		ul li { padding-left:50px; margin:10px 0; border:1px solid #000; }
+		li div { padding:7px; background-color:#aaaaff; border:1px solid #000; }
+		li, ul, div { border-radius: 3px; }
+		.scrollUp { position:fixed; top:0; left:0; height:48px; width:50px; border:1px solid red; }
+		.scrollDown { position:fixed; bottom:0; left:0; height:48px; width:50px; border:1px solid red; }
+		.sortableListsClose ul, .sortableListsClose ol { display:none; }
+		.sortableListsOpener { display:inline-block; float:left; width:18px; height:18px; margin-right:5px; background:url('./imgs/remove.png') center center no-repeat; }
+		.sortableListsClose .sortableListsOpener { background:url('./imgs/add.png') center center no-repeat; }
+		.red { background-color:#ff9999;}
+		.blue { background-color:#aaaaff;}
+		.green { background-color:#99ff99; }
+		.pV10 { padding-top:10px; padding-bottom:10px; }
+		.dN { display:none; }
+		.zI1000 { z-index:1000; }
+		.bgC1 { background-color:#ccc; }
+		.bgC2 { background-color:#ff8; }
+		.bgC3 { background-color:#f0f; }
+		.bgC4 { background-color:#ccf; }
+		.small1 { font-size:0.8em; }
+		.small2 { font-size:0.7em; }
+		.small3 { font-size:0.6em; }
+		#sTreeBase { width:100px; height:50px; background-color: blue; }
+		#text { padding:10px 0; }
+		#sTree { background-color: green; }
+		#sTree2 { margin:10px 0; }
+		#center { width:950px; margin:0 auto; padding:10px; }
+	</style>
+	<script src="http://web.php5.sk/NCMS/www/js/jquery.js"></script>
+	<script src="jquery-sortable-lists.js"></script>
+	<script type="text/javascript">
+		$(function()
+		{
+			var options = {
+				currElClass: 'red',
+				placeholderClass: 'bgC2',
+				listsClass:'',
+				isAllowed: function(cEl, hint, target)
+					{
+						hint.css('background-color', '#99ff99');
+						return true;
+					}
+			};
+			$('#sTree2').sortableLists(options);
+
+			console.log($('#sTree2').sortableListsToArray());
+			console.log($('#sTree2').sortableListsToHierarchy());
+			console.log($('#sTree2').sortableListsToString());
+		});
+	</script> 
+</head>
+<body>
+
+<div id="center">
+
+	<h1>
+		Sortable lists jQuery plugin.<br>
+		<span class="small3">Also for tree stucture.</span>
+	</h1>
+
+	<div id="text" class="">
+		<div class="pV10"><b>You can do this:</b></div>
+		<div style="">You can set placeholder css in init object through placeholderCss object - jQuery css object or placeholderClass.</div>
+		<div style="">You can set dragged element css through currElCss object or currElClass.</div>
+		<div style="">You can set hint css through hintCss object or hintClass.</div>
+		<div style="">You can set hintWrapper css throungh hintWrapperCss object or hintWrapperClass. Class will be removed after item will be inserted to the active area.</div>
+		<div style="">You can set base object css in init object through the baseCss object or baseClass.</div>
+		<div style="">You can set insert zone as a distance which determines if item wil be inserted inside or ouside of the active area by insertZone:50 property. </div>
+		<div style="">You can set speed of scrolling by scroll:10 property. Default is 20.</div>
+		<div style="">You can set isAllowed callback which determine if is possible to insert element in to the active area.</div>
+		<div class="pV10"><b>You should do this:</b></div>
+		<div style="">If you use css classes to formating ul/ols you should set the class used for ul/ol lists through listsClass:'className'. It is necessary for hintWrapper element which is created on the fly.</div>
+		<div class="pV10"><b>Do not do this:</b></div>
+		<div style="">Do not use list-style-type values different as none. It works also with type, but it is not recomended. You can use background image instead.</div>
+		<div style="">Do not format lists with # selector. Use classes or element selectors(ul{color:red}). It can cause problems with formating.</div>
+		<div style="">Do not use absolute positioning on the lists.</div>
+		<div style="">Do not experiment with body margin-top/left or padding-top/left. Script tries to solve it but i am not sure if it is 100% OK.</div>
+		<div>Do not use construction where ul with margin top is direct child of body - &lt;body&gt;&lt;ul style="margin-top:XYpx"&gt;. Margin-top breaks the position of dragged element.</div>
+	</div>
+
+	<h2>Sortable lists example. Try it yourself!</h2>
+
+	<ul class="sTree bgC4" id="sTree2">
+		<li class="bgC4" id="item_a">
+			<div>Item a</div>
+		</li>
+		<li class="bgC4" id="item_b">
+			<div>Item b</div>
+		</li>
+		<li class="bgC4 sortableListsClose" id="item_c">
+			<div><span class="sortableListsOpener"> </span>Item c</div>
+			<ul class="">
+				<li class="bgC4" id="item_1">
+					<div>Item 1</div>
+				</li>
+				<li class="bgC4" id="item_2">
+					<div>Item 2</div>
+				</li>
+				<li class="bgC4" id="item_3">
+					<div>Item 3</div>
+				</li>
+				<li class="bgC4" id="item_4">
+					<div>Item 4</div>
+				</li>
+				<li class="bgC4" id="item_5">
+					<div>Item 5</div>
+				</li>
+			</ul>
+		</li>
+		<li class="bgC4 sortableListsClose" id="item_d">
+			<div><span class="sortableListsOpener"> </span>Item c</div>
+			<ul class="">
+				<li class="bgC4" id="item_1">
+					<div>Item 1</div>
+				</li>
+				<li class="bgC4" id="item_2">
+					<div>Item 2</div>
+				</li>
+				<li class="bgC4" id="item_3">
+					<div>Item 3</div>
+				</li>
+				<li class="bgC4" id="item_4">
+					<div>Item 4</div>
+				</li>
+				<li class="bgC4" id="item_5">
+					<div>Item 5</div>
+				</li>
+			</ul>
+		</li>
+		<li class="bgC4 sortableListsClose" id="item_e">
+			<div><span class="sortableListsOpener"> </span>Item c</div>
+			<ul class="">
+				<li class="bgC4" id="item_1">
+					<div>Item 1</div>
+				</li>
+				<li class="bgC4" id="item_2">
+					<div>Item 2</div>
+				</li>
+				<li class="bgC4" id="item_3">
+					<div>Item 3</div>
+				</li>
+				<li class="bgC4" id="item_4">
+					<div>Item 4</div>
+				</li>
+				<li class="bgC4" id="item_5">
+					<div>Item 5</div>
+				</li>
+			</ul>
+		</li>
+	</ul>
+
+	<div class="scrollUp dN"></div>
+	<div class="scrollDown dN"></div>
+
+</div>
+</body>
+</html>
+
