@@ -44,6 +44,7 @@
 				},
 				listSelector: 'ul',
 				listsClass: '',
+				listsCss: {},
 				insertZone: 50,
 				scroll: 20,
 				isAllowed: function(cEl, hint) { return true; } // Params: current el., hint el.
@@ -51,34 +52,38 @@
 
 			setting = $.extend(true, {}, defaults, options),
 
-			// base element from which is counted position of draged element
+		// base element from which is counted position of draged element
 			base = $('<' + setting.listSelector + ' />')
 				.prependTo(jQBody)
 				.attr('id', 'sListsBase')
 				.css( setting.baseCss )
 				.addClass( setting.baseClass ),
 
-			// placeholder != state.placeholderNode
-			// placeholder is document fragment and state.placeholderNode is document node
+		// placeholder != state.placeholderNode
+		// placeholder is document fragment and state.placeholderNode is document node
 			placeholder = $('<li />')
 				.attr('id', 'sListsPlaceholder')
 				.css( setting.placeholderCss )
 				.addClass( setting.placeholderClass ),
 
-			// hint is document fragment
+		// hint is document fragment
 			hint = $('<li />')
 				.attr('id', 'sListsHint')
 				.css( setting.hintCss )
 				.addClass( setting.hintClass ),
 
-			// Is document fragment used as wrapper if hint is inserted to the empty li
+		// Is document fragment used as wrapper if hint is inserted to the empty li
 			hintWrapper = $('<' + setting.listSelector + ' />')
 				.attr('class', setting.listsClass)
 				.attr('id', 'sListsHintWrapper')
 				.css( setting.hintWrapperCss )
+				.css( setting.listsCss )// TODO: check that css works correctly
 				.addClass( setting.hintWrapperClass ),
 
-			// Container with all actual elements and parameters
+			opener = $('<span />')
+				.addClass('sortableListsOpener'),
+
+		// Container with all actual elements and parameters
 			state = {
 				isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
 				oEl: null, // overElement is element which returns elementFromPoint() method
@@ -90,19 +95,25 @@
 				pY: 0,
 				cX: 0,
 				cY: 0,
+				isAllowed: true, // The function is defined in setting
 				e: {pageX: 0, pageY:0, clientX:0, clientY:0 }, // TODO: unused??
 				doc: $(document),
 				win: $(window)
 			};
 
+		$(this).find('li').each( function()
+		{
+			var li = $(this);
+			if(li.children('ul,ol').length)
+			{
+				li.addClass('sortableListsClose');
+				opener.clone().prependTo(li.children('div').first());
+			}
+		});
+
 		$('.sortableListsOpener').on('mousedown', function(e)
 		{
-			$(this).closest('li').children('ul, ol').slideToggle(100, function()
-			{
-
-				$(this)
-					.closest('li').toggleClass('sortableListsClose');
-			});
+			$(this).closest('li').toggleClass('sortableListsClose');
 			return false;
 		});
 
@@ -258,7 +269,7 @@
 
 			state.isDragged = false;
 
-			if(hintStyle.display == 'block' && hintNode.length && setting.isAllowed(cEl, hintNode, state.oEl))
+			if(hintStyle.display == 'block' && hintNode.length && state.isAllowed)
 			{
 				targetEl = hintNode;
 				isHintTarget = true;
@@ -309,6 +320,8 @@
 			state.doc
 				.unbind("mousemove", dragging)
 				.unbind("mouseup", endDrag);
+
+			setting.complete(cEl.el, targetEl);
 
 		}
 
@@ -407,11 +420,11 @@
 		}
 
 		/**
-		* @desc Return elementFromPoint() result as jQuery object
-		* @param x e.pageX
-		* @param y e.pageY
-		* @return null|jQuery object
-		*/
+		 * @desc Return elementFromPoint() result as jQuery object
+		 * @param x e.pageX
+		 * @param y e.pageY
+		 * @return null|jQuery object
+		 */
 		function elFromPoint(x,y)
 		{
 			if(!document.elementFromPoint) return null;
@@ -420,21 +433,21 @@
 			// Opera/Safari which needs absolute coordinates of document in elementFromPoint()
 			var isRelEFP = state.isRelEFP;
 
-			// isRealtive === null means it is not checked yet
+			// isRelative === null means it is not checked yet
 			if(isRelEFP === null)
 			{
 				var s, res;
 				if((s = state.doc.scrollTop()) > 0)
-		  		{
+				{
 					isRelEFP = ((res = document.elementFromPoint(0, s + $(window).height() -1)) == null
 					|| res.tagName.toUpperCase() == 'HTML');  // IE8 returns html
-		  		}
-		  		if((s = state.doc.scrollLeft()) > 0)
-		  		{
+				}
+				if((s = state.doc.scrollLeft()) > 0)
+				{
 					isRelEFP = ((res = document.elementFromPoint(s + $(window).width() - 1, 0)) == null
 					|| res.tagName.toUpperCase() == 'HTML');  // IE8 returns html
-		  		}
-		   	}
+				}
+			}
 
 			if(isRelEFP)
 			{
@@ -466,11 +479,11 @@
 		}
 
 		/**
-		* @desc Shows or hides or does not show hint element
-		* @param e event
-		* @param state
-		* @return No value
-		*/
+		 * @desc Shows or hides or does not show hint element
+		 * @param e event
+		 * @param state
+		 * @return No value
+		 */
 		function showHint(e, state)
 		{
 			var oEl = state.oEl;
@@ -493,11 +506,11 @@
 		}
 
 		/**
-		* @desc Called from showHint method. Displayes or hides hint element
-		* @param e event
-		* @param oEl oElement
-		* @return No value
-		*/
+		 * @desc Called from showHint method. Displays or hides hint element
+		 * @param e event
+		 * @param oEl oElement
+		 * @return No value
+		 */
 		function showHintBefore(e, oEl)
 		{
 			if($('#sListsHintWrapper', state.rootEl.el).length)
@@ -541,22 +554,22 @@
 
 				if(state.oEl)
 				{
-					oEl.removeClass('sortableListsClose').children('ul,ol').css('display', 'block');
+					oEl.removeClass('sortableListsClose'); // TODO:animation??? .children('ul,ol').css('display', 'block');
 				}
 			}
 
 			hint.css('display', 'block');
 			// Ensures posible formating of elements. Second call is in the endDrag method.
-			setting.isAllowed(state.cEl, $('#sListsHint'), oEl);
+			state.isAllowed = setting.isAllowed(state.cEl.el, $('#sListsHint'), oEl);
 
 		}
 
 		/**
-		* @desc Called from showHint function. Displayes or hides hint element.
-		* @param e event
-		* @param oEl oElement
-		* @return No value
-		*/
+		 * @desc Called from showHint function. Displays or hides hint element.
+		 * @param e event
+		 * @param oEl oElement
+		 * @return No value
+		 */
 		function showHintAfter(e, oEl)
 		{
 			if($('#sListsHintWrapper', state.rootEl.el).length)
@@ -604,14 +617,14 @@
 				{
 					// sortableListsClose ensures background image for opener.
 					// Display block is necessary cause slideToggle (up) sets none and toggle class is not enough.
-					oEl.removeClass('sortableListsClose').children('ul,ol').css('display', 'block');
+					oEl.removeClass('sortableListsClose'); // TODO:animation???  .children('ul,ol').css('display', 'block');
 				}
 
 			}
 
 			hint.css('display', 'block');
 			// Ensures posible formating of elements. Second call is in the endDrag method.
-			setting.isAllowed(state.cEl, $('#sListsHint'), oEl);
+			state.isAllowed = setting.isAllowed(state.cEl.el, $('#sListsHint'), oEl);
 
 		}
 
@@ -639,7 +652,7 @@
 
 				if(!(id = li.attr('id')))
 				{
-					console.log(li);
+					console.log(li); // Have to be here! Read next exception message.
 					throw 'Previous item in console.log has no id. It is necessary to create the array.';
 				}
 
@@ -674,7 +687,7 @@
 
 				if(!(id = li.attr('id')))
 				{
-					console.log(li);
+					console.log(li); // Have to be here! Read next exception message.
 					throw 'Previous item in console.log has no id. It is necessary to create the array.';
 				}
 				tempArr['id'] = id;
@@ -718,7 +731,7 @@
 		return arr.join('&amp;');
 
 	}
- 
+
 }( jQuery ));
 
 
