@@ -90,6 +90,7 @@
 				pY: 0,
 				cX: 0,
 				cY: 0,
+				isAllowed: true, // The function is defined in setting
 				e: {pageX: 0, pageY:0, clientX:0, clientY:0 }, // TODO: unused??
 				doc: $(document),
 				win: $(window)
@@ -258,7 +259,7 @@
 
 			state.isDragged = false;
 
-			if(hintStyle.display == 'block' && hintNode.length && setting.isAllowed(cEl, hintNode, state.oEl))
+			if(hintStyle.display == 'block' && hintNode.length && state.isAllowed)
 			{
 				targetEl = hintNode;
 				isHintTarget = true;
@@ -309,6 +310,8 @@
 			state.doc
 				.unbind("mousemove", dragging)
 				.unbind("mouseup", endDrag);
+
+			setting.complete(cEl.el, targetEl);
 
 		}
 
@@ -493,7 +496,7 @@
 		}
 
 		/**
-		* @desc Called from showHint method. Displayes or hides hint element
+		* @desc Called from showHint method. Displays or hides hint element
 		* @param e event
 		* @param oEl oElement
 		* @return No value
@@ -547,12 +550,12 @@
 
 			hint.css('display', 'block');
 			// Ensures posible formating of elements. Second call is in the endDrag method.
-			setting.isAllowed(state.cEl, $('#sListsHint'), oEl);
+			state.isAllowed = setting.isAllowed(state.cEl.el, $('#sListsHint'), oEl);
 
 		}
 
 		/**
-		* @desc Called from showHint function. Displayes or hides hint element.
+		* @desc Called from showHint function. Displays or hides hint element.
 		* @param e event
 		* @param oEl oElement
 		* @return No value
@@ -611,7 +614,7 @@
 
 			hint.css('display', 'block');
 			// Ensures posible formating of elements. Second call is in the endDrag method.
-			setting.isAllowed(state.cEl, $('#sListsHint'), oEl);
+			state.isAllowed = setting.isAllowed(state.cEl.el, $('#sListsHint'), oEl);
 
 		}
 
@@ -639,7 +642,7 @@
 
 				if(!(id = li.attr('id')))
 				{
-					console.log(li);
+					console.log(li); // Have to be here! Read next exception message.
 					throw 'Previous item in console.log has no id. It is necessary to create the array.';
 				}
 
@@ -674,7 +677,7 @@
 
 				if(!(id = li.attr('id')))
 				{
-					console.log(li);
+					console.log(li); // Have to be here! Read next exception message.
 					throw 'Previous item in console.log has no id. It is necessary to create the array.';
 				}
 				tempArr['id'] = id;

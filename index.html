@@ -32,12 +32,11 @@
 		.small3 { font-size:0.6em; }
 		#sTreeBase { width:100px; height:50px; background-color: blue; }
 		#text { padding:10px 0; }
-		#sTree { background-color: green; }
 		#sTree2 { margin:10px 0; }
 		#center { width:950px; margin:0 auto; padding:10px; }
 	</style>
-	<script src="http://web.php5.sk/NCMS/www/js/jquery.js"></script>
-	<script src="jquery-sortable-lists.js"></script>
+	<script src="http://code.jquery.com/jquery-git1.min.js"></script>
+	<script src="jquery-sortable-lists.min.js"></script>
 	<script type="text/javascript">
 		$(function()
 		{
@@ -46,10 +45,26 @@
 				placeholderClass: 'bgC2',
 				listsClass:'',
 				isAllowed: function(cEl, hint, target)
+				{
+					// Be carefull if you test some ul/ol elements here.
+					// Sometimes ul/ols are dynamically generated and so they have not some attributes as natural ul/ols.
+					// Be careful also if the hint is not visible. It has only display none so it is at the previouse place where it was before(excluding first moves before showing).
+					if(hint.parents('li').first().data('module') === 'c' && cEl.data('module') !== 'c')
+					{
+						hint.css('background-color', '#ff9999');
+						return false;
+					}
+					else
 					{
 						hint.css('background-color', '#99ff99');
 						return true;
 					}
+				},
+				complete: function(cEl, target)
+				{
+					console.log(cEl);
+					console.log(target);
+				}
 			};
 			$('#sTree2').sortableLists(options);
 
@@ -77,7 +92,7 @@
 		<div style="">You can set base object css in init object through the baseCss object or baseClass.</div>
 		<div style="">You can set insert zone as a distance which determines if item wil be inserted inside or ouside of the active area by insertZone:50 property. </div>
 		<div style="">You can set speed of scrolling by scroll:10 property. Default is 20.</div>
-		<div style="">You can set isAllowed callback which determine if is possible to insert element in to the active area.</div>
+		<div style="">You can set isAllowerrd callback which determine if is possible to insert element in to the active area.</div>
 		<div class="pV10"><b>You should do this:</b></div>
 		<div style="">If you use css classes to formating ul/ols you should set the class used for ul/ol lists through listsClass:'className'. It is necessary for hintWrapper element which is created on the fly.</div>
 		<div class="pV10"><b>Do not do this:</b></div>
@@ -91,68 +106,68 @@
 	<h2>Sortable lists example. Try it yourself!</h2>
 
 	<ul class="sTree bgC4" id="sTree2">
-		<li class="bgC4" id="item_a">
+		<li class="bgC4" id="item_a" data-module="a">
 			<div>Item a</div>
 		</li>
-		<li class="bgC4" id="item_b">
+		<li class="bgC4" id="item_b" data-module="b">
 			<div>Item b</div>
 		</li>
-		<li class="bgC4 sortableListsClose" id="item_c">
+		<li class="bgC4 sortableListsClose" id="item_c" data-module="c">
 			<div><span class="sortableListsOpener"> </span>Item c</div>
 			<ul class="">
-				<li class="bgC4" id="item_1">
+				<li class="bgC4" id="item_1" data-module="c">
 					<div>Item 1</div>
 				</li>
-				<li class="bgC4" id="item_2">
+				<li class="bgC4" id="item_2" data-module="c">
 					<div>Item 2</div>
 				</li>
-				<li class="bgC4" id="item_3">
+				<li class="bgC4" id="item_3" data-module="c">
 					<div>Item 3</div>
 				</li>
-				<li class="bgC4" id="item_4">
+				<li class="bgC4" id="item_4" data-module="c">
 					<div>Item 4</div>
 				</li>
-				<li class="bgC4" id="item_5">
+				<li class="bgC4" id="item_5" data-module="c">
 					<div>Item 5</div>
 				</li>
 			</ul>
 		</li>
-		<li class="bgC4 sortableListsClose" id="item_d">
-			<div><span class="sortableListsOpener"> </span>Item c</div>
+		<li class="bgC4 sortableListsClose" id="item_d" data-module="d">
+			<div><span class="sortableListsOpener"> </span>Item d</div>
 			<ul class="">
-				<li class="bgC4" id="item_1">
+				<li class="bgC4" id="item_1" data-module="d">
 					<div>Item 1</div>
 				</li>
-				<li class="bgC4" id="item_2">
+				<li class="bgC4" id="item_2" data-module="d">
 					<div>Item 2</div>
 				</li>
-				<li class="bgC4" id="item_3">
+				<li class="bgC4" id="item_3" data-module="d">
 					<div>Item 3</div>
 				</li>
-				<li class="bgC4" id="item_4">
+				<li class="bgC4" id="item_4" data-module="d">
 					<div>Item 4</div>
 				</li>
-				<li class="bgC4" id="item_5">
+				<li class="bgC4" id="item_5" data-module="d">
 					<div>Item 5</div>
 				</li>
 			</ul>
 		</li>
-		<li class="bgC4 sortableListsClose" id="item_e">
-			<div><span class="sortableListsOpener"> </span>Item c</div>
+		<li class="bgC4 sortableListsClose" id="item_e" data-module="e">
+			<div><span class="sortableListsOpener"> </span>Item e</div>
 			<ul class="">
-				<li class="bgC4" id="item_1">
+				<li class="bgC4" id="item_1" data-module="e">
 					<div>Item 1</div>
 				</li>
-				<li class="bgC4" id="item_2">
+				<li class="bgC4" id="item_2" data-module="e">
 					<div>Item 2</div>
 				</li>
-				<li class="bgC4" id="item_3">
+				<li class="bgC4" id="item_3" data-module="e">
 					<div>Item 3</div>
 				</li>
-				<li class="bgC4" id="item_4">
+				<li class="bgC4" id="item_4" data-module="e">
 					<div>Item 4</div>
 				</li>
-				<li class="bgC4" id="item_5">
+				<li class="bgC4" id="item_5" data-module="e">
 					<div>Item 5</div>
 				</li>
 			</ul>
