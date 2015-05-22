@@ -44,6 +44,7 @@
 				},
 				listSelector: 'ul',
 				listsClass: '',
+				listsCss: {},
 				insertZone: 50,
 				scroll: 20,
 				isAllowed: function(cEl, hint) { return true; } // Params: current el., hint el.
@@ -76,7 +77,11 @@
 				.attr('class', setting.listsClass)
 				.attr('id', 'sListsHintWrapper')
 				.css( setting.hintWrapperCss )
+				.css( setting.listsCss )// TODO: check that css works correctly
 				.addClass( setting.hintWrapperClass ),
+
+			opener = $('<span />')
+				.addClass('sortableListsOpener'),
 
 			// Container with all actual elements and parameters
 			state = {
@@ -96,14 +101,19 @@
 				win: $(window)
 			};
 
+		$(this).find('li').each( function()
+		{
+			var li = $(this);
+			if(li.children('ul,ol').length)
+			{
+				li.addClass('sortableListsClose');
+				opener.clone().prependTo(li.children('div').first());
+			}
+		});
+
 		$('.sortableListsOpener').on('mousedown', function(e)
 		{
-			$(this).closest('li').children('ul, ol').slideToggle(100, function()
-			{
-
-				$(this)
-					.closest('li').toggleClass('sortableListsClose');
-			});
+			$(this).closest('li').toggleClass('sortableListsClose');
 			return false;
 		});
 
@@ -544,7 +554,7 @@
 
 				if(state.oEl)
 				{
-					oEl.removeClass('sortableListsClose').children('ul,ol').css('display', 'block');
+					oEl.removeClass('sortableListsClose');//.children('ul,ol').css('display', 'block');
 				}
 			}
 
@@ -607,7 +617,7 @@
 				{
 					// sortableListsClose ensures background image for opener.
 					// Display block is necessary cause slideToggle (up) sets none and toggle class is not enough.
-					oEl.removeClass('sortableListsClose').children('ul,ol').css('display', 'block');
+					oEl.removeClass('sortableListsClose'); // If  .children('ul,ol').css('display', 'block');
 				}
 
 			}
