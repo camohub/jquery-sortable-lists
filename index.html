@@ -114,7 +114,7 @@ $(function()
 </pre>
 			<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items however you want.
 				You can define the <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
-				Set the <strong class="c1">insert zone</strong> like a distance which determines if item wil be inserted inside or outside of the active area,
+				Set the <strong class="c1">insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
 				<strong class="c1">speed of autoscroll</strong> function. For details look at the <a href="#settings" id="settingsOpener1" title="Click me">settings&nbsp;section</a>.
 				For better understanding look at the <a href="picture">picture</a> which describes all active elements in sortable lists plugin.
 			</p>
@@ -247,7 +247,7 @@ $(function()
 </pre>
 
 			<h4>Hint wrapper</h4>
-			<p>This element generates the plugin if is necessary to wrap the future position by ul/ol.
+			<p>Sortable lists plugin generates this element if is necessary to wrap the future position by ul/ol.
 				Default type of wrapper is <span class="c1">UL</span>. You can change it in settings object by <span class="c1">listSelector</span> property.
 				The hintWrapperClass is removed after the item is inserted inside the list. So the final css of the wrapper is determined by listsClass property of settings. Look at the next paragraph.
 			</p>
@@ -294,14 +294,14 @@ $(function()
 
 			<h4>isAllowed</h4>
 			<p>isAllowed is anonymous function which determines if item can be inserted to the active area. It takes three arguments:
-				currEl == currently dragged el., hint == hint, target == li wrapper of hint element. Look at the code of isAllowed from first example of the page.
-				It disallow you to insert item to the "c" module if it is not from "c" module by default.
+				currEl == currently dragged el., hint == hint, target == <span class="c1">li</span> wrapper of hint element. Look at the code of isAllowed from first example of the page.
+				It disallows you to insert item to the "c" module if it is not from "c" module by default.
 			</p>
 <pre>
 <code>var options = {
-	isAllowed: function(cEl, hint, target)
+	isAllowed: function(currEl, hint, target)
 	{
-		if(hint.parents('li').first().data('module') === 'c' && cEl.data('module') !== 'c')
+		if(hint.parents('li').first().data('module') === 'c' && currEl.data('module') !== 'c')
 		{
 			hint.css('background-color', '#ff9999');
 			return false;
@@ -318,16 +318,17 @@ $(function()
 			<h4>Base element</h4>
 			<p>Most important element. Sortable lists plugin adds this element in to the body at the background. It is the ul/or element with css properties: position:absolute; top:0; left:0.
 				This element is the base for calculation the position of dragged element. This ensures smooth movement while dragging and scrolling. Another plugins have big problems with it. So Sortable lists solve it this way.
+				If it is necessary you can set the css properties of the element by baseClass or baseCss.
 			</p>
 <pre>
 <code>var options = {
-	scroll: 20
+	baseClass: 'baseClass',
+	baseCss: { 'margin-left': '-20px' }
 }</code>
 </pre>
 
 			<h4>To array, to hierarchy, to string</h4>
-			<p>Sortable lists also support this three function. They are implemented as plugins so you can cal it this way:
-				isAllowed(currEl, hint, target). currEl == dragged element, hint == hint, target == parent li element of hint/placeholder
+			<p>Sortable lists also support this three function. They do what they say - produce returns the representation of the lists as array, tree or string. Look at the first example on the page. They are implemented as plugins so you can call it this way:
 			</p>
 <pre>
 <code>$('#toArrBtn').on('click', function(){ console.log($('#sTree2').sortableListsToArray()); });
