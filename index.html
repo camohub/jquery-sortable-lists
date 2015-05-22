@@ -200,11 +200,32 @@ $(function()
 			</ul>
 
 			<section>
-				<p>Look at the console log to see the result of buttons below.</p>
+				<p><strong>Sortable lists</strong> also supports export methods. ts Look at the console log to see the result of buttons below.</p>
 				<span id="toArrBtn" class="btn">To array</span>
 				<span id="toHierBtn" class="btn">To hierarchy</span>
 				<span id="toStrBtn" class="btn">To string</span>
 			</section>
+
+			<section>
+				<h2>Lists patern</h2>
+				<p>Note that li items can contains <span class="c1">only two direct children elements</span>. Content <span class="c1">div</span> as a wrapper of li content and
+				another <span class="c1">list</span> if there is one. Like this:</p>
+			</section>
+<pre>
+<code>&lt;ul&gt;
+   &lt;li&gt;
+      &lt;div&gt;Whatever you want here&lt;/div&gt;
+      &lt;ul&gt;
+         &lt;li&gt;
+            &lt;div&gt;Nested list item&lt;/div&gt;
+         &lt;/li&gt;
+         &lt;li&gt;
+            &lt;div&gt;Another item&lt;/div&gt;
+         &lt;/li&gt;
+      &lt;/ul&gt;
+   &lt;/li&gt;
+&lt;/ul&gt;</code>
+</pre>
 
 			<a name="picture"></a>
 			<h4>This pictures shows you how it works inside. Click to show.</h4>
