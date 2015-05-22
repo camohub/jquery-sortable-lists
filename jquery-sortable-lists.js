@@ -52,27 +52,27 @@
 
 			setting = $.extend(true, {}, defaults, options),
 
-		// base element from which is counted position of draged element
+			// base element from which is counted position of draged element
 			base = $('<' + setting.listSelector + ' />')
 				.prependTo(jQBody)
 				.attr('id', 'sListsBase')
 				.css( setting.baseCss )
 				.addClass( setting.baseClass ),
 
-		// placeholder != state.placeholderNode
-		// placeholder is document fragment and state.placeholderNode is document node
+			// placeholder != state.placeholderNode
+			// placeholder is document fragment and state.placeholderNode is document node
 			placeholder = $('<li />')
 				.attr('id', 'sListsPlaceholder')
 				.css( setting.placeholderCss )
 				.addClass( setting.placeholderClass ),
 
-		// hint is document fragment
+			// hint is document fragment
 			hint = $('<li />')
 				.attr('id', 'sListsHint')
 				.css( setting.hintCss )
 				.addClass( setting.hintClass ),
 
-		// Is document fragment used as wrapper if hint is inserted to the empty li
+			// Is document fragment used as wrapper if hint is inserted to the empty li
 			hintWrapper = $('<' + setting.listSelector + ' />')
 				.attr('class', setting.listsClass)
 				.attr('id', 'sListsHintWrapper')
@@ -83,7 +83,7 @@
 			opener = $('<span />')
 				.addClass('sortableListsOpener'),
 
-		// Container with all actual elements and parameters
+			// Container with all actual elements and parameters
 			state = {
 				isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
 				oEl: null, // overElement is element which returns elementFromPoint() method
@@ -594,7 +594,7 @@
 				var children = oEl.children(),
 					list = oEl.children(setting.listSelector).last();  // ul/ol || empty jQuery obj
 
-				if(state.oEl) oEl.removeClass('sortableListsClose');
+				// if(state.oEl) oEl.removeClass('sortableListsClose'); // TODO: this peace of code is also at the end of the function
 
 				if(list.children().last().is('#sListsPlaceholder'))
 				{
