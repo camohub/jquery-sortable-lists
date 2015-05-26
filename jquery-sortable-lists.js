@@ -19,7 +19,6 @@
 
 			defaults = {
 				currElClass: '', // TODO
-				curElCss: {}, // TODO
 				placeholderClass: '',
 				placeholderCss: {
 					'position': 'relative',
@@ -52,38 +51,38 @@
 
 			setting = $.extend(true, {}, defaults, options),
 
-			// base element from which is counted position of draged element
+		// base element from which is counted position of draged element
 			base = $('<' + setting.listSelector + ' />')
 				.prependTo(jQBody)
-				.attr('id', 'sListsBase')
+				.attr('id', 'sortableListsBase')
 				.css( setting.baseCss )
 				.addClass( setting.baseClass ),
 
-			// placeholder != state.placeholderNode
-			// placeholder is document fragment and state.placeholderNode is document node
+		// placeholder != state.placeholderNode
+		// placeholder is document fragment and state.placeholderNode is document node
 			placeholder = $('<li />')
-				.attr('id', 'sListsPlaceholder')
+				.attr('id', 'sortableListsPlaceholder')
 				.css( setting.placeholderCss )
 				.addClass( setting.placeholderClass ),
 
-			// hint is document fragment
+		// hint is document fragment
 			hint = $('<li />')
-				.attr('id', 'sListsHint')
+				.attr('id', 'sortableListsHint')
 				.css( setting.hintCss )
 				.addClass( setting.hintClass ),
 
-			// Is document fragment used as wrapper if hint is inserted to the empty li
+		// Is document fragment used as wrapper if hint is inserted to the empty li
 			hintWrapper = $('<' + setting.listSelector + ' />')
-				.attr('class', setting.listsClass)
-				.attr('id', 'sListsHintWrapper')
-				.css( setting.hintWrapperCss )
-				.css( setting.listsCss )// TODO: check that css works correctly
-				.addClass( setting.hintWrapperClass ),
+				.attr('id', 'sortableListsHintWrapper')
+				.addClass( setting.listsClass + ' ' + setting.hintWrapperClass )
+				.css( setting.listsCss ) // TODO: check that css works correctly
+				.css( setting.hintWrapperCss ),
+
 
 			opener = $('<span />')
 				.addClass('sortableListsOpener'),
 
-			// Container with all actual elements and parameters
+		// Container with all actual elements and parameters
 			state = {
 				isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
 				oEl: null, // overElement is element which returns elementFromPoint() method
@@ -153,7 +152,8 @@
 
 			state.rootEl = {
 				el: rEl,
-				offset: rEl.offset()
+				offset: rEl.offset(),
+				class: rEl.attr('class')
 			};
 
 			state.cEl = {
@@ -163,17 +163,18 @@
 			};
 
 			state.cEl.xyOffsetDiff = { X: e.pageX - state.cEl.offset.left, Y: e.pageY - state.cEl.offset.top };
+			state.cEl.el.addClass('sortableListsCurrent' + ' ' + setting.currElClass);
 
 			el.before(placeholder);  // Now document has node placeholder
 
-			var placeholderNode = state.placeholderNode = $('#sListsPlaceholder');  // jQuery object && document node
+			var placeholderNode = state.placeholderNode = $('#sortableListsPlaceholder');  // jQuery object && document node
 
 			el.css({'width': el.width(),
 				'position': 'absolute',
 				'top': elXY.top - elMT,
 				'left': elXY.left - elML
 			})
-			.prependTo(base);
+				.prependTo(base);
 
 			placeholderNode.css({'display': 'block',
 				'height': elOH
@@ -261,11 +262,10 @@
 		{
 			var cEl = state.cEl,
 				cElStyle = cEl.el[0].style,
-				hintNode = $('#sListsHint', state.rootEl.el),
+				hintNode = $('#sortableListsHint', state.rootEl.el),
 				hintStyle = hint[0].style,
 				targetEl = null, // hintNode/placeholderNode
-				isHintTarget = false, // if cEl will be placed to the hintNode
-				offset = null;
+				isHintTarget = false; // if cEl will be placed to the hintNode
 
 			state.isDragged = false;
 
@@ -283,8 +283,9 @@
 			offset = targetEl.offset();
 
 			cEl.el.animate({left: offset.left - state.cEl.mL, top: offset.top - state.cEl.mT}, 250,
-				function()
+				function()  // complete callback
 				{
+					cEl.el.removeClass(setting.currElClass + ' ' + 'sortableListsCurrent');
 					cElStyle.top = '0';	cElStyle.left = '0';
 					cElStyle.position = 'relative';
 					cElStyle.width = 'auto';
@@ -293,7 +294,8 @@
 					hintStyle.display = 'none';
 					// This have to be document node, not hint as a part of documentFragment.
 					hintNode.remove();
-					$('#sListsHintWrapper')
+
+					$('#sortableListsHintWrapper')
 						.removeAttr('id')
 						.removeClass(setting.hintWrapperClass);
 					// Remove every empty ul/ol from root
@@ -313,6 +315,11 @@
 							else state.placeholderNode.parent().remove();
 						});
 					}
+					else
+					{
+						if(state.placeholderNode.siblings().length) state.placeholderNode.remove();
+						else state.placeholderNode.parent().remove();
+					}
 				});
 
 			scrollStop(state);
@@ -321,7 +328,7 @@
 				.unbind("mousemove", dragging)
 				.unbind("mouseup", endDrag);
 
-			setting.complete(cEl.el, targetEl);
+			setting.complete(cEl.el);
 
 		}
 
@@ -462,7 +469,7 @@
 			{
 				return null;
 			}
-			else if(el.is('#sListsPlaceholder') || el.is('#sListsHint')) // el is #placeholder/#hint
+			else if(el.is('#sortableListsPlaceholder') || el.is('#sortableListsHint')) // el is #placeholder/#hint
 			{
 				return null;
 			}
@@ -513,16 +520,16 @@
 		 */
 		function showHintBefore(e, oEl)
 		{
-			if($('#sListsHintWrapper', state.rootEl.el).length)
+			if($('#sortableListsHintWrapper', state.rootEl.el).length)
 			{
-				hint.unwrap();  // If hint is wrapped by ul/ol #sListsHintWrapper
+				hint.unwrap();  // If hint is wrapped by ul/ol #sortableListsHintWrapper
 			}
 
 			// Hint outside the oEl
 			if(e.pageX - oEl.offset().left < setting.insertZone)
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if(oEl.prev('#sListsPlaceholder').length)
+				if(oEl.prev('#sortableListsPlaceholder').length)
 				{
 					hint.css('display', 'none');
 					return;
@@ -535,7 +542,7 @@
 				var children = oEl.children(),
 					list = oEl.children('ul').first();
 
-				if(list.children().first().is('#sListsPlaceholder'))
+				if(list.children().first().is('#sortableListsPlaceholder'))
 				{
 					hint.css('display', 'none');
 					return;
@@ -560,7 +567,7 @@
 
 			hint.css('display', 'block');
 			// Ensures posible formating of elements. Second call is in the endDrag method.
-			state.isAllowed = setting.isAllowed(state.cEl.el, $('#sListsHint'), oEl);
+			state.isAllowed = setting.isAllowed(state.cEl.el, $('#sortableListsHint'), oEl);
 
 		}
 
@@ -572,16 +579,16 @@
 		 */
 		function showHintAfter(e, oEl)
 		{
-			if($('#sListsHintWrapper', state.rootEl.el).length)
+			if($('#sortableListsHintWrapper', state.rootEl.el).length)
 			{
-				hint.unwrap();  // If hint is wrapped by ul/ol sListsHintWrapper
+				hint.unwrap();  // If hint is wrapped by ul/ol sortableListsHintWrapper
 			}
 
 			// Hint outside the oEl
 			if(e.pageX - oEl.offset().left < setting.insertZone)
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if(oEl.next('#sListsPlaceholder').length)
+				if(oEl.next('#sortableListsPlaceholder').length)
 				{
 					hint.css('display', 'none');
 					return;
@@ -596,7 +603,7 @@
 
 				// if(state.oEl) oEl.removeClass('sortableListsClose'); // TODO: this peace of code is also at the end of the function
 
-				if(list.children().last().is('#sListsPlaceholder'))
+				if(list.children().last().is('#sortableListsPlaceholder'))
 				{
 					hint.css('display', 'none');
 					return;
@@ -624,11 +631,11 @@
 
 			hint.css('display', 'block');
 			// Ensures posible formating of elements. Second call is in the endDrag method.
-			state.isAllowed = setting.isAllowed(state.cEl.el, $('#sListsHint'), oEl);
+			state.isAllowed = setting.isAllowed(state.cEl.el, $('#sortableListsHint'), oEl);
 
 		}
 
-    };
+	};
 
 //// toArray /////////////////////////////////////////////////////////////////////////////////////
 
@@ -644,27 +651,27 @@
 			order = 1;
 
 		this.children('li').each( function()
+		{
+			var li = $(this),
+				tempArr = [],
+				id,
+				value;
+
+			if(!(id = li.attr('id')))
 			{
-				var li = $(this),
-					tempArr = [],
-					id,
-					value;
+				console.log(li); // Have to be here! Read next exception message.
+				throw 'Previous item in console.log has no id. It is necessary to create the array.';
+			}
 
-				if(!(id = li.attr('id')))
-				{
-					console.log(li); // Have to be here! Read next exception message.
-					throw 'Previous item in console.log has no id. It is necessary to create the array.';
-				}
-
-				tempArr['id'] = id;
-				tempArr['parentId'] = parentId;
-				tempArr['value'] = li.data('value');
-				tempArr['branchOrder'] = order;
-				arr.push(tempArr);
-				i++;
-				li.children('ul').sortableListsToArray(arr, id, i);
-				order++;
-			});
+			tempArr['id'] = id;
+			tempArr['parentId'] = parentId;
+			tempArr['value'] = li.data('value');
+			tempArr['branchOrder'] = order;
+			arr.push(tempArr);
+			i++;
+			li.children('ul').sortableListsToArray(arr, id, i);
+			order++;
+		});
 
 		return arr;
 
@@ -680,23 +687,23 @@
 			order = 1;
 
 		$(this).children('li').each( function()
+		{
+			var id,
+				tempArr = [],
+				li = $(this);
+
+			if(!(id = li.attr('id')))
 			{
-				var id,
-					tempArr = [],
-					li = $(this);
+				console.log(li); // Have to be here! Read next exception message.
+				throw 'Previous item in console.log has no id. It is necessary to create the array.';
+			}
+			tempArr['id'] = id;
+			tempArr['value'] = li.data('value');
+			tempArr['order'] = order;
+			tempArr['children'] = li.children('ul').sortableListsToHierarchy();
 
-				if(!(id = li.attr('id')))
-				{
-					console.log(li); // Have to be here! Read next exception message.
-					throw 'Previous item in console.log has no id. It is necessary to create the array.';
-				}
-				tempArr['id'] = id;
-				tempArr['value'] = li.data('value');
-				tempArr['order'] = order;
-				tempArr['children'] = li.children('ul').sortableListsToHierarchy();
-
-				arr[order++] = tempArr;
-			});
+			arr[order++] = tempArr;
+		});
 
 		return arr;
 
@@ -712,21 +719,21 @@
 			parentId = parentId ? parentId : 0;
 
 		$(this).children('li').each( function()
+		{
+			var id,
+				tempArr = [],
+				li = $(this);
+
+			if(!(id = li.attr('id')))
 			{
-				var id,
-					tempArr = [],
-					li = $(this);
+				console.log(li);  // Have to be here. Read next exception message.
+				throw 'Previous item in console.log has no id. It is necessary to create the array.';
+			}
 
-				if(!(id = li.attr('id')))
-				{
-					console.log(li);  // Have to be here. Read next comment.
-					throw 'Previous item in console.log has no id. It is necessary to create the array.';
-				}
+			arr.push(id + '=' + parentId);
+			$(this).children('ul, ol').sortableListsToString(arr, id);
 
-				arr.push(id + '=' + parentId);
-				$(this).children('ul, ol').sortableListsToString(arr, id);
-
-			});
+		});
 
 		return arr.join('&amp;');
 
