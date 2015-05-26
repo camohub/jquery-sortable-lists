@@ -103,7 +103,7 @@ p { margin-top:0; font-size:0.97em; }
 
 #main_content h2 {
   font-size: 20px;
-  margin:20px 0;
+  margin:40px 0 20px;
 }
 
 #main_content h3 {
@@ -113,8 +113,8 @@ p { margin-top:0; font-size:0.97em; }
 }
 
 #main_content h4 {
-  font-size: 17px;
-  font-weight:normal;
+  font-size: 15px;
+  font-weight:bold;
   margin:30px 0 20px;
   color:#63c0f5;
 }
