@@ -55,8 +55,8 @@ $(function()
 			hintCss: {'background-color':'#bbf'},
 			opener: {
 				active: true,
-				close: './imgs/Add2.png',
-				open: './imgs/Remove2.png',
+				close: './imgs/Remove2.png',
+				open: './imgs/Add2.png',
 				css: {
 					'display': 'inline-block',
 					'width': '18px',
@@ -142,7 +142,7 @@ $(function()
 				<li id="item_a" data-module="a">
 					<div>Item a</div>
 				</li>
-				<li class="open" id="item_b" data-module="b">
+				<li class="sortableListsOpen" id="item_b" data-module="b">
 					<div>Item b</div>
 					<ul class="">
 						<li id="item_b1" data-module="b">
@@ -363,8 +363,8 @@ $(function()
 <code>var options = {
 	opener: {
 		active: true,
-		close: './imgs/Add2.png',
-		open: './imgs/Remove2.png',
+		close: './imgs/Remove2.png',
+		open: './imgs/Add2.png',
 		css: {
 			'display': 'inline-block', <span class="c4">// Default value</span>
 			'float': 'left', <span class="c4">// Default value</span>
@@ -379,6 +379,20 @@ $(function()
 		class: 'yourClassName'
 	}
 }</code>
+</pre>
+			<p>Default behaviour is to close all nested lists on page load.
+				If you want to show some nested lists you have to add "sortableListsOpen" class to the parent li element of nested list.
+			</p>
+<pre>
+<code>&lt;ul&gt;
+   &lt;li class="sortableListsOpen"&gt;
+      &lt;div&gt;Content div&lt;/div&gt;
+      &lt;ul&gt;
+         &lt;li&gt;&lt;div&gt;Nested list item&lt;/div&gt;&lt;/li&gt;
+         &lt;li&gt;&lt;div&gt;Another item&lt;/div&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+   &lt;/li&gt;
+&lt;/ul&gt;</code>
 </pre>
 
 

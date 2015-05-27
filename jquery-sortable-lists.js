@@ -56,7 +56,8 @@
 				listsCss: {},
 				insertZone: 50,
 				scroll: 20,
-				isAllowed: function(cEl, hint) { return true; } // Params: current el., hint el.
+				isAllowed: function(cEl, hint) { return true; }, // Params: current el., hint el.
+				complete: function(cEl) { return true; } // Params: current el., hint el.
 			},
 
 			setting = $.extend(true, {}, defaults, options),
@@ -97,7 +98,7 @@
 				{
 					var li = $(this).closest('li');
 
-					if(li.hasClass('closed')){ open(li); }
+					if(li.hasClass('sortableListsClosed')){ open(li); }
 					else { close(li); }
 
 					return false; // Prevent default
@@ -128,8 +129,8 @@
 
 				if (li.children('ul,ol').length) {
 					opener.clone(true).prependTo(li.children('div').first());
-					if (!li.hasClass('open')) {
-						li.addClass('closed');
+					if (!li.hasClass('sortableListsOpen')) {
+						li.addClass('sortableListsClosed');
 						close(li);
 					}
 				}
@@ -655,14 +656,16 @@
 
 		function open(li)
 		{
-			li.removeClass('closed').addClass('open');
+			li.removeClass('sortableListsClosed').addClass('sortableListsOpen');
 			li.children('ul, ol').css('display', 'block');
+			li.children('div').children('.sortableListsOpener').first().css('background-image', 'url(' + setting.opener.close + ')');
 		}
 
 		function close(li)
 		{
-			li.removeClass('open').addClass('closed');
+			li.removeClass('sortableListsOpen').addClass('sortableListsClosed');
 			li.children('ul, ol').css('display', 'none');
+			li.children('div').children('.sortableListsOpener').first().css('background-image', 'url(' + setting.opener.open + ')');
 		}
 
 		function tidyCurrEl(cEl)
