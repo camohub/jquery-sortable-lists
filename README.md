@@ -1,4 +1,4 @@
-<h1><a href="http://localhost/jquery-sortable-lists/index.html">jquery-sortable-lists</a></h1>
+<h1><a href="http://camohub.github.io/jquery-sortable-lists/index.html">jquery-sortable-lists</a></h1>
 <h2 style="font-size:17px">jQuery plugin to sorting lists also the tree structures.</h2>
 
 ```$('#myList').sortableLists( options );```
