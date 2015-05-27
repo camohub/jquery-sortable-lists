@@ -8,37 +8,41 @@
 <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
 <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
 
-<title>Jquery sortable lists</title>
+<title>jQquery sortable lists</title>
 
 <style type="text/css">
 	html, body, ul, li { margin:0; padding:0; }
 	ul, li { list-style-type:none; color:#b5e853; border:1px solid #3f3f3f; }
 	ul.sTree, ul{ padding:0px; background-color:#151515; }
-	ul li { padding-left:50px; margin:5px; border:1px solid #3f3f3f; background-color:#3f3f3f; }
+	ul.sTree2 li, ul#sortableListsBase li { padding-left:50px; margin:5px; border:1px solid #3f3f3f; background-color:#3f3f3f; }
 	li div { padding:7px; background-color:#222; Nborder:1px solid #3f3f3f; }
 	li, ul, div { border-radius: 3px; }
-	.sortableListsClose ul, .sortableListsClose ol { display:none; }
-	.sortableListsOpener { display:inline-block; float:left; width:18px; height:18px; margin-left:-35px; margin-right:5px; background:url('./imgs/Remove2.png') center center no-repeat; }
-	.sortableListsClose .sortableListsOpener { background:url('./imgs/Add2.png') center center no-repeat;}
-	.red { background-color:#ff9999;}
+	.red { background-color:#ff9999; }
 	.blue { background-color:#aaaaff;}
-	.blue2 { background-color:#ccf; }
 	.green { background-color:#99ff99; }
-	.gree2{ Nbackground-color:#bbffbb; }
+	.gree2 { background-color:#bbffbb; }
+	.yellow { background-color:#ff8; }
+	.brown { background-color:#c26b2b; }
 	.pT20 { padding-top:20px; }
 	.pV10 { padding-top:10px; padding-bottom:10px; }
 	.dN { display:none; }
 	.zI1000 { z-index:1000; }
 	.c1 { color:#b5e853; }
+	.c2 { color:#63c0f5; }
+	.c3 { color: #f77720; }
+	.c4 { color: #888; }
 	.bgC1 { background-color:#ccc; }
 	.bgC2 { background-color:#ff8; }
 	.small1 { font-size:0.8em; }
 	.small2 { font-size:0.7em; }
 	.small3 { font-size:0.6em; }
 	.tAR { text-align:right; }
-	#sTreeBase { width:100px; height:50px; background-color: blue; }
+	.clear { clear:both; }
+	img.descPicture { display:block; width:100%; margin:0 7px 30px 0; float:left; cursor:pointer; /*transition: all 0.5s ease;*/ }
+	img.descPicture.descPictureClose { width:150px; }
 	#sTree2 { margin:10px auto; }
 	#settingsOpener1, #settingsOpener2 { cursor: pointer; }
+
 </style>
 
 <script src="http://code.jquery.com/jquery-git1.min.js"></script>
@@ -47,9 +51,24 @@
 $(function()
 {
 	var options = {
-			currElClass: 'red',
-			placeholderClass: 'bgC2',
-			listsClass:'',
+			placeholderCss: {'background-color': '#ff8'},
+			hintCss: {'background-color':'#bbf'},
+			opener: {
+				active: true,
+				close: './imgs/Remove2.png',
+				open: './imgs/Add2.png',
+				css: {
+					'display': 'inline-block',
+					'width': '18px',
+					'height': '18px',
+					'float': 'left',
+					'margin-left': '-35px',
+					'margin-right': '5px',
+					'background-position': 'center center',
+					'background-repeat': 'no-repeat'
+				},
+				class: ''
+			},
 			isAllowed: function(cEl, hint, target)
 			{
 				// Be carefull if you test some ul/ol elements here.
@@ -65,11 +84,6 @@ $(function()
 					hint.css('background-color', '#99ff99');
 					return true;
 				}
-			},
-			complete: function(cEl, target)
-			{
-				console.log(cEl);
-				console.log(target);
 			}
 		},
 
@@ -87,6 +101,7 @@ $(function()
 	$('#toArrBtn').on('click', function(){ console.log($('#sTree2').sortableListsToArray()); });
 	$('#toHierBtn').on('click', function() { console.log($('#sTree2').sortableListsToHierarchy()); });
 	$('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsToString()); });
+	$('.descPicture').on('click', function(e) { $(this).toggleClass('descPictureClose'); });
 });
 </script>
 </head>
@@ -112,22 +127,22 @@ $(function()
 <pre>
 <code>$('.sortableLists').sortableLists( options );</code>
 </pre>
-			<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items however you want.
+			<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items.
 				You can define the <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
-				Set the <strong class="c1">insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
-				<strong class="c1">speed of autoscroll</strong> function. For details look at the <a href="#settings" id="settingsOpener1" title="Click me">settings&nbsp;section</a>.
-				For better understanding look at the <a href="picture">picture</a> which describes all active elements in sortable lists plugin.
+				Also <strong class="c1">complete callback</strong>. Set the <strong class="c1">insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
+				<strong class="c1">speed of autoscroll</strong> function and more.
+				For better understanding look at the <a href="#picture">picture</a> which describes all active elements in sortable lists plugin.
 			</p>
 
         	<h2>
 				Look at the example and try it yourself.
 			</h2>
 
-			<ul class="sTree2" id="sTree2">
+	<ul class="sTree2 listsClass" id="sTree2">
 				<li id="item_a" data-module="a">
 					<div>Item a</div>
 				</li>
-				<li class="" id="item_b" data-module="b">
+				<li class="sortableListsOpen" id="item_b" data-module="b">
 					<div>Item b</div>
 					<ul class="">
 						<li id="item_b1" data-module="b">
@@ -196,85 +211,131 @@ $(function()
 			</ul>
 
 			<section>
-				<p>Look at the console log to see the result of buttons below.</p>
+				<p><strong>Sortable lists</strong> also supports export methods. Look at the console log to see the result of buttons below.</p>
 				<span id="toArrBtn" class="btn">To array</span>
 				<span id="toHierBtn" class="btn">To hierarchy</span>
 				<span id="toStrBtn" class="btn">To string</span>
 			</section>
 
-			<a name="picture"></a>
-			<h4>This picture shows you how it works inside.</h4>
-			<img src="./imgs/descPicture.jpg">
+			<section>
+				<h2>Lists pattern</h2>
+				<p>Note that li items can contains <span class="c1">only one or max two direct children</span>. Content <span class="c1">div</span> as a wrapper of li content and
+				another <span class="c1">list</span> if item contains nested list. Like this:</p>
+			</section>
+<pre>
+<code>&lt;ul&gt;
+   &lt;li&gt;
+      &lt;div&gt;Whatever you want here&lt;/div&gt;
+      &lt;ul&gt;
+         &lt;li&gt;&lt;div&gt;Nested list item&lt;/div&gt;&lt;/li&gt;
+         &lt;li&gt;&lt;div&gt;Another item&lt;/div&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+   &lt;/li&gt;
+&lt;/ul&gt;</code>
+</pre>
 
-			<a name="settings"></a>
-			<h2 id="settingsOpener2" title="Click me">Settings</h2>
-			<div id="settingsWrapper">
+
+			<a name="cssPattern"></a>
+			<h2 class="clear">Css pattern</h2>
+			<p>If you format li elements this way</p>
+<pre>
+<code>#myList li { background-color:#ddf, padding-left:50px }</code>
+</pre>
+			<p>you have to add this selector to css file.</p>
+<pre>
+<code>$myList li, #sortableListsBase li { background-color:#ddf, padding-left:50px }</code>
+</pre>
+			<p>Every dragged item is appended to the base element. It ensures smooth dragging and scrolling. For more information about base element look at the picture below and at the <a href="#baseElement">Base element description</a>.</p>
 			<p>All settings are placed in object which is the only parameter of .sortableLists() function.</p>
 <pre>
 <code>$('.sortableLists').sortableLists( options );</code>
 </pre>
+			<p class="c1">That's all. Everything else is optonal.</p>
 
-			<h3>Now all possible settings step by step.</h3>
-			<h4>Currently dragged element</h4>
-			<p>Is the currently dragged item. You can set the css of this element via currElClass and currElCss property of settings object.</p>
+
+			<a name="picture"></a>
+			<h4>This pictures shows you how it works inside. Click to show.</h4>
+			<img class="descPicture descPictureClose" src="./imgs/sortable-lists.jpg">
+			<img class="descPictureClose descPicture" src="./imgs/sortable-lists2.jpg">
+
+
+			<h2 class="clear">Active elements</h2>
+
+			<a name="baseElement"></a>
+			<h3 class="c3">Base element</h3>
+			<p>Most important element. Every dragged element is appended to the base element while dragging. Sortable lists plugin adds this element in to the body at the background.
+				It is the ul/ol element with css properties: position:absolute; top:0; left:0.
+				This element is the base for calculation the position of dragged element. This ensures smooth movement while dragging and scrolling. Another plugins have big problems with it.
+			</p>
+
+			<h3 class="c3">Currently dragged element</h3>
+			<p>Is dragged element of course. You can have a little problem with the formatting this element. It caused the fact that dragged element
+				is the child of the base element during the dragging. Look at the <a href="#cssPattern" id="toCssPattern">Css pattern</a> how to solve it.
+				Current element has class - sortableListsCurrent which helps you to format the item. You can do it also through the options object by
+				currElClass or currElCss properties. Note that classes sortableListsCurrent and currElClass will be removed after the dragging but currElCss not.
+			</p>
 <pre>
 <code>var options = {
-	// Like a css class name
+	<span class="c4">// Like a css class name. Class will be removed after drop.</span>
 	currElClass: 'currElemClass',
-	// or like a jQuery css object. Note that settings cant be removed
+	<span class="c4">// or like a jQuery css object. Note that css object settings can't be removed</span>
 	currElCss: {'background-color':'green', 'color':'#fff'}
 }</code>
 </pre>
 
-			<h4>Placeholder</h4>
-			<p>Sortable lists plugin generates this li element at the background. Element holds the default position of dragged item while dragging. You can set the css via placeholderClass or placeholderCss.</p>
+
+			<h3 class="c3">Placeholder</h3>
+			<p>Sortable lists plugin generates this li element at the background. Element holds the default position of dragged item while dragging. Element has id - sortableListsPlaceholder. You can also set the css via placeholderClass or placeholderCss in options object.</p>
 <pre>
 <code>var options = {
 	placeholderClass: 'placeholderClass',
-	// or like a jQuery css object
+	<span class="c4">// or like a jQuery css object</span>
 	placeholderCss: {'background-color':'yellow'}
 }</code>
 </pre>
 
-			<h4>Hint</h4>
-			<p>This element generates the plugin at the background. Element shows the possible future position of dragged item. You can set the css via hintClass or hintCss.</p>
+
+			<h3 class="c3">Hint</h3>
+			<p>This element generates the plugin at the background. Element shows the possible future position of dragged item. You can set the css via hintClass or hintCss in options object.</p>
 <pre>
 <code>var options = {
 	hintClass: 'hintClass',
-	// or like a jQuery css object
+	<span class="c4">// or like a jQuery css object</span>
 	hintCss: {'background-color':'green', 'border':'1px dashed white'}
 }</code>
 </pre>
 
-			<h4>Hint wrapper</h4>
+
+			<h3 class="c3">Hint wrapper</h3>
 			<p>Sortable lists plugin generates this element if is necessary to wrap the future position by ul/ol.
 				Default type of wrapper is <span class="c1">UL</span>. You can change it in settings object by <span class="c1">listSelector</span> property.
-				The hintWrapperClass is removed after the item is inserted inside the list. So the final css of the wrapper is determined by listsClass property of settings. Look at the next paragraph.
+				The hintWrapperClass is removed after the item is inserted inside the list. So the final css of the wrapper is determined by listsClass property of options object or by default. Look at the next paragraph.
 			</p>
 <pre>
 <code>var options = {
 	listSelector: 'ol',
 	hintWrapperClass: 'hintClass',
-	// or like a jQuery css object
+	<span class="c4">// or like a jQuery css object</span>
 	hintWrapperCss: {'background-color':'green', 'border':'1px dashed white'}
 }</code>
 </pre>
 
-			<h4>List selector, list class</h4>
-			<p>As I mention above, plugin needs to know which type of lists(ul/ol) you want to use if is necessary to wrap item by ul/ol.
-			Plugin does not know which classes do you use to format your lists so
-				you have to set listsClass or listsCss property of settings object.
+
+			<h2>Another settings</h2>
+			<h3 class="c2">List selector, list class</h3>
+			<p>Sortable lists plugin needs to know which type of lists(ul/ol) you want to use if is necessary to wrap item by ul/ol.
+			Plugin also does not know which classes do you use to format your lists so you have to set listsClass or listsCss property of settings object.
 			</p>
 <pre>
 <code>var options = {
 	listSelector: 'ol',
 	listsClass: 'listsClass',
-	// or like a jQuery css object
+	<span class="c4">// or like a jQuery css object</span>
 	listsCss: {'background-color':'silver', 'border':'1px solid white'}
 }</code>
 </pre>
 
-			<h4>Insert zone</h4>
+			<h3 class="c2">Insert zone</h3>
 			<p>This property defines the distance which determines if item will be inserted outside(before/after) or inside of another item.
 			</p>
 <pre>
@@ -283,7 +344,7 @@ $(function()
 }</code>
 </pre>
 
-			<h4>Autoscroll speed</h4>
+			<h3 class="c2">Autoscroll speed</h3>
 			<p>Yes you are right. This property defines the speed of auto scrolling.
 			</p>
 <pre>
@@ -292,7 +353,50 @@ $(function()
 }</code>
 </pre>
 
-			<h4>isAllowed</h4>
+			<h3 class="c2">Open/close function</h3>
+			<p>This option enables you to hide/show nested lists. Plugin prepend the span element to the content div of items with nested lists.
+				You can style this element through the opener object of options. Look at the example code below.
+				At first you must activate the open/close function.	Next step is setting of url for open/close image on the background of the span.
+				The last step are styles as jquery css object or class.
+			</p>
+<pre>
+<code>var options = {
+	opener: {
+		active: true,
+		close: './imgs/Remove2.png',
+		open: './imgs/Add2.png',
+		css: {
+			'display': 'inline-block', <span class="c4">// Default value</span>
+			'float': 'left', <span class="c4">// Default value</span>
+			'width': '18px',
+			'height': '18px',
+			'margin-left': '-35px',
+			'margin-right': '5px',
+			'background-position': 'center center', <span class="c4">// Default value</span>
+			'background-repeat': 'no-repeat' <span class="c4">// Default value</span>
+		},
+		// or like a class. Note that class can not rewrite default values. To rewrite defaults you have to do it through css object.
+		class: 'yourClassName'
+	}
+}</code>
+</pre>
+			<p>Default behaviour is to close all nested lists on page load.
+				If you want to show some nested lists you have to add "sortableListsOpen" class to the parent li element of nested list.
+			</p>
+<pre>
+<code>&lt;ul&gt;
+   &lt;li class="sortableListsOpen"&gt;
+      &lt;div&gt;Content div&lt;/div&gt;
+      &lt;ul&gt;
+         &lt;li&gt;&lt;div&gt;Nested list item&lt;/div&gt;&lt;/li&gt;
+         &lt;li&gt;&lt;div&gt;Another item&lt;/div&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+   &lt;/li&gt;
+&lt;/ul&gt;</code>
+</pre>
+
+
+			<h3 class="c2">Callback isAllowed</h3>
 			<p>isAllowed is anonymous function which determines if item can be inserted to the active area. It takes three arguments:
 				currEl == currently dragged el., hint == hint, target == <span class="c1">li</span> wrapper of hint element. Look at the code of isAllowed from first example of the page.
 				It disallows you to insert item to the "c" module if it is not from "c" module by default.
@@ -315,20 +419,20 @@ $(function()
 }</code>
 </pre>
 
-			<h4>Base element</h4>
-			<p>Most important element. Sortable lists plugin adds this element in to the body at the background. It is the ul/or element with css properties: position:absolute; top:0; left:0.
-				This element is the base for calculation the position of dragged element. This ensures smooth movement while dragging and scrolling. Another plugins have big problems with it. So Sortable lists solve it this way.
-				If it is necessary you can set the css properties of the element by baseClass or baseCss.
+			<h3 class="c2">Callback complete</h3>
+			<p>Is called after the drop. Takes one argument currEl == currently dragged element.
 			</p>
 <pre>
 <code>var options = {
-	baseClass: 'baseClass',
-	baseCss: { 'margin-left': '-20px' }
+	complete: function(currEl)
+	{
+		<span class="c4">// Whatever you need to do after the drop</span>
+	}
 }</code>
 </pre>
 
-			<h4>To array, to hierarchy, to string</h4>
-			<p>Sortable lists also support this three function. They do what they say - produce returns the representation of the lists as array, tree or string. Look at the first example on the page. They are implemented as plugins so you can call it this way:
+			<h2>To array, to hierarchy, to string</h2>
+			<p>Sortable lists also support this three function. They do what they say - returns the representation of the lists as array, tree or string. Look at the first example on the page. They are implemented as plugins so you can call it this way:
 			</p>
 <pre>
 <code>$('#toArrBtn').on('click', function(){ console.log($('#sTree2').sortableListsToArray()); });
@@ -337,12 +441,9 @@ $('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsTo
 </code>
 </pre>
 
-			</div>
 
 
-
-
-			<h3 class="pT20"><b>Do not do this:</b></h3>
+			<h2 class="pT20"><b>Do not do this:</b></h2>
 			<p>Do not use construction where ul with margin top is direct child of body - &lt;body&gt;&lt;ul style="margin-top:XYpx"&gt;. Margin-top breaks the position of dragged element.
 			</p>
 
