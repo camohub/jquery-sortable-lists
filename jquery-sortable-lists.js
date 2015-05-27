@@ -41,12 +41,23 @@
 					'padding': 0,
 					'z-index': 2500
 				},
+				opener: {
+					active: false,
+					openerCss: {
+						'float': 'left',
+						'display': 'inline-block',
+						'background-position': 'center center',
+						'background-repeat': 'no-repeat'
+					},
+					openerClass: ''
+				},
 				listSelector: 'ul',
 				listsClass: '',
 				listsCss: {},
 				insertZone: 50,
 				scroll: 20,
-				isAllowed: function(cEl, hint) { return true; } // Params: current el., hint el.
+				isAllowed: function(cEl, hint) { return true; }, // Params: current el., hint el.
+				complete: function(cEl) { return true; } // Params: current el., hint el.
 			},
 
 			setting = $.extend(true, {}, defaults, options),
@@ -80,7 +91,18 @@
 
 
 			opener = $('<span />')
-				.addClass('sortableListsOpener'),
+				.addClass( 'sortableListsOpener ' + setting.opener.class )
+				.css('background-image', 'url(' + setting.opener.close + ')')
+				.css( setting.opener.css )
+				.on('mousedown', function(e)
+				{
+					var li = $(this).closest('li');
+
+					if(li.hasClass('sortableListsClosed')){ open(li); }
+					else { close(li); }
+
+					return false; // Prevent default
+				}),
 
 		// Container with all actual elements and parameters
 			state = {
@@ -100,20 +122,24 @@
 				win: $(window)
 			};
 
-		$(this).find('li').each( function()
+		if(setting.opener.active)
 		{
-			var li = $(this);
-			if(li.children('ul,ol').length)
-			{
-				li.addClass('sortableListsClose');
-				opener.clone().prependTo(li.children('div').first());
-			}
-		});
+			$(this).find('li').each( function() {
+				var li = $(this);
+
+				if (li.children('ul,ol').length) {
+					opener.clone(true).prependTo(li.children('div').first());
+					if (!li.hasClass('sortableListsOpen')) {
+						li.addClass('sortableListsClosed');
+						close(li);
+					}
+				}
+			});
+		}
 
 		$('.sortableListsOpener').on('mousedown', function(e)
 		{
-			$(this).closest('li').toggleClass('sortableListsClose');
-			return false;
+
 		});
 
 		// Return this ensures chaining
@@ -148,7 +174,7 @@
 				elML = parseInt(el.css('margin-left')),
 				elMR = parseInt(el.css('margin-right')),
 				elXY = el.offset(),
-				elOH = el.outerHeight(false);
+				elIH = el.innerHeight();
 
 			state.rootEl = {
 				el: rEl,
@@ -177,10 +203,10 @@
 				.prependTo(base);
 
 			placeholderNode.css({'display': 'block',
-				'height': elOH
+				'height': elIH
 			});
 
-			hint.css('height', elOH);
+			hint.css('height', elIH);
 
 			state.doc
 				.on('mousemove', dragging)
@@ -261,11 +287,11 @@
 		function endDrag(e)
 		{
 			var cEl = state.cEl,
-				cElStyle = cEl.el[0].style,
 				hintNode = $('#sortableListsHint', state.rootEl.el),
 				hintStyle = hint[0].style,
 				targetEl = null, // hintNode/placeholderNode
-				isHintTarget = false; // if cEl will be placed to the hintNode
+				isHintTarget = false, // if cEl will be placed to the hintNode
+				hintWrapperNode = $('#sortableListsHintWrapper');
 
 			state.isDragged = false;
 
@@ -285,41 +311,38 @@
 			cEl.el.animate({left: offset.left - state.cEl.mL, top: offset.top - state.cEl.mT}, 250,
 				function()  // complete callback
 				{
-					cEl.el.removeClass(setting.currElClass + ' ' + 'sortableListsCurrent');
-					cElStyle.top = '0';	cElStyle.left = '0';
-					cElStyle.position = 'relative';
-					cElStyle.width = 'auto';
+					tidyCurrEl(cEl);
+
 					targetEl.after(cEl.el[0]);
 					targetEl[0].style.display = 'none';
 					hintStyle.display = 'none';
 					// This have to be document node, not hint as a part of documentFragment.
 					hintNode.remove();
 
-					$('#sortableListsHintWrapper')
+					hintWrapperNode
 						.removeAttr('id')
 						.removeClass(setting.hintWrapperClass);
-					// Remove every empty ul/ol from root
-					// Has to be here cause hintWrapper can not be removed before the hint
-					$(setting.listSelector, state.rootEl.el).each(
-						function(i)
-						{
-							if(!$(this).children().length)  $(this).remove();
-						}
-					);
+
+					if(hintWrapperNode.length)
+					{
+						hintWrapperNode.prev('div').append(opener.clone(true));
+					}
+
 					// Directly removed placeholder looks bad. It jumps up if the hint is below.
 					if(isHintTarget)
 					{
 						state.placeholderNode.slideUp(150, function()
 						{
-							if(state.placeholderNode.siblings().length) state.placeholderNode.remove();
-							else state.placeholderNode.parent().remove();
+							state.placeholderNode.remove();
+							tidyEmptyLists();
 						});
 					}
 					else
 					{
-						if(state.placeholderNode.siblings().length) state.placeholderNode.remove();
-						else state.placeholderNode.parent().remove();
+						state.placeholderNode.remove();
+						tidyEmptyLists();
 					}
+
 				});
 
 			scrollStop(state);
@@ -561,7 +584,7 @@
 
 				if(state.oEl)
 				{
-					oEl.removeClass('sortableListsClose'); // TODO:animation??? .children('ul,ol').css('display', 'block');
+					open(oEl); // TODO:animation??? .children('ul,ol').css('display', 'block');
 				}
 			}
 
@@ -601,8 +624,6 @@
 				var children = oEl.children(),
 					list = oEl.children(setting.listSelector).last();  // ul/ol || empty jQuery obj
 
-				// if(state.oEl) oEl.removeClass('sortableListsClose'); // TODO: this peace of code is also at the end of the function
-
 				if(list.children().last().is('#sortableListsPlaceholder'))
 				{
 					hint.css('display', 'none');
@@ -622,9 +643,7 @@
 
 				if(state.oEl)
 				{
-					// sortableListsClose ensures background image for opener.
-					// Display block is necessary cause slideToggle (up) sets none and toggle class is not enough.
-					oEl.removeClass('sortableListsClose'); // TODO:animation???  .children('ul,ol').css('display', 'block');
+					open(oEl); // TODO: animation???
 				}
 
 			}
@@ -635,7 +654,50 @@
 
 		}
 
+		function open(li)
+		{
+			li.removeClass('sortableListsClosed').addClass('sortableListsOpen');
+			li.children('ul, ol').css('display', 'block');
+			li.children('div').children('.sortableListsOpener').first().css('background-image', 'url(' + setting.opener.close + ')');
+		}
+
+		function close(li)
+		{
+			li.removeClass('sortableListsOpen').addClass('sortableListsClosed');
+			li.children('ul, ol').css('display', 'none');
+			li.children('div').children('.sortableListsOpener').first().css('background-image', 'url(' + setting.opener.open + ')');
+		}
+
+		function tidyCurrEl(cEl)
+		{
+			var cElStyle = cEl.el[0].style;
+
+			cEl.el.removeClass( setting.currElClass + ' ' + 'sortableListsCurrent' );
+			cElStyle.top = '0';
+			cElStyle.left = '0';
+			cElStyle.position = 'relative';
+			cElStyle.width = 'auto';
+
+		}
+
+		function tidyEmptyLists()
+		{
+			// Remove every empty ul/ol from root and also with .sortableListsOpener
+			// hintWrapper can not be removed before the hint
+			$(setting.listSelector, state.rootEl.el).each( function(i)
+				{
+					if(!$(this).children().length)
+					{
+						$(this).prev('div').children('.sortableListsOpener').first().remove();
+						$(this).remove();
+					}
+				}
+			);
+
+		}
+
 	};
+
 
 //// toArray /////////////////////////////////////////////////////////////////////////////////////
 
