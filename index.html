@@ -41,7 +41,6 @@
 	img.descPicture { display:block; width:100%; margin:0 7px 30px 0; float:left; cursor:pointer; /*transition: all 0.5s ease;*/ }
 	img.descPicture.descPictureClose { width:150px; }
 	#sTree2 { margin:10px auto; }
-	#settingsOpener1, #settingsOpener2 { cursor: pointer; }
 
 </style>
 
@@ -53,22 +52,6 @@ $(function()
 	var options = {
 			placeholderCss: {'background-color': '#ff8'},
 			hintCss: {'background-color':'#bbf'},
-			opener: {
-				active: true,
-				close: './imgs/Remove2.png',
-				open: './imgs/Add2.png',
-				css: {
-					'display': 'inline-block',
-					'width': '18px',
-					'height': '18px',
-					'float': 'left',
-					'margin-left': '-35px',
-					'margin-right': '5px',
-					'background-position': 'center center',
-					'background-repeat': 'no-repeat'
-				},
-				class: ''
-			},
 			isAllowed: function(cEl, hint, target)
 			{
 				// Be carefull if you test some ul/ol elements here.
@@ -84,20 +67,29 @@ $(function()
 					hint.css('background-color', '#99ff99');
 					return true;
 				}
+			},
+			opener: {
+				 active: true,
+				 close: './imgs/Remove2.png',
+				 open: './imgs/Add2.png',
+				 openerCss: {
+					 'display': 'inline-block',
+					 'width': '18px',
+					 'height': '18px',
+					 'float': 'left',
+					 'margin-left': '-35px',
+					 'margin-right': '5px',
+					 'background-position': 'center center',
+					 'background-repeat': 'no-repeat'
+				 },
+				 openerClass: ''
 			}
 		},
 
 		sWrapper = $('#settingsWrapper');
 
 	$('#sTree2, #sTree').sortableLists(options);
-	//sWrapper.css('display','none');
-	$('#settingsOpener1').on('click', function(e)
-	{
-		$('html, body').each(function(){ $(this).animate({scrollTop: $('#settingsOpener2').offset().top - 50}, 250); });
-		sWrapper.slideDown(1000);
-		return false;
-	});
-	$('#settingsOpener2').on('click', function(e) {	sWrapper.slideToggle(1000);	});
+
 	$('#toArrBtn').on('click', function(){ console.log($('#sTree2').sortableListsToArray()); });
 	$('#toHierBtn').on('click', function() { console.log($('#sTree2').sortableListsToHierarchy()); });
 	$('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsToString()); });
@@ -380,7 +372,7 @@ $(function()
 	}
 }</code>
 </pre>
-			<p>Default behaviour is to close all nested lists on page load.
+			<p>Default behaviour(if opener is active) is to close all nested lists on page load.
 				If you want to show some nested lists you have to add "sortableListsOpen" class to the parent li element of nested list.
 			</p>
 <pre>

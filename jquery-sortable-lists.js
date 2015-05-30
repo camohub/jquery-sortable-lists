@@ -43,6 +43,8 @@
 				},
 				opener: {
 					active: false,
+					open: '',
+					close: '',
 					openerCss: {
 						'float': 'left',
 						'display': 'inline-block',
@@ -89,11 +91,11 @@
 				.css( setting.listsCss ) // TODO: check that css works correctly
 				.css( setting.hintWrapperCss ),
 
-
+			// Is +/- ikon to open/close nested lists
 			opener = $('<span />')
-				.addClass( 'sortableListsOpener ' + setting.opener.class )
+				.addClass( 'sortableListsOpener ' + setting.opener.openerClass )
 				.css('background-image', 'url(' + setting.opener.close + ')')
-				.css( setting.opener.css )
+				.css( setting.opener.openerCss )
 				.on('mousedown', function(e)
 				{
 					var li = $(this).closest('li');
@@ -179,7 +181,7 @@
 			state.rootEl = {
 				el: rEl,
 				offset: rEl.offset(),
-				class: rEl.attr('class')
+				rootElClass: rEl.attr('class')
 			};
 
 			state.cEl = {
