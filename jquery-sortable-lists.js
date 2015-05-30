@@ -91,7 +91,7 @@
 
 
 			opener = $('<span />')
-				.addClass( 'sortableListsOpener ' + setting.opener.class )
+				.addClass( 'sortableListsOpener ' + setting.opener.openerClass )
 				.css('background-image', 'url(' + setting.opener.close + ')')
 				.css( setting.opener.openerCss )
 				.on('mousedown', function(e)
