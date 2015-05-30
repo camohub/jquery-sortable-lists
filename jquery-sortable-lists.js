@@ -91,7 +91,7 @@
 
 
 			opener = $('<span />')
-				.addClass( 'sortableListsOpener ' + setting.opener.class )
+				.addClass( 'sortableListsOpener ' + setting.opener.openerClass )
 				.css('background-image', 'url(' + setting.opener.close + ')')
 				.css( setting.opener.openerCss )
 				.on('mousedown', function(e)
@@ -654,6 +654,10 @@
 
 		}
 
+		/**
+		 * @desc Handles opening nested lists and opener image
+		 * @param li
+		 */
 		function open(li)
 		{
 			li.removeClass('sortableListsClosed').addClass('sortableListsOpen');
@@ -661,6 +665,10 @@
 			li.children('div').children('.sortableListsOpener').first().css('background-image', 'url(' + setting.opener.close + ')');
 		}
 
+		/**
+		 * @desc Handles opening nested lists and opener image
+		 * @param li
+		 */
 		function close(li)
 		{
 			li.removeClass('sortableListsOpen').addClass('sortableListsClosed');
@@ -668,6 +676,10 @@
 			li.children('div').children('.sortableListsOpener').first().css('background-image', 'url(' + setting.opener.open + ')');
 		}
 
+		/**
+		 * @desc Places currEl to the target place
+		 * @param cEl
+		 */
 		function tidyCurrEl(cEl)
 		{
 			var cElStyle = cEl.el[0].style;
@@ -680,6 +692,9 @@
 
 		}
 
+		/**
+		 * @desc Removes empty lists and redundant openers
+		 */
 		function tidyEmptyLists()
 		{
 			// Remove every empty ul/ol from root and also with .sortableListsOpener
