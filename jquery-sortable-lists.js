@@ -93,7 +93,7 @@
 			opener = $('<span />')
 				.addClass( 'sortableListsOpener ' + setting.opener.class )
 				.css('background-image', 'url(' + setting.opener.close + ')')
-				.css( setting.opener.css )
+				.css( setting.opener.openerCss )
 				.on('mousedown', function(e)
 				{
 					var li = $(this).closest('li');
