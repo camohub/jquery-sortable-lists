@@ -695,7 +695,7 @@
 		}
 
 		/**
-		 * @desc Removes empty lists and openers
+		 * @desc Removes empty lists and redundant openers
 		 */
 		function tidyEmptyLists()
 		{
