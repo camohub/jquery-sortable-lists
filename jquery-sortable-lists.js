@@ -18,7 +18,7 @@
 				.css('position', 'relative'),
 
 			defaults = {
-				currElClass: '', // TODO
+				currElClass: '',
 				placeholderClass: '',
 				placeholderCss: {
 					'position': 'relative',
@@ -88,7 +88,7 @@
 			hintWrapper = $('<' + setting.listSelector + ' />')
 				.attr('id', 'sortableListsHintWrapper')
 				.addClass( setting.listsClass + ' ' + setting.hintWrapperClass )
-				.css( setting.listsCss ) // TODO: check that css works correctly
+				.css( setting.listsCss )
 				.css( setting.hintWrapperCss ),
 
 			// Is +/- ikon to open/close nested lists
