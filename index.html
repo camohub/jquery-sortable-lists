@@ -128,7 +128,7 @@
 <code>$('.sortableLists').sortableLists( options );</code>
 </pre>
 		<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items.
-			You can define the <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
+			You can define the <strong class="c1">isAllowed callback</strong> which determines if dragged item can be inserted into another.
 			Also <strong class="c1">complete callback</strong>. Set the <strong class="c1">insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
 			<strong class="c1">speed of autoscroll</strong> function and more.
 			For better understanding look at the <a href="#picture">picture</a> which describes all active elements in sortable lists plugin.
@@ -243,7 +243,7 @@
 </pre>
 		<p>you have to add this selector to css file.</p>
 <pre>
-<code>$myList li, #sortableListsBase li { background-color:#ddf, padding-left:50px }</code>
+<code>#myList li, #sortableListsBase li { background-color:#ddf, padding-left:50px }</code>
 </pre>
 		<p>Every dragged item is appended to the base element. It ensures smooth dragging and scrolling. For more information about base element look at the picture below and at the <a href="#baseElement">Base element description</a>.</p>
 		<p>All settings are placed in object which is the only parameter of .sortableLists() function.</p>
@@ -267,6 +267,15 @@
 			It is the ul/ol element with css properties: position:absolute; top:0; left:0.
 			This element is the base for calculation the position of dragged element. This ensures smooth movement while dragging and scrolling. Another plugins have big problems with it.
 		</p>
+		<p>Be careful how you format nested items. <b>Base element makes only one level <span class="c1">&nbsp;ul&nbsp;li</span> relationship</b>. So do not use more levels to format your lists like&nbsp;<span class="c1"><b>ul&nbsp;li&nbsp;ul&nbsp;li</b></span> in your css file.
+		</p>
+<pre>
+<code><span class="c4">// Do not use this to format lists</span>
+#myList li ul li { ... }
+<span class="c4">// cause baseElement makes only one level relation</span>
+#sortableListsBase li { ... }</code>
+</pre>
+
 
 		<h3 class="c3">Currently dragged element</h3>
 		<p>Is dragged element of course. You can have a little problem with the formatting this element. It caused the fact that dragged element
