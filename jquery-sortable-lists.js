@@ -179,7 +179,7 @@
 			state.rootEl = {
 				el: rEl,
 				offset: rEl.offset(),
-				class: rEl.attr('class')
+				rootElClass: rEl.attr('class')
 			};
 
 			state.cEl = {
