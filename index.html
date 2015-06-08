@@ -85,19 +85,10 @@
 						return true;
 					}
 				}
-			},
-
-			sWrapper = $('#settingsWrapper');
+			};
 
 			$('#sTree2, #sTree').sortableLists(options);
-			//sWrapper.css('display','none');
-			$('#settingsOpener1').on('click', function(e)
-			{
-				$('html, body').each(function(){ $(this).animate({scrollTop: $('#settingsOpener2').offset().top - 50}, 250); });
-				sWrapper.slideDown(1000);
-				return false;
-			});
-			$('#settingsOpener2').on('click', function(e) {	sWrapper.slideToggle(1000);	});
+
 			$('#toArrBtn').on('click', function(){ console.log($('#sTree2').sortableListsToArray()); });
 			$('#toHierBtn').on('click', function() { console.log($('#sTree2').sortableListsToHierarchy()); });
 			$('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsToString()); });
