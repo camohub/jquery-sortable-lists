@@ -259,6 +259,15 @@ $(function()
 				It is the ul/ol element with css properties: position:absolute; top:0; left:0.
 				This element is the base for calculation the position of dragged element. This ensures smooth movement while dragging and scrolling. Another plugins have big problems with it.
 			</p>
+			<p>Be careful how you format nested items. <b>Base element makes only one level <span class="c1">ul&nbsp;li</span> relationship</b>. So do not use more levels to format your lists like <b class="c1">ul&nbsp;li&nbsp;ul&nbsp;li</b> in your css file.
+			</p>
+<pre>
+<code><span class="c4">// Do not use this to format lists</span>
+#myList li ul li { ... }
+<span class="c4">// // cause baseElement makes only one level relation</span>
+#sortableListsBase li { ... }</code>
+</pre>
+
 
 			<h3 class="c3">Currently dragged element</h3>
 			<p>Is dragged element of course. You can have a little problem with the formatting this element. It caused the fact that dragged element
