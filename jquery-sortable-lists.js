@@ -722,35 +722,31 @@
 	 * @desc jQuery plugin
 	 * @returns this to unsure chaining
 	 */
-	$.fn.sortableListsToArray = function(arr, parentId, i)
+	$.fn.sortableListsToArray = function(arr, parentId)
 	{
-		var arr = arr ? arr : [],
-			parentId = parentId ? parentId : 0,
-			i = i ? i : 1,
-			order = 1;
+		arr = arr || [];
+		var order = 0;
 
 		this.children('li').each( function()
+		{
+			var li = $(this),
+				listItem = {},
+				id = li.attr('id');
+
+			if(!id)
 			{
-				var li = $(this),
-					tempArr = [],
-					id,
-					value;
+				console.log(li); // Have to be here! Read next exception message.
+				throw 'Previous item in console.log has no id. It is necessary to create the array.';
+			}
 
-				if(!(id = li.attr('id')))
-				{
-					console.log(li); // Have to be here! Read next exception message.
-					throw 'Previous item in console.log has no id. It is necessary to create the array.';
-				}
-
-				tempArr['id'] = id;
-				tempArr['parentId'] = parentId;
-				tempArr['value'] = li.data('value');
-				tempArr['branchOrder'] = order;
-				arr.push(tempArr);
-				i++;
-				li.children('ul').sortableListsToArray(arr, id, i);
-				order++;
-			});
+			listItem.id = id;
+			listItem.parentId = parentId;
+			listItem.value = li.data('value');
+			listItem.order = order;
+			arr.push(listItem);
+			li.children('ul,ol').sortableListsToArray(arr, id);
+			order++;
+		});
 
 		return arr;
 
@@ -762,27 +758,27 @@
 	 */
 	$.fn.sortableListsToHierarchy = function()
 	{
-		var arr = arr ? arr : [],
-			order = 1;
+		var arr = [],
+			order = 0;
 
 		$(this).children('li').each( function()
+		{
+			var li = $(this),
+				listItem = {},
+				id = li.attr('id');
+
+			if(!id)
 			{
-				var id,
-					tempArr = [],
-					li = $(this);
-
-				if(!(id = li.attr('id')))
-				{
-					console.log(li); // Have to be here! Read next exception message.
-					throw 'Previous item in console.log has no id. It is necessary to create the array.';
-				}
-				tempArr['id'] = id;
-				tempArr['value'] = li.data('value');
-				tempArr['order'] = order;
-				tempArr['children'] = li.children('ul').sortableListsToHierarchy();
-
-				arr[order++] = tempArr;
-			});
+				console.log(li); // Have to be here! Read next exception message.
+				throw 'Previous item in console.log has no id. It is necessary to create the array.';
+			}
+			listItem.id = id;
+			listItem.value = li.data('value');
+			listItem.order = order;
+			arr.push(listItem);
+			listItem.children = li.children('ul,ol').sortableListsToHierarchy();
+			order++;
+		});
 
 		return arr;
 
@@ -794,29 +790,29 @@
 	 */
 	$.fn.sortableListsToString = function(arr, parentId)
 	{
-		var arr = arr ? arr : [],
-			parentId = parentId ? parentId : 0;
+		arr = arr || [];
+		parentId = parentId || '';
 
 		$(this).children('li').each( function()
+		{
+			var li = $(this),
+				id = li.attr('id');
+
+			if(!id)
 			{
-				var id,
-					tempArr = [],
-					li = $(this);
+				console.log(li);  // Have to be here. Read next exception message.
+				throw 'Previous item in console.log has no id. It is necessary to create the array.';
+			}
 
-				if(!(id = li.attr('id')))
-				{
-					console.log(li);  // Have to be here. Read next exception message.
-					throw 'Previous item in console.log has no id. It is necessary to create the array.';
-				}
+			arr.push(encodeURIComponent(id) + '=' + encodeURIComponent(parentId));
+			$(this).children('ul,ol').sortableListsToString(arr, id);
 
-				arr.push(id + '=' + parentId);
-				$(this).children('ul, ol').sortableListsToString(arr, id);
+		});
 
-			});
+		return arr.join('&');
 
-		return arr.join('&amp;');
+	};
 
-	}
 
 }( jQuery ));
 
