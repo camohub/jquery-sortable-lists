@@ -128,6 +128,9 @@
 
 		if(setting.opener.active)
 		{
+			if(!setting.opener.open) throw 'Url for opener.open image is not defined';
+			if(!setting.opener.close) throw 'Url for opener.close image is not defined';
+
 			$(this).find('li').each( function() {
 				var li = $(this);
 
