@@ -50,43 +50,43 @@
 $(function()
 {
 	var options = {
-			placeholderCss: {'background-color': '#ff8'},
-			hintCss: {'background-color':'#bbf'},
-			isAllowed: function(cEl, hint, target)
+		placeholderCss: {'background-color': '#ff8'},
+		hintCss: {'background-color':'#bbf'},
+		isAllowed: function(cEl, hint, target)
+		{
+			// Be carefull if you test some ul/ol elements here.
+			// Sometimes ul/ols are dynamically generated and so they have not some attributes as natural ul/ols.
+			// Be careful also if the hint is not visible. It has only display none so it is at the previouse place where it was before(excluding first moves before showing).
+			if(hint.parents('li').first().data('module') === 'c' && cEl.data('module') !== 'c')
 			{
-				// Be carefull if you test some ul/ol elements here.
-				// Sometimes ul/ols are dynamically generated and so they have not some attributes as natural ul/ols.
-				// Be careful also if the hint is not visible. It has only display none so it is at the previouse place where it was before(excluding first moves before showing).
-				if(hint.parents('li').first().data('module') === 'c' && cEl.data('module') !== 'c')
-				{
-					hint.css('background-color', '#ff9999');
-					return false;
-				}
-				else
-				{
-					hint.css('background-color', '#99ff99');
-					return true;
-				}
-			},
-			opener: {
-				 active: true,
-				 close: './imgs/Remove2.png',
-				 open: './imgs/Add2.png',
-				 openerCss: {
-					 'display': 'inline-block',
-					 'width': '18px',
-					 'height': '18px',
-					 'float': 'left',
-					 'margin-left': '-35px',
-					 'margin-right': '5px',
-					 'background-position': 'center center',
-					 'background-repeat': 'no-repeat'
-				 },
-				 openerClass: ''
+				hint.css('background-color', '#ff9999');
+				return false;
+			}
+			else
+			{
+				hint.css('background-color', '#99ff99');
+				return true;
 			}
 		},
+		opener: {
+			 active: true,
+			 close: './imgs/Remove2.png',
+			 open: './imgs/Add2.png',
+			 openerCss: {
+				 'display': 'inline-block',
+				 'width': '18px',
+				 'height': '18px',
+				 'float': 'left',
+				 'margin-left': '-35px',
+				 'margin-right': '5px',
+				 'background-position': 'center center',
+				 'background-repeat': 'no-repeat'
+			 },
+			 openerClass: ''
+		},
+		ignoreClass: 'clickable'
+	};
 
-		sWrapper = $('#settingsWrapper');
 
 	$('#sTree2, #sTree').sortableLists(options);
 
@@ -94,6 +94,8 @@ $(function()
 	$('#toHierBtn').on('click', function() { console.log($('#sTree2').sortableListsToHierarchy()); });
 	$('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsToString()); });
 	$('.descPicture').on('click', function(e) { $(this).toggleClass('descPictureClose'); });
+
+	$('.clickable').on('click', function(e)	{ alert('Click works fine!'); });
 });
 </script>
 </head>
@@ -122,7 +124,7 @@ $(function()
 			<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items.
 				You can define the <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
 				Also <strong class="c1">complete callback</strong>. Set the <strong class="c1">insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
-				<strong class="c1">speed of autoscroll</strong> function and more.
+				<strong class="c1">speed of autoscroll</strong> function. Available is <strong class="c1">onDragStart</strong> and <strong class="c1">complete</strong> callback and more.
 				For better understanding look at the <a href="#picture">picture</a> which describes all active elements in sortable lists plugin.
 			</p>
 
@@ -141,7 +143,7 @@ $(function()
 							<div>Item b1</div>
 						</li>
 						<li id="item_b2" data-module="b">
-							<div>Item b2</div>
+							<div><span class="clickable">Item b2 - clickable text</span></div>
 						</li>
 						<li id="item_b3" data-module="b">
 							<div>Item b3</div>
@@ -325,7 +327,7 @@ $(function()
 			<h2>Another settings</h2>
 			<h3 class="c2">List selector, list class</h3>
 			<p>Sortable lists plugin needs to know which type of lists(ul/ol) you want to use if is necessary to wrap item by ul/ol.
-			Plugin also does not know which classes do you use to format your lists so you have to set listsClass or listsCss property of settings object.
+			Plugin also does not know which classes do you use to format your lists so you have to set listsClass or listsCss property of settings object. You can do it also by baseElementClass.
 			</p>
 <pre>
 <code>var options = {
@@ -336,6 +338,19 @@ $(function()
 }</code>
 </pre>
 
+
+			<h3 class="c2">ignoreClass</h3>
+			<p>Cause jquery sortable lists works with dragging which fires onmousedown event with preventDefault, you can have a problem with some elements inside list with onclick events.
+				This solves the ignoreClass which ensures that onmousedown wont trigger dragging.
+			</p>
+<pre>
+<code>var options = {
+	<span class="c4">// All elements with class clickable will be clickable</span>
+	ignoreClass: 'clickable'
+}</code>
+</pre>
+
+
 			<h3 class="c2">Insert zone</h3>
 			<p>This property defines the distance which determines if item will be inserted outside(before/after) or inside of another item.
 			</p>
@@ -345,6 +360,7 @@ $(function()
 }</code>
 </pre>
 
+
 			<h3 class="c2">Autoscroll speed</h3>
 			<p>Yes you are right. This property defines the speed of auto scrolling.
 			</p>
@@ -353,6 +369,7 @@ $(function()
 	scroll: 20
 }</code>
 </pre>
+
 
 			<h3 class="c2">Open/close function</h3>
 			<p>This option enables you to hide/show nested lists. Plugin prepend the span element to the content div of items with nested lists.
@@ -376,7 +393,7 @@ $(function()
 			'background-position': 'center center', <span class="c4">// Default value</span>
 			'background-repeat': 'no-repeat' <span class="c4">// Default value</span>
 		},
-		// or like a class. Note that class can not rewrite default values. To rewrite defaults you have to do it through css object.
+		<span class="c4">// or like a class. Note that class can not rewrite default values. To rewrite defaults you have to do it through css object.</span>
 		class: 'yourClassName'
 	}
 }</code>
@@ -420,6 +437,20 @@ $(function()
 }</code>
 </pre>
 
+
+			<h3 class="c2">Callback onDragStart</h3>
+			<p>Is called before dragging. Takes two arguments: e - jQ event object and el - dragged li element.
+			</p>
+<pre>
+<code>var options = {
+	onDragStart: function(e, el)
+	{
+		<span class="c4">// Whatever you need to do before dragging</span>
+	}
+}</code>
+</pre>
+
+
 			<h3 class="c2">Callback complete</h3>
 			<p>Is called after the drop. Takes one argument currEl == currently dragged element.
 			</p>
@@ -431,6 +462,7 @@ $(function()
 	}
 }</code>
 </pre>
+
 
 			<h2>To array, to hierarchy, to string</h2>
 			<p>Sortable lists also support this three function. They do what they say - returns the representation of the lists as array, tree or string. Look at the first example on the page. They are implemented as plugins so you can call it this way:

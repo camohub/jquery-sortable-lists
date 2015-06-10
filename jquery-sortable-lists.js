@@ -54,12 +54,14 @@
 					openerClass: ''
 				},
 				listSelector: 'ul',
-				listsClass: '',
+				listsClass: '', // Used for hintWrapper and baseElement
 				listsCss: {},
 				insertZone: 50,
 				scroll: 20,
+				ignoreClass: '',
 				isAllowed: function(cEl, hint) { return true; }, // Params: current el., hint el.
-				complete: function(cEl) { return true; } // Params: current el., hint el.
+				onDragStart: function(e, cEl) { return true; }, // Params e jQ. event obj., current el.
+				complete: function(cEl) { return true; } // Params: current el.
 			},
 
 			setting = $.extend(true, {}, defaults, options),
@@ -69,7 +71,7 @@
 				.prependTo(jQBody)
 				.attr('id', 'sortableListsBase')
 				.css( setting.baseCss )
-				.addClass( setting.baseClass ),
+				.addClass( setting.listsClass + ' ' + setting.baseClass ),
 
 			// placeholder != state.placeholderNode
 			// placeholder is document fragment and state.placeholderNode is document node
@@ -139,23 +141,23 @@
 			});
 		}
 
-		$('.sortableListsOpener').on('mousedown', function(e)
-		{
-
-		});
-
 		// Return this ensures chaining
 		return this.on('mousedown', function(e)
 			{
+				var target = $(e.target);
+
+				if( target.hasClass( setting.ignoreClass ) ) return;
+
 				// Solves selection/range highlighting
 				e.preventDefault();
 
 				// El must be li in jQuery object
-				var el = $(e.target).is('li') ? $(e.target) : $(e.target).closest('li'),
+				var el = target.is('li') ? target : target.closest('li'),
 					rEl = $(this);
 				// Check if el is not empty
 				if(el[0])
 				{
+					setting.onDragStart(e, el);
 					startDrag(e, el, rEl);
 				}
 			}
@@ -171,7 +173,7 @@
 		{
 			state.isDragged = true;
 
-			var elMT = parseInt(el.css('margin-top')), // parseInt is necesery cause value has px at the end
+			var elMT = parseInt(el.css('margin-top')), // parseInt is necesary cause value has px at the end
 				elMB = parseInt(el.css('margin-bottom')),
 				elML = parseInt(el.css('margin-left')),
 				elMR = parseInt(el.css('margin-right')),
@@ -260,7 +262,6 @@
 						e.pageY = e.pageY + setting.scroll;
 						$('html, body').each(function(i) { $(this).scrollTop($(this).scrollTop() + setting.scroll); } );
 						setCursorPos(e);
-
 					}
 				}
 				else
@@ -345,6 +346,8 @@
 						tidyEmptyLists();
 					}
 
+					setting.complete(cEl.el);
+
 				});
 
 			scrollStop(state);
@@ -352,8 +355,6 @@
 			state.doc
 				.unbind("mousemove", dragging)
 				.unbind("mouseup", endDrag);
-
-			setting.complete(cEl.el);
 
 		}
 
@@ -668,7 +669,7 @@
 		}
 
 		/**
-		 * @desc Handles hideing nested lists
+		 * @desc Handles hiding nested lists
 		 * @param li
 		 */
 		function close(li)
