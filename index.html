@@ -1,100 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset='utf-8'>
-	<meta name="description" content="jquery sortable lists plugin also for tree structures">
-	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta charset='utf-8'>
+<meta name="description" content="jquery sortable lists plugin also for tree structures">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-	<link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-	<link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+<link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+<link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
 
-	<title>jQquery sortable lists</title>
+<title>jQquery sortable lists</title>
 
-	<style type="text/css">
-		html, body, ul, li { margin:0; padding:0; }
-		ul, li { list-style-type:none; color:#b5e853; border:1px solid #3f3f3f; }
-		ul.sTree, ul{ padding:0px; background-color:#151515; }
-		ul.sTree2 li, ul#sortableListsBase li { padding-left:50px; margin:5px; border:1px solid #3f3f3f; background-color:#3f3f3f; }
-		li div { padding:7px; background-color:#222; Nborder:1px solid #3f3f3f; }
-		li, ul, div { border-radius: 3px; }
-		.red { background-color:#ff9999; }
-		.blue { background-color:#aaaaff;}
-		.green { background-color:#99ff99; }
-		.gree2 { background-color:#bbffbb; }
-		.yellow { background-color:#ff8; }
-		.brown { background-color:#c26b2b; }
-		.pT20 { padding-top:20px; }
-		.pV10 { padding-top:10px; padding-bottom:10px; }
-		.dN { display:none; }
-		.zI1000 { z-index:1000; }
-		.c1 { color:#b5e853; }
-		.c2 { color:#63c0f5; }
-		.c3 { color: #f77720; }
-		.c4 { color: #888; }
-		.bgC1 { background-color:#ccc; }
-		.bgC2 { background-color:#ff8; }
-		.small1 { font-size:0.8em; }
-		.small2 { font-size:0.7em; }
-		.small3 { font-size:0.6em; }
-		.tAR { text-align:right; }
-		.clear { clear:both; }
-		img.descPicture { display:block; width:100%; margin:0 7px 30px 0; float:left; cursor:pointer; /*transition: all 0.5s ease;*/ }
-		img.descPicture.descPictureClose { width:150px; }
-		#sTree2 { margin:10px auto; }
-		#settingsOpener1, #settingsOpener2 { cursor: pointer; }
+<style type="text/css">
+	html, body, ul, li { margin:0; padding:0; }
+	ul, li { list-style-type:none; color:#b5e853; border:1px solid #3f3f3f; }
+	ul.sTree, ul{ padding:0px; background-color:#151515; }
+	ul.sTree2 li, ul#sortableListsBase li { padding-left:50px; margin:5px; border:1px solid #3f3f3f; background-color:#3f3f3f; }
+	li div { padding:7px; background-color:#222; Nborder:1px solid #3f3f3f; }
+	li, ul, div { border-radius: 3px; }
+	.red { background-color:#ff9999; }
+	.blue { background-color:#aaaaff;}
+	.green { background-color:#99ff99; }
+	.gree2 { background-color:#bbffbb; }
+	.yellow { background-color:#ff8; }
+	.brown { background-color:#c26b2b; }
+	.pT20 { padding-top:20px; }
+	.pV10 { padding-top:10px; padding-bottom:10px; }
+	.dN { display:none; }
+	.zI1000 { z-index:1000; }
+	.c1 { color:#b5e853; }
+	.c2 { color:#63c0f5; }
+	.c3 { color: #f77720; }
+	.c4 { color: #888; }
+	.bgC1 { background-color:#ccc; }
+	.bgC2 { background-color:#ff8; }
+	.small1 { font-size:0.8em; }
+	.small2 { font-size:0.7em; }
+	.small3 { font-size:0.6em; }
+	.tAR { text-align:right; }
+	.clear { clear:both; }
+	img.descPicture { display:block; width:100%; margin:0 7px 30px 0; float:left; cursor:pointer; /*transition: all 0.5s ease;*/ }
+	img.descPicture.descPictureClose { width:150px; }
+	#sTree2 { margin:10px auto; }
 
-	</style>
+</style>
 
-	<script src="http://code.jquery.com/jquery-git1.min.js"></script>
-	<script src="jquery-sortable-lists.js"></script>
-	<script type="text/javascript">
-		$(function()
+<script src="http://code.jquery.com/jquery-git1.min.js"></script>
+<script src="jquery-sortable-lists.min.js"></script>
+<script type="text/javascript">
+$(function()
+{
+	var options = {
+		placeholderCss: {'background-color': '#ff8'},
+		hintCss: {'background-color':'#bbf'},
+		isAllowed: function(cEl, hint, target)
 		{
-			var options = {
-				placeholderCss: {'background-color': '#ff8'},
-				hintCss: {'background-color':'#bbf'},
-				opener: {
-					active: true,
-					close: './imgs/Remove2.png',
-					open: './imgs/Add2.png',
-					openerCss: {
-						'display': 'inline-block',
-						'width': '18px',
-						'height': '18px',
-						'float': 'left',
-						'margin-left': '-35px',
-						'margin-right': '5px',
-						'background-position': 'center center',
-						'background-repeat': 'no-repeat'
-					},
-					openerClass: ''
-				},
-				isAllowed: function(cEl, hint, target)
-				{
-					// Be carefull if you test some ul/ol elements here.
-					// Sometimes ul/ols are dynamically generated and so they have not some attributes as natural ul/ols.
-					// Be careful also if the hint is not visible. It has only display none so it is at the previouse place where it was before(excluding first moves before showing).
-					if(hint.parents('li').first().data('module') === 'c' && cEl.data('module') !== 'c')
-					{
-						hint.css('background-color', '#ff9999');
-						return false;
-					}
-					else
-					{
-						hint.css('background-color', '#99ff99');
-						return true;
-					}
-				}
-			};
+			// Be carefull if you test some ul/ol elements here.
+			// Sometimes ul/ols are dynamically generated and so they have not some attributes as natural ul/ols.
+			// Be careful also if the hint is not visible. It has only display none so it is at the previouse place where it was before(excluding first moves before showing).
+			if(hint.parents('li').first().data('module') === 'c' && cEl.data('module') !== 'c')
+			{
+				hint.css('background-color', '#ff9999');
+				return false;
+			}
+			else
+			{
+				hint.css('background-color', '#99ff99');
+				return true;
+			}
+		},
+		opener: {
+			 active: true,
+			 close: './imgs/Remove2.png',
+			 open: './imgs/Add2.png',
+			 openerCss: {
+				 'display': 'inline-block',
+				 'width': '18px',
+				 'height': '18px',
+				 'float': 'left',
+				 'margin-left': '-35px',
+				 'margin-right': '5px',
+				 'background-position': 'center center',
+				 'background-repeat': 'no-repeat'
+			 },
+			 openerClass: ''
+		},
+		ignoreClass: 'clickable'
+	};
 
-			$('#sTree2, #sTree').sortableLists(options);
+	$('#sTree2, #sTree').sortableLists(options);
 
-			$('#toArrBtn').on('click', function(){ console.log($('#sTree2').sortableListsToArray()); });
-			$('#toHierBtn').on('click', function() { console.log($('#sTree2').sortableListsToHierarchy()); });
-			$('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsToString()); });
-			$('.descPicture').on('click', function(e) { $(this).toggleClass('descPictureClose'); });
-		});
-	</script>
+	$('#toArrBtn').on('click', function(){ console.log($('#sTree2').sortableListsToArray()); });
+	$('#toHierBtn').on('click', function() { console.log($('#sTree2').sortableListsToHierarchy()); });
+	$('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsToString()); });
+	$('.descPicture').on('click', function(e) { $(this).toggleClass('descPictureClose'); });
+
+	$('.clickable').on('click', function(e)	{ alert('Click works fine!'); });
+});
+</script>
 </head>
 <body>
 <header>
@@ -118,99 +120,100 @@
 <pre>
 <code>$('.sortableLists').sortableLists( options );</code>
 </pre>
-		<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items.
-			You can define the <strong class="c1">isAllowed callback</strong> which determines if dragged item can be inserted into another.
-			Also <strong class="c1">complete callback</strong>. Set the <strong class="c1">insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
-			<strong class="c1">speed of autoscroll</strong> function and more.
-			For better understanding look at the <a href="#picture">picture</a> which describes all active elements in sortable lists plugin.
-		</p>
 
-		<h2>
-			Look at the example and try it yourself.
-		</h2>
+			<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items.
+				You can define the <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
+				Also <strong class="c1">complete callback</strong>. Set the <strong class="c1">insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
+				<strong class="c1">speed of autoscroll</strong> function. Available is <strong class="c1">onDragStart</strong> and <strong class="c1">complete</strong> callback and more.
+				For better understanding look at the <a href="#picture">picture</a> which describes all active elements in sortable lists plugin.
+			</p>
 
-		<ul class="sTree2 listsClass" id="sTree2">
-			<li id="item_a" data-module="a">
-				<div>Item a</div>
-			</li>
-			<li class="sortableListsOpen" id="item_b" data-module="b">
-				<div>Item b</div>
-				<ul class="">
-					<li id="item_b1" data-module="b">
-						<div>Item b1</div>
-					</li>
-					<li id="item_b2" data-module="b">
-						<div>Item b2</div>
-					</li>
-					<li id="item_b3" data-module="b">
-						<div>Item b3</div>
-					</li>
-					<li id="item_b4" data-module="b">
-						<div>Item b4</div>
-					</li>
-					<li id="item_b5" data-module="b">
-						<div>Item b5</div>
-					</li>
-				</ul>
-			</li>
-			<li class="" id="item_c" data-module="c">
-				<div>Item c - c block disallows inserting items from other blocks</div>
-				<ul class="">
-					<li id="item_c1" data-module="c">
-						<div>Item c1</div>
-					</li>
-					<li id="item_c2" data-module="c">
-						<div>Item c2</div>
-					</li>
-					<li id="item_c3" data-module="c">
-						<div>Item c3</div>
-					</li>
-					<li id="item_c4" data-module="c">
-						<div>Item c4</div>
-					</li>
-					<li id="item_c5" data-module="c">
-						<div>Item c5</div>
-					</li>
-				</ul>
-			</li>
-			<li class="" id="item_d" data-module="d">
-				<div>Item d</div>
-				<ul class="">
-					<li id="item_d1" data-module="d">
-						<div>Item d1</div>
-					</li>
-					<li id="item_d2" data-module="d">
-						<div>Item d2</div>
-					</li>
-					<li id="item_d3" data-module="d">
-						<div>Item d3</div>
-					</li>
-					<li id="item_d4" data-module="d">
-						<div>Item d4</div>
-					</li>
-					<li id="item_d5" data-module="d">
-						<div>Item d5</div>
-					</li>
-				</ul>
-			</li>
-			<li class="" id="item_e" data-module="e">
-				<div>Item e</div>
-			</li>
-			<li class="" id="item_f" data-module="f">
-				<div>Item f</div>
-			</li>
-		</ul>
+        	<h2>
+				Look at the example and try it yourself.
+			</h2>
 
-		<section>
-			<p><strong>Sortable lists</strong> also supports export methods. Look at the console log to see the result of buttons below.</p>
-			<span id="toArrBtn" class="btn">To array</span>
-			<span id="toHierBtn" class="btn">To hierarchy</span>
-			<span id="toStrBtn" class="btn">To string</span>
-		</section>
+	<ul class="sTree2 listsClass" id="sTree2">
+				<li id="item_a" data-module="a">
+					<div>Item a</div>
+				</li>
+				<li class="sortableListsOpen" id="item_b" data-module="b">
+					<div>Item b</div>
+					<ul class="">
+						<li id="item_b1" data-module="b">
+							<div>Item b1</div>
+						</li>
+						<li id="item_b2" data-module="b">
+							<div><span class="clickable">Item b2 - clickable text</span></div>
+						</li>
+						<li id="item_b3" data-module="b">
+							<div>Item b3</div>
+						</li>
+						<li id="item_b4" data-module="b">
+							<div>Item b4</div>
+						</li>
+						<li id="item_b5" data-module="b">
+							<div>Item b5</div>
+						</li>
+					</ul>
+				</li>
+				<li class="" id="item_c" data-module="c">
+					<div>Item c - c block disallows inserting items from other blocks</div>
+					<ul class="">
+						<li id="item_c1" data-module="c">
+							<div>Item c1</div>
+						</li>
+						<li id="item_c2" data-module="c">
+							<div>Item c2</div>
+						</li>
+						<li id="item_c3" data-module="c">
+							<div>Item c3</div>
+						</li>
+						<li id="item_c4" data-module="c">
+							<div>Item c4</div>
+						</li>
+						<li id="item_c5" data-module="c">
+							<div>Item c5</div>
+						</li>
+					</ul>
+				</li>
+				<li class="" id="item_d" data-module="d">
+					<div>Item d</div>
+					<ul class="">
+						<li id="item_d1" data-module="d">
+							<div>Item d1</div>
+						</li>
+						<li id="item_d2" data-module="d">
+							<div>Item d2</div>
+						</li>
+						<li id="item_d3" data-module="d">
+							<div>Item d3</div>
+						</li>
+						<li id="item_d4" data-module="d">
+							<div>Item d4</div>
+						</li>
+						<li id="item_d5" data-module="d">
+							<div>Item d5</div>
+						</li>
+					</ul>
+				</li>
+				<li class="" id="item_e" data-module="e">
+					<div>Item e</div>
+				</li>
+				<li class="" id="item_f" data-module="f">
+					<div>Item f</div>
+				</li>
+			</ul>
 
-		<section>
-			<h2>Lists pattern</h2>
-			<p>Note that li items can contains <span class="c1">only one or max two direct children</span>. Content <span class="c1">div</span> as a wrapper of li content and
+			<section>
+				<p><strong>Sortable lists</strong> also supports export methods. Look at the console log to see the result of buttons below.</p>
+				<span id="toArrBtn" class="btn">To array</span>
+				<span id="toHierBtn" class="btn">To hierarchy</span>
+				<span id="toStrBtn" class="btn">To string</span>
+			</section>
+
+			<section>
+				<h2>Lists pattern</h2>
+				<p>Note that li items can contains <span class="c1">only one or max two direct children</span>. Content <span class="c1">div</span> as a wrapper of li content and
 				another <span class="c1">list</span> if item contains nested list. Like this:</p>
 		</section>
 <pre>
@@ -268,6 +271,22 @@
 </pre>
 
 
+			<a name="baseElement"></a>
+			<h3 class="c3">Base element</h3>
+			<p>Most important element. Every dragged element is appended to the base element while dragging. Sortable lists plugin adds this element in to the body at the background.
+				It is the ul/ol element with css properties: position:absolute; top:0; left:0.
+				This element is the base for calculation the position of dragged element. This ensures smooth movement while dragging and scrolling. Another plugins have big problems with it.
+			</p>
+			<p>Be careful how you format nested items. <b>Base element makes only one level <span class="c1">ul&nbsp;li</span> relationship</b>. So do not use more levels to format your lists like <b class="c1">ul&nbsp;li&nbsp;ul&nbsp;li</b> in your css file.
+			</p>
+<pre>
+<code><span class="c4">// Do not use this to format lists</span>
+#myList li ul li { ... }
+<span class="c4">// // cause baseElement makes only one level relation</span>
+#sortableListsBase li { ... }</code>
+</pre>
+
+
 		<h3 class="c3">Currently dragged element</h3>
 		<p>Is dragged element of course. You can have a little problem with the formatting this element. It caused the fact that dragged element
 			is the child of the base element during the dragging. Look at the <a href="#cssPattern" id="toCssPattern">Css pattern</a> how to solve it.
@@ -321,11 +340,11 @@
 </pre>
 
 
-		<h2>Another settings</h2>
-		<h3 class="c2">List selector, list class</h3>
-		<p>Sortable lists plugin needs to know which type of lists(ul/ol) you want to use if is necessary to wrap item by ul/ol.
-			Plugin also does not know which classes do you use to format your lists so you have to set listsClass or listsCss property of settings object.
-		</p>
+			<h2>Another settings</h2>
+			<h3 class="c2">List selector, list class</h3>
+			<p>Sortable lists plugin needs to know which type of lists(ul/ol) you want to use if is necessary to wrap item by ul/ol.
+			Plugin also does not know which classes do you use to format your lists so you have to set listsClass or listsCss property of settings object. You can do it also by baseElementClass.
+			</p>
 <pre>
 <code>var options = {
 	listSelector: 'ol',
@@ -335,30 +354,45 @@
 }</code>
 </pre>
 
-		<h3 class="c2">Insert zone</h3>
-		<p>This property defines the distance which determines if item will be inserted outside(before/after) or inside of another item.
-		</p>
+
+			<h3 class="c2">ignoreClass</h3>
+			<p>Cause jquery sortable lists works with dragging which fires onmousedown event with preventDefault, you can have a problem with some elements inside list with onclick events.
+				This solves the ignoreClass which ensures that onmousedown wont trigger dragging.
+			</p>
+<pre>
+<code>var options = {
+	<span class="c4">// All elements with class clickable will be clickable</span>
+	ignoreClass: 'clickable'
+}</code>
+</pre>
+
+
+			<h3 class="c2">Insert zone</h3>
+			<p>This property defines the distance which determines if item will be inserted outside(before/after) or inside of another item.
+			</p>
 <pre>
 <code>var options = {
 	insertZone: 50
 }</code>
 </pre>
 
-		<h3 class="c2">Autoscroll speed</h3>
-		<p>Yes you are right. This property defines the speed of auto scrolling.
-		</p>
+
+			<h3 class="c2">Autoscroll speed</h3>
+			<p>Yes you are right. This property defines the speed of auto scrolling.
+			</p>
 <pre>
 <code>var options = {
 	scroll: 20
 }</code>
 </pre>
 
-		<h3 class="c2">Open/close function</h3>
-		<p>This option enables you to hide/show nested lists. Plugin prepend the span element to the content div of items with nested lists.
-			You can style this element through the opener object of options. Look at the example code below.
-			At first you must activate the open/close function.	Next step is setting of url for open/close image on the background of the span.
-			The last step are styles as jquery css object or class.
-		</p>
+
+			<h3 class="c2">Open/close function</h3>
+			<p>This option enables you to hide/show nested lists. Plugin prepend the span element to the content div of items with nested lists.
+				You can style this element through the opener object of options. Look at the example code below.
+				At first you must activate the open/close function.	Next step is setting of url for open/close image on the background of the span.
+				The last step are styles as jquery css object or class.
+			</p>
 <pre>
 <code>var options = {
 	opener: {
@@ -375,14 +409,15 @@
 			'background-position': 'center center', <span class="c4">// Default value</span>
 			'background-repeat': 'no-repeat' <span class="c4">// Default value</span>
 		},
-		// or like a class. Note that class can not rewrite default values. To rewrite defaults you have to do it through css object.
+		<span class="c4">// or like a class. Note that class can not rewrite default values. To rewrite defaults you have to do it through css object.</span>
 		class: 'yourClassName'
 	}
 }</code>
 </pre>
-		<p>Default behaviour is to close all nested lists on page load.
-			If you want to show some nested lists you have to add "sortableListsOpen" class to the parent li element of nested list.
-		</p>
+
+			<p>Default behaviour(if opener is active) is to close all nested lists on page load.
+				If you want to show some nested lists you have to add "sortableListsOpen" class to the parent li element of nested list.
+			</p>
 <pre>
 <code>&lt;ul&gt;
    &lt;li class="sortableListsOpen"&gt;
@@ -419,9 +454,23 @@
 }</code>
 </pre>
 
-		<h3 class="c2">Callback complete</h3>
-		<p>Is called after the drop. Takes one argument currEl == currently dragged element.
-		</p>
+
+			<h3 class="c2">Callback onDragStart</h3>
+			<p>Is called before dragging. Takes two arguments: e - jQ event object and el - dragged li element.
+			</p>
+<pre>
+<code>var options = {
+	onDragStart: function(e, el)
+	{
+		<span class="c4">// Whatever you need to do before dragging</span>
+	}
+}</code>
+</pre>
+
+
+			<h3 class="c2">Callback complete</h3>
+			<p>Is called after the drop. Takes one argument currEl == currently dragged element.
+			</p>
 <pre>
 <code>var options = {
 	complete: function(currEl)
@@ -431,9 +480,10 @@
 }</code>
 </pre>
 
-		<h2>To array, to hierarchy, to string</h2>
-		<p>Sortable lists also support this three function. They do what they say - returns the representation of the lists as array, tree or string. Look at the first example on the page. They are implemented as plugins so you can call it this way:
-		</p>
+
+			<h2>To array, to hierarchy, to string</h2>
+			<p>Sortable lists also support this three function. They do what they say - returns the representation of the lists as array, tree or string. Look at the first example on the page. They are implemented as plugins so you can call it this way:
+			</p>
 <pre>
 <code>$('#toArrBtn').on('click', function(){ console.log($('#sTree2').sortableListsToArray()); });
 $('#toHierBtn').on('click', function() { console.log($('#sTree2').sortableListsToHierarchy()); });
