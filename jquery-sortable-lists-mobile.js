@@ -211,8 +211,8 @@
 			hint.css('height', elIH);
 
 			state.doc
-				.on('mousemove', dragging)
-				.on('mouseup', endDrag);
+				.on('mousemove touchmove', dragging)
+				.on('mouseup touchend touchcancel', endDrag);
 
 		}
 
@@ -360,8 +360,8 @@
 			scrollStop(state);
 
 			state.doc
-				.unbind("mousemove", dragging)
-				.unbind("mouseup", endDrag);
+				.unbind("mousemove touchmove", dragging)
+				.unbind("mouseup touchend touchcancel", endDrag);
 
 			setting.complete(cEl.el);
 
