@@ -128,8 +128,8 @@
 
 		if(setting.opener.active)
 		{
-			if(!stting.opener.open) throw 'Url for opener.open image is not defined';
-			if(!stting.opener.close) throw 'Url for opener.close image is not defined';
+			if(!setting.opener.open) throw 'Url for opener.open image is not defined';
+			if(!setting.opener.close) throw 'Url for opener.close image is not defined';
 
 			$(this).find('li').each( function() {
 				var li = $(this);
@@ -672,7 +672,7 @@
 		}
 
 		/**
-		 * @desc Handles hiding nested lists
+		 * @desc Handles opening nested lists
 		 * @param li
 		 */
 		function close(li)
@@ -717,7 +717,7 @@
 
 		}
 
-    };
+	};
 
 
 //// toArray /////////////////////////////////////////////////////////////////////////////////////
@@ -816,7 +816,6 @@
 		return arr.join('&');
 
 	};
-
 
 }( jQuery ));
 
