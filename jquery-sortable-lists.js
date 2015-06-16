@@ -790,25 +790,28 @@
 
 	/**
 	 * @desc jQuery plugin
-	 * @returns this to unsure chaining
+	 * @returns string
 	 */
 	$.fn.sortableListsToString = function(arr, parentId)
 	{
 		arr = arr || [];
-		parentId = parentId || '';
+		parentId = parentId || 'no-parent';
 
 		$(this).children('li').each( function()
 		{
 			var li = $(this),
-				id = li.attr('id');
+				id = li.attr('id'),
+				match = id ? id.match(/[0-9]+/) : null;
 
-			if(!id)
+			if(!match)
 			{
 				console.log(li);  // Have to be here. Read next exception message.
-				throw 'Previous item in console.log has no id. It is necessary to create the array.';
+				throw 'Previous item in console.log has no id or has no number in id attribute. It is necessary to create valid string.';
 			}
 
-			arr.push(encodeURIComponent(id) + '=' + encodeURIComponent(parentId));
+			id = match[0];
+
+			arr.push( 'sItems[' + id + ']=' + parentId );
 			$(this).children('ul,ol').sortableListsToString(arr, id);
 
 		});
