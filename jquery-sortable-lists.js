@@ -801,18 +801,16 @@
 		{
 			var li = $(this),
 				id = li.attr('id'),
-				match = id ? id.match(/[0-9]+/) : null; // string "0" is evaluate to true and is valid
+				matches = id ? id.match(/(.+)[-=_](.+)/) : null; // string "0" is evaluate to true but is not valid
 
-			if(!match)
+			if(!matches)
 			{
 				console.log(li);  // Have to be here. Read next exception message.
-				throw 'Previous item in console.log has no id or has no number in id attribute. It is necessary to create valid string.';
+				throw 'Previous item in console.log has no id or id is not in required format xx_yy, xx-yy or xx=yy. It is necessary to create valid string.';
 			}
 
-			id = match[0];
-
-			arr.push( 'sItems[' + id + ']=' + parentId );
-			$(this).children('ul,ol').sortableListsToString(arr, id);
+			arr.push( matches[1] + '[' + matches[2] + ']=' + parentId );
+			$(this).children('ul,ol').sortableListsToString(arr, matches[2]);
 
 		});
 
