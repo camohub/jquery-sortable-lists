@@ -261,28 +261,12 @@ $(function()
 			It is the ul/ol element with css properties: position:absolute; top:0; left:0.
 			This element is the base for calculation the position of dragged element. This ensures smooth movement while dragging and scrolling. Another plugins have big problems with it.
 		</p>
-		<p>Be careful how you format nested items. <b>Base element makes only one level <span class="c1">&nbsp;ul&nbsp;li</span> relationship</b>. So do not use more levels to format your lists like&nbsp;<span class="c1"><b>ul&nbsp;li&nbsp;ul&nbsp;li</b></span> in your css file.
+		<p>Be careful how you format nested items. <b>Base element makes only one level <span class="c1">ul&nbsp;li</span> relationship</b>. So do not use more levels to format your lists like <b class="c1">ul&nbsp;li&nbsp;ul&nbsp;li</b> in your css file.
 		</p>
 <pre>
 <code><span class="c4">// Do not use this to format lists</span>
 #myList li ul li { ... }
 <span class="c4">// cause baseElement makes only one level relation</span>
-#sortableListsBase li { ... }</code>
-</pre>
-
-
-			<a name="baseElement"></a>
-			<h3 class="c3">Base element</h3>
-			<p>Most important element. Every dragged element is appended to the base element while dragging. Sortable lists plugin adds this element in to the body at the background.
-				It is the ul/ol element with css properties: position:absolute; top:0; left:0.
-				This element is the base for calculation the position of dragged element. This ensures smooth movement while dragging and scrolling. Another plugins have big problems with it.
-			</p>
-			<p>Be careful how you format nested items. <b>Base element makes only one level <span class="c1">ul&nbsp;li</span> relationship</b>. So do not use more levels to format your lists like <b class="c1">ul&nbsp;li&nbsp;ul&nbsp;li</b> in your css file.
-			</p>
-<pre>
-<code><span class="c4">// Do not use this to format lists</span>
-#myList li ul li { ... }
-<span class="c4">// // cause baseElement makes only one level relation</span>
 #sortableListsBase li { ... }</code>
 </pre>
 

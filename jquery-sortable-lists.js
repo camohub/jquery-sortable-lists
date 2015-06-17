@@ -795,13 +795,13 @@
 	$.fn.sortableListsToString = function(arr, parentId)
 	{
 		arr = arr || [];
-		parentId = parentId || 'no-parent';
+		parentId = parentId || 'no-parent'; // string "0" is evaluate to true and is valid
 
 		$(this).children('li').each( function()
 		{
 			var li = $(this),
 				id = li.attr('id'),
-				match = id ? id.match(/[0-9]+/) : null;
+				match = id ? id.match(/[0-9]+/) : null; // string "0" is evaluate to true and is valid
 
 			if(!match)
 			{
