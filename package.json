@@ -18,6 +18,16 @@
     "tree",
     "jquery"
   ],
+  "files": [
+    "jquery-sortable-lists.js",
+    "jquery-sortable-lists.min.js",
+    "LICENCE",
+    "README.md",
+    "imgs"
+  ],
+  "dependencies": {
+    "jquery": ">=1"
+  },
   "author": "Vladimír Čamaj",
   "license": "GNU",
   "bugs": {
