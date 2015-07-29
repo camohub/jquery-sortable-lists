@@ -1,0 +1,27 @@
+{
+  "name": "jquery-sortable-lists",
+  "main": "jquery-sortable-lists.min.js",
+  "dependencies": {
+    "jquery": "~1.7.0",
+    "eventEmitter": "~4.2.11"
+  },
+  "version": "1.0.4",
+  "homepage": "git@github.com:camohub/jquery-sortable-lists.git",
+  "authors": [
+    "Vladimír Čamaj <vladimir.camaj@gmail.com>"
+  ],
+  "description": "jQuery plugin to sorting html lists also the tree structures",
+  "keywords": [
+    "jquery-plugin",
+    "jquery",
+    "ordering",
+    "lists",
+    "tree"
+  ],
+  "license": "GNU",
+  "ignore": [
+    "javascripts",
+    ".idea",
+    "package.json"
+  ]
+}
