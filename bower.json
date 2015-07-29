@@ -2,10 +2,9 @@
   "name": "jquery-sortable-lists",
   "main": "jquery-sortable-lists.min.js",
   "dependencies": {
-    "jquery": "~1.7.0",
-    "eventEmitter": "~4.2.11"
+    "jquery": "~1"
   },
-  "version": "1.0.4",
+  "version": "1.0.5",
   "homepage": "git@github.com:camohub/jquery-sortable-lists.git",
   "authors": [
     "Vladimír Čamaj <vladimir.camaj@gmail.com>"
