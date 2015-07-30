@@ -2,13 +2,14 @@
 <html>
 <head>
 <meta charset='utf-8'>
-<meta name="description" content="jquery sortable lists plugin also for tree structures">
+<meta name="description" content="jquery sortable lists plugin to sorting lists also the tree structures">
+<meta name="keywords" content="sorting nested list jquery plugin">
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
 <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
 <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
 
-<title>jQquery sortable lists</title>
+<title>jQquery sortable lists plugin</title>
 
 <style type="text/css">
 	html, body, ul, li { margin:0; padding:0; }
@@ -99,9 +100,10 @@ $(function()
 	$('.clickable').on('click', function(e)	{ alert('Click works fine! IgnoreClass stops onDragStart event.'); });
 
 	/* Scrolling anchors */
-	$('#toPictureAnch').on('click', function(e) { scrollToAnch('pictureAnch'); return false; });
-	$('#toBaseElementAnch').on('click', function(e) { scrollToAnch('baseElementAnch'); return false; });
-	$('#toCssPatternAnch').on('click', function(e) { scrollToAnch('cssPatternAnch'); return false; });
+	$('#toPictureAnch').on('click', function(e) { scrollToAnch('pictureAnch'); });
+	$('#toBaseElementAnch').on('click', function(e) { scrollToAnch('baseElementAnch'); });
+	$('#toBaseElementAnch2').on('click', function(e) { scrollToAnch('baseElementAnch'); });
+	$('#toCssPatternAnch').on('click', function(e) { scrollToAnch('cssPatternAnch'); });
 
 	function scrollToAnch(id)
 	{
@@ -143,7 +145,7 @@ $(function()
 				You can define the <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
 				<strong class="c1">Insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
 				<strong class="c1">speed of autoscroll</strong> function. Available is <strong class="c1">onDragStart</strong> and <strong class="c1">complete callback</strong> and more.
-				For better understanding look at the <a id="toPictureAnch" href="#picture">picture</a> which describes all active elements in sortable lists plugin.
+				For better understanding look at the <a id="toPictureAnch" href="#picture">picture</a> which describes all active elements in sortable lists jQuery plugin.
 			</p>
 
         	<h2>
@@ -223,7 +225,7 @@ $(function()
 			</ul>
 
 			<section>
-				<p><strong>Sortable lists</strong> also supports export methods. Look at the console log to see the result of buttons below.</p>
+				<p><strong>JQuery sortable lists</strong> also supports export methods. Look at the console log to see the result of buttons below.</p>
 				<span id="toArrBtn" class="btn">To array</span>
 				<span id="toHierBtn" class="btn">To hierarchy</span>
 				<span id="toStrBtn" class="btn">To string</span>
@@ -275,7 +277,7 @@ $(function()
 
 		<a name="baseElement" id="baseElementAnch"></a>
 		<h3 class="c3">Base element</h3>
-		<p>Most important element. Every dragged element is appended to the base element while dragging. Sortable lists plugin adds this element in to the body at the background.
+		<p>Most important element. Every dragged element is appended to the base element while dragging. Jquery sortable lists plugin adds this element in to the body at the background.
 			It is the ul/ol element with css properties: position:absolute; top:0; left:0.
 			This element is the base for calculation the position of dragged element. This ensures smooth movement while dragging and scrolling. Another plugins have big problems with it.
 		</p>
@@ -306,7 +308,7 @@ $(function()
 
 
 		<h3 class="c3">Placeholder</h3>
-		<p>Sortable lists plugin generates this li element at the background. Element holds the default position of dragged item while dragging. Element has id - sortableListsPlaceholder. You can also set the css via placeholderClass or placeholderCss in options object.</p>
+		<p>Jquery sortable lists plugin generates this li element at the background. Element holds the default position of dragged item while dragging. Element has id - sortableListsPlaceholder. You can also set the css via placeholderClass or placeholderCss in options object.</p>
 <pre>
 <code>var options = {
 	placeholderClass: 'placeholderClass',
@@ -328,7 +330,7 @@ $(function()
 
 
 		<h3 class="c3">Hint wrapper</h3>
-		<p>Sortable lists plugin generates this element if is necessary to wrap the future position by ul/ol.
+		<p>Plugin generates this element if is necessary to wrap the future position by ul/ol.
 			Default type of wrapper is <span class="c1">UL</span>. You can change it in settings object by <span class="c1">listSelector</span> property.
 			The hintWrapperClass is removed after the item is inserted inside the list. So the final css of the wrapper is determined by listsClass property of options object or by default. Look at the next paragraph.
 		</p>
@@ -358,7 +360,8 @@ $(function()
 
 
 			<h3 class="c2">ignoreClass</h3>
-			<p>Cause jquery sortable lists works with dragging which fires onmousedown event with preventDefault, you can have a problem with some elements inside list with onclick events.
+			<p>Usually sorting lists is not the only functionality which your lists should provide.
+				Cause jquery sortable lists works with dragging which fires onmousedown event with preventDefault, you can have a problem with onclick events.
 				This solves the ignoreClass which ensures that onmousedown wont trigger dragging.
 			</p>
 <pre>
@@ -389,10 +392,10 @@ $(function()
 </pre>
 
 
-			<h3 class="c2">Open/close function</h3>
+			<h3 class="c2">Open/close nested lists</h3>
 			<p>This option enables you to hide/show nested lists. Plugin prepend the span element to the content div of items with nested lists.
 				You can style this element through the opener object of options. Look at the example code below.
-				At first you must activate the open/close function.	Next step is setting of url for open/close image on the background of the span.
+				At first you must activate the open/close function. Next step is setting of url for open/close image on the background of the span.
 				The last step are styles as jquery css object or class.
 			</p>
 <pre>
@@ -418,15 +421,15 @@ $(function()
 </pre>
 
 			<p>Default behaviour(if opener is active) is to close all nested lists on page load.
-				If you want to show some nested lists you have to add "sortableListsOpen" class to the parent li element of nested list.
+				If you want to show some nested lists you have to add <span class="c1">"sortableListsOpen"</span> class to the parent li element of nested list.
 			</p>
 <pre>
 <code>&lt;ul&gt;
    &lt;li class="sortableListsOpen"&gt;
       &lt;div&gt;Content div&lt;/div&gt;
       &lt;ul&gt;
-         &lt;li&gt;&lt;div&gt;Nested list item&lt;/div&gt;&lt;/li&gt;
-         &lt;li&gt;&lt;div&gt;Another item&lt;/div&gt;&lt;/li&gt;
+         &lt;li&gt;&lt;div&gt;This nested list&lt;/div&gt;&lt;/li&gt;
+         &lt;li&gt;&lt;div&gt;will be visible on page load&lt;/div&gt;&lt;/li&gt;
       &lt;/ul&gt;
    &lt;/li&gt;
 &lt;/ul&gt;</code>
@@ -484,7 +487,7 @@ $(function()
 
 
 			<h2>To array, to hierarchy, to string</h2>
-			<p>Sortable lists also support this three function. They do what they say - returns the representation of the lists as array, tree or string. Look at the first example on the page. They are implemented as plugins so you can call it this way:
+			<p>JQuery sortable lists also support this three function. They do what they say - return representation of the list as array, tree or string. Look at the first example on the page. They are implemented as plugins so you can call it this way:
 			</p>
 <pre>
 <code>$('#toArrBtn').on('click', function(){ console.log($('#sTree2').sortableListsToArray()); });
@@ -498,6 +501,7 @@ $('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsTo
 		<h2 class="pT20"><b>Do not do this:</b></h2>
 		<p>Do not use construction where ul with margin top is direct child of body - &lt;body&gt;&lt;ul style="margin-top:XYpx"&gt;. Margin-top breaks the position of dragged element.
 		</p>
+		<p>Do not use more than one level css pattern to format li. Look at the <a href="#baseElement" id="toBaseElementAnch2">base element</a> description.</p>
 
 	</section>
 
