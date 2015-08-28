@@ -59,7 +59,8 @@
                 insertZone: 50,
                 scroll: 20,
                 isAllowed: function(cEl, hint) { return true; }, // Params: current el., hint el.
-                complete: function(cEl) { return true; } // Params: current el., hint el.
+				onDragStart: function( e, cEl ) { return true; }, // Params: e jQ. event obj., current el.
+				complete: function(cEl) { return true; } // Params: current el., hint el.
             },
 
             setting = $.extend(true, {}, defaults, options),
@@ -108,6 +109,7 @@
 
         // Container with all actual elements and parameters
             state = {
+                isDragged: false,
                 isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
                 oEl: null, // overElement is element which returns elementFromPoint() method
                 rootEl: null,
@@ -145,6 +147,10 @@
         // Return this ensures chaining
         return this.on('mousedown touchstart', function(e)
             {
+                var target = $( e.target );
+
+                if ( state.isDragged !== false || target.hasClass( setting.ignoreClass ) ) return;
+
                 // Solves selection/range highlighting
                 e.preventDefault();
 
@@ -154,11 +160,12 @@
                 }
 
                 // El must be li in jQuery object
-                var el = $(e.target).is('li') ? $(e.target) : $(e.target).closest('li'),
+                var el = target.is('li') ? target : target.closest('li'),
                     rEl = $(this);
                 // Check if el is not empty
                 if(el[0])
                 {
+					setting.onDragStart( e, el );
                     startDrag(e, el, rEl);
                 }
             }
@@ -308,8 +315,6 @@
                 setTouchEvent(e);
             }
 
-            state.isDragged = false;
-
             if(hintStyle.display == 'block' && hintNode.length && state.isAllowed)
             {
                 targetEl = hintNode;
@@ -357,6 +362,10 @@
                         state.placeholderNode.remove();
                         tidyEmptyLists();
                     }
+
+					setting.complete( cEl.el );
+
+					state.isDragged = false;
 
                 });
 
