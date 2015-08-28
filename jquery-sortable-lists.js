@@ -110,6 +110,7 @@
 
 			// Container with all actual elements and parameters
 			state = {
+				isDragged: false,
 				isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
 				oEl: null, // overElement is element which returns elementFromPoint() method
 				rootEl: null,
