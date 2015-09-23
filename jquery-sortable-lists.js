@@ -345,17 +345,17 @@
 						{
 							state.placeholderNode.remove();
 							tidyEmptyLists();
+							setting.complete( cEl.el ); // Have to be here cause is necessary to remove placeholder before complete call.
+							state.isDragged = false;
 						});
 					}
 					else
 					{
 						state.placeholderNode.remove();
 						tidyEmptyLists();
+						setting.complete( cEl.el );
+						state.isDragged = false;
 					}
-
-					setting.complete( cEl.el );
-
-					state.isDragged = false;
 
 				});
 

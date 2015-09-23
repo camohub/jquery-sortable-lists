@@ -349,23 +349,23 @@
                     }
 
                     // Directly removed placeholder looks bad. It jumps up if the hint is below.
-                    if(isHintTarget)
+                    if ( isHintTarget )
                     {
-                        state.placeholderNode.slideUp(150, function()
+                        state.placeholderNode.slideUp( 150, function()
                         {
                             state.placeholderNode.remove();
                             tidyEmptyLists();
+                            setting.complete( cEl.el ); // Have to be here cause is necessary to remove placeholder before complete call.
+                            state.isDragged = false;
                         });
                     }
                     else
                     {
                         state.placeholderNode.remove();
                         tidyEmptyLists();
+                        setting.complete( cEl.el );
+                        state.isDragged = false;
                     }
-
-					setting.complete( cEl.el );
-
-					state.isDragged = false;
 
                 });
 
