@@ -10,6 +10,6 @@ Set the <strong>insert zone</strong> like a distance which determines if item wi
 <strong>speed of autoscroll</strong>. 
 Available is <strong>onDragStart</strong> and <strong>complete callback</strong>.</p>
 <p>Sortable lists also contains export functions <strong>toArray, toHierarchy, toString</strong>.</p>
-<p>For more info look at <a href="http://camohub.github.io/jquery-sortable-lists">the documentation</a>.</p>				
-				
+<p>For more info look at <a href="http://camohub.github.io/jquery-sortable-lists">the documentation</a>.</p>
+<p>Changelog is <a href="http://camohub.github.io/jquery-sortable-lists">here</a></p>
 				
