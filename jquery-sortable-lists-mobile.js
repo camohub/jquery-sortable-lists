@@ -65,34 +65,34 @@
 
             setting = $.extend(true, {}, defaults, options),
 
-        // base element from which is counted position of draged element
+            // base element from which is counted position of draged element
             base = $('<' + setting.listSelector + ' />')
                 .prependTo(jQBody)
                 .attr('id', 'sortableListsBase')
                 .css( setting.baseCss )
                 .addClass( setting.baseClass ),
 
-        // placeholder != state.placeholderNode
-        // placeholder is document fragment and state.placeholderNode is document node
+            // placeholder != state.placeholderNode
+            // placeholder is document fragment and state.placeholderNode is document node
             placeholder = $('<li />')
                 .attr('id', 'sortableListsPlaceholder')
                 .css( setting.placeholderCss )
                 .addClass( setting.placeholderClass ),
 
-        // hint is document fragment
+            // hint is document fragment
             hint = $('<li />')
                 .attr('id', 'sortableListsHint')
                 .css( setting.hintCss )
                 .addClass( setting.hintClass ),
 
-        // Is document fragment used as wrapper if hint is inserted to the empty li
+            // Is document fragment used as wrapper if hint is inserted to the empty li
             hintWrapper = $('<' + setting.listSelector + ' />')
                 .attr('id', 'sortableListsHintWrapper')
                 .addClass( setting.listsClass + ' ' + setting.hintWrapperClass )
                 .css( setting.listsCss )
                 .css( setting.hintWrapperCss ),
 
-        // Is +/- ikon to open/close nested lists
+            // Is +/- ikon to open/close nested lists
             opener = $('<span />')
                 .addClass( 'sortableListsOpener ' + setting.opener.openerClass )
                 .css('background-image', 'url(' + setting.opener.close + ')')
@@ -107,7 +107,7 @@
                     return false; // Prevent default
                 }),
 
-        // Container with all actual elements and parameters
+            // Container with all actual elements and parameters
             state = {
                 isDragged: false,
                 isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
@@ -149,7 +149,7 @@
             {
                 var target = $( e.target );
 
-                if ( state.isDragged !== false || target.hasClass( setting.ignoreClass ) ) return;
+                if ( state.isDragged !== false || ( setting.ignoreClass && target.hasClass( setting.ignoreClass ) ) ) return; // setting.ignoreClass is checked cause hasClass('') returns true
 
                 // Solves selection/range highlighting
                 e.preventDefault();

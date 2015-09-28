@@ -49,8 +49,7 @@
 						'float': 'left',
 						'display': 'inline-block',
 						'background-position': 'center center',
-						'background-repeat': 'no-repeat',
-						'cursor': 'pointer'
+						'background-repeat': 'no-repeat'
 					},
 					openerClass: ''
 				},
@@ -59,7 +58,7 @@
 				listsCss: {},
 				insertZone: 50,
 				scroll: 20,
-				/*ignoreClass: '',*/
+				ignoreClass: '',
 				isAllowed: function( cEl, hint ) { return true; }, // Params: current el., hint el.
 				onDragStart: function( e, cEl ) { return true; }, // Params: e jQ. event obj., current el.
 				complete: function( cEl ) { return true; } // Params: current el.
@@ -153,7 +152,7 @@
 			{
 				var target = $( e.target );
 
-				if ( state.isDragged !== false || target.hasClass( setting.ignoreClass ) ) return;
+				if ( state.isDragged !== false || ( setting.ignoreClass && target.hasClass( setting.ignoreClass ) ) ) return; // setting.ignoreClass is checked cause hasClass('') returns true
 
 				// Solves selection/range highlighting
 				e.preventDefault();
@@ -181,7 +180,7 @@
 		{
 			state.isDragged = true;
 
-			var elMT = parseInt( el.css( 'margin-top' ) ), // parseInt is necessary cause value has px at the end
+			var elMT = parseInt( el.css( 'margin-top' ) ), // parseInt is necesary cause value has px at the end
 				elMB = parseInt( el.css( 'margin-bottom' ) ),
 				elML = parseInt( el.css( 'margin-left' ) ),
 				elMR = parseInt( el.css( 'margin-right' ) ),
@@ -213,7 +212,7 @@
 				'top': elXY.top - elMT,
 				'left': elXY.left - elML
 			})
-			.prependTo( base );
+				.prependTo( base );
 
 			placeholderNode.css({
 				'display': 'block',
@@ -599,7 +598,7 @@
 
 				if ( state.oEl )
 				{
-					open( oEl ); // TODO: animation??? .children('ul,ol').css('display', 'block');
+					open( oEl ); // TODO:animation??? .children('ul,ol').css('display', 'block');
 				}
 			}
 
