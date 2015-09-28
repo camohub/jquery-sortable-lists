@@ -11,5 +11,6 @@ Set the <strong>insert zone</strong> like a distance which determines if item wi
 Available is <strong>onDragStart</strong> and <strong>complete callback</strong>.</p>
 <p>Sortable lists also contains export functions <strong>toArray, toHierarchy, toString</strong>.</p>
 <p>For more info look at <a href="http://camohub.github.io/jquery-sortable-lists/index.html">the documentation</a>.</p>				
-				
+<p>Changelog is <a href="https://github.com/camohub/jquery-sortable-lists/blob/master/CHANGELOG.md">here</a>.</p>
+
 				
