@@ -108,7 +108,7 @@
 					return false; // Prevent default
 				});
 
-		set_open_close( opener, 'close' );
+		setOpenClose( opener, 'close' );
 
 			// Container with all actual elements and parameters
 			var state = {
@@ -131,8 +131,7 @@
 
 		if ( setting.opener.active )
 		{
-			if ( ! setting.opener.as || (setting.opener.as !== 'img' && setting.opener.as !== 'html') )
-				throw 'Value for opener.as must be "img" or "html"';
+			if ( setting.opener.as !== 'img' && setting.opener.as !== 'html') throw 'Value for opener.as must be "img" or "html"';
 			if ( ! setting.opener.open ) throw 'Value opener.open is not defined';
 			if ( ! setting.opener.close ) throw 'Value opener.close is not defined';
 
@@ -680,7 +679,7 @@
 		{
 			li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );
 			li.children( 'ul, ol' ).css( 'display', 'block' );
-			set_open_close( li.children( 'div' ).children( '.sortableListsOpener' ).first(), 'close' );
+			setOpenClose( li.children( 'div' ).children( '.sortableListsOpener' ).first(), 'close' );
 		}
 
 		/**
@@ -691,7 +690,7 @@
 		{
 			li.removeClass( 'sortableListsOpen' ).addClass( 'sortableListsClosed' );
 			li.children( 'ul, ol' ).css( 'display', 'none' );
-			set_open_close( li.children( 'div' ).children( '.sortableListsOpener' ).first(), 'open' );
+			setOpenClose( li.children( 'div' ).children( '.sortableListsOpener' ).first(), 'open' );
 		}
 
 		/**
@@ -699,7 +698,7 @@
 		 * @param el
 		 * @param state
 		 */
-		function set_open_close( el, state )
+		function setOpenClose( el, state )
 		{
 			var value = setting.opener[state];
 
