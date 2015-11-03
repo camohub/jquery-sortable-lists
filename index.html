@@ -27,6 +27,8 @@
 	.pT20 { padding-top:20px; }
 	.pV10 { padding-top:10px; padding-bottom:10px; }
 	.dN { display:none; }
+	.dIB { display:inline-block; }
+    .vAM { vertical-align: text-bottom; }
 	.zI1000 { z-index:1000; }
 	.c1 { color:#b5e853; }
 	.c2 { color:#63c0f5; }
@@ -499,7 +501,7 @@ $('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsTo
 
 
 		<h2 class="pT20"><b>Do not do this:</b></h2>
-		<p>Do not use construction where ul with margin top is direct child of body - &lt;body&gt;&lt;ul style="margin-top:XYpx"&gt;. Margin-top breaks the position of dragged element.
+		<p>Do not use construction where ul with margin top is direct child of body<br>&lt;body&gt;&lt;ul style="margin-top:XYpx"&gt;. Margin-top breaks the position of dragged element.
 		</p>
 		<p>Do not use more than one level css pattern to format li. Look at the <a href="#baseElement" id="toBaseElementAnch2">base element</a> description.</p>
 
@@ -510,7 +512,14 @@ $('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsTo
 	</section>
 
 	<section>
-		<p>Sortable lists is under the GNU license.</p>
+		<p>Sortable lists is under the MIT license.</p>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" class="dIB">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id" value="7TMZBBBG3HRHU">
+            <span>If this plugin is usefull for you, send me 1€ &nbsp;</span>
+            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" class="vAM dI">
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
 	</section>
 </div>
 

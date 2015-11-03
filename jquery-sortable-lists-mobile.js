@@ -1,7 +1,7 @@
 /**
  * @desc jQuery plugin to sort html list also the tree structures
  * @author Vladimír Čamaj
- * @license GNU General public license
+ * @license MIT
  */
 
 (function ( $ ) {
