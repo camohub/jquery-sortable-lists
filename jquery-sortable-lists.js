@@ -43,6 +43,7 @@
 				},
 				opener: {
 					active: false,
+					as: 'img',
 					open: '',
 					close: '',
 					openerCss: {
@@ -96,7 +97,6 @@
 			// Is +/- ikon to open/close nested lists
 			opener = $( '<span />' )
 				.addClass( 'sortableListsOpener ' + setting.opener.openerClass )
-				.css( 'background-image', 'url(' + setting.opener.close + ')' )
 				.css( setting.opener.openerCss )
 				.on( 'mousedown', function( e )
 				{
@@ -106,10 +106,12 @@
 					else { close( li ); }
 
 					return false; // Prevent default
-				}),
+				});
+
+		setOpenClose( opener, 'close' );
 
 			// Container with all actual elements and parameters
-			state = {
+			var state = {
 				isDragged: false,
 				isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
 				oEl: null, // overElement is element which returns elementFromPoint() method
@@ -129,8 +131,9 @@
 
 		if ( setting.opener.active )
 		{
-			if ( ! setting.opener.open ) throw 'Url for opener.open image is not defined';
-			if ( ! setting.opener.close ) throw 'Url for opener.close image is not defined';
+			if ( setting.opener.as !== 'img' && setting.opener.as !== 'html') throw 'Value for opener.as must be "img" or "html"';
+			if ( ! setting.opener.open ) throw 'Value opener.open is not defined';
+			if ( ! setting.opener.close ) throw 'Value opener.close is not defined';
 
 			$( this ).find( 'li' ).each( function() {
 				var li = $( this );
@@ -676,7 +679,7 @@
 		{
 			li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );
 			li.children( 'ul, ol' ).css( 'display', 'block' );
-			li.children( 'div' ).children( '.sortableListsOpener' ).first().css( 'background-image', 'url(' + setting.opener.close + ')' );
+			setOpenClose( li.children( 'div' ).children( '.sortableListsOpener' ).first(), 'close' );
 		}
 
 		/**
@@ -687,7 +690,26 @@
 		{
 			li.removeClass( 'sortableListsOpen' ).addClass( 'sortableListsClosed' );
 			li.children( 'ul, ol' ).css( 'display', 'none' );
-			li.children( 'div' ).children( '.sortableListsOpener' ).first().css( 'background-image', 'url(' + setting.opener.open + ')' );
+			setOpenClose( li.children( 'div' ).children( '.sortableListsOpener' ).first(), 'open' );
+		}
+
+		/**
+		 * @desc Handles display of open/close image or html
+		 * @param el
+		 * @param state
+		 */
+		function setOpenClose( el, state )
+		{
+			var value = setting.opener[state];
+
+			if( setting.opener.as === 'img' )
+			{
+				el.css( 'background-image', 'url(' + value + ')' );
+			}
+			else if( setting.opener.as === 'html' )
+			{
+				el.html( value );
+			}
 		}
 
 		/**
