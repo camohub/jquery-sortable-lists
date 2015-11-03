@@ -1,6 +1,6 @@
 {
   "name": "jquery-sortable-lists",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "jQuery plugin to sorting lists also the tree structures",
   "main": "jquery-sortable-lists.min.js",
   "scripts": {
