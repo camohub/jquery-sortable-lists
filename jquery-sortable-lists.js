@@ -538,13 +538,13 @@
 			var	oElH = oEl.outerHeight( false ),
 				relY = e.pageY - oEl.offset().top;
 
-			if ( 5 > relY )  // Inserting before
+			if ( 14 > relY )  // Inserting before
 			{
-				showHintBefore( e, oEl );
+				showHintBefore( e, oEl, 7 > relY );
 			}
-			else if ( oElH - 5 < relY )  // Inserting after
+			else if ( oElH - 14 < relY )  // Inserting after
 			{
-				showHintAfter( e, oEl );
+				showHintAfter( e, oEl, oElH - 7 < relY );
 			}
 
 		}
@@ -555,7 +555,7 @@
 		 * @param oEl oElement
 		 * @return No value
 		 */
-		function showHintBefore( e, oEl )
+		function showHintBefore( e, oEl, outSide )
 		{
 			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
 			{
@@ -563,9 +563,9 @@
 			}
 
 			// Hint outside the oEl
-			if ( e.pageX - oEl.offset().left < setting.insertZone )
+			if ( outSide )
 			{
-				// Ensure display:none if hint will be next to the placeholder
+				// Ensures display:none if hint will be next to the placeholder
 				if ( oEl.prev( '#sortableListsPlaceholder' ).length )
 				{
 					hint.css( 'display', 'none' );
@@ -614,7 +614,7 @@
 		 * @param oEl oElement
 		 * @return No value
 		 */
-		function showHintAfter( e, oEl )
+		function showHintAfter( e, oEl, outSide )
 		{
 			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
 			{
@@ -622,9 +622,9 @@
 			}
 
 			// Hint outside the oEl
-			if ( e.pageX - oEl.offset().left < setting.insertZone )
+			if ( outSide )
 			{
-				// Ensure display:none if hint will be next to the placeholder
+				// Ensures display:none if hint will be next to the placeholder
 				if ( oEl.next( '#sortableListsPlaceholder' ).length )
 				{
 					hint.css( 'display', 'none' );
