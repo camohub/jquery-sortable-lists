@@ -522,6 +522,8 @@
 
 		}
 
+//////// Show hint section //////////////////////////////////////////////////////
+
 		/**
 		 * @desc Shows or hides or does not show hint element
 		 * @param e event
@@ -538,15 +540,14 @@
 			var	oElH = oEl.outerHeight( false ),
 				relY = e.pageY - oEl.offset().top;
 
-			if ( 14 > relY )  // Inserting before
+			if ( 14 > relY )  // Inserting on top
 			{
-				showHintBefore( e, oEl, 7 > relY );
+				showOnTop( e, oEl, 7 > relY );  // Last bool param express if hint insert outside/inside
 			}
-			else if ( oElH - 14 < relY )  // Inserting after
+			else if ( oElH - 14 < relY )  // Inserting on bottom
 			{
-				showHintAfter( e, oEl, oElH - 7 < relY );
+				showOnBottom( e, oEl, oElH - 7 < relY );
 			}
-
 		}
 
 		/**
@@ -557,26 +558,15 @@
 		 * @return No value
 		 * @TODO param e is unused
 		 */
-		function showHintBefore( e, oEl, outside )
+		function showOnTop( e, oEl, outside )
 		{
 			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
 			{
 				hint.unwrap();  // If hint is wrapped by ul/ol #sortableListsHintWrapper
 			}
 
-			// Hint outside the oEl
-			if ( outside )
-			{
-				// Ensures display:none if hint will be next to the placeholder
-				if ( oEl.prev( '#sortableListsPlaceholder' ).length )
-				{
-					hint.css( 'display', 'none' );
-					return;
-				}
-				oEl.before( hint );
-			}
 			// Hint inside the oEl
-			else
+			if ( ! outside && e.pageX - oEl.offset().left > setting.insertZone )
 			{
 				var children = oEl.children(),
 					list = oEl.children( 'ul' ).first();
@@ -603,6 +593,18 @@
 					open( oEl ); // TODO:animation??? .children('ul,ol').css('display', 'block');
 				}
 			}
+			// Hint outside the oEl
+			else
+			{
+				// Ensure display:none if hint will be next to the placeholder
+				if ( oEl.prev( '#sortableListsPlaceholder' ).length )
+				{
+					hint.css( 'display', 'none' );
+					return;
+				}
+				oEl.before( hint );
+			}
+
 
 			hint.css( 'display', 'block' );
 			// Ensures posible formating of elements. Second call is in the endDrag method.
@@ -618,26 +620,15 @@
 		 * @return No value
 		 * @TODO param e is unused
 		 */
-		function showHintAfter( e, oEl, outside )
+		function showOnBottom( e, oEl, outside )
 		{
 			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
 			{
 				hint.unwrap();  // If hint is wrapped by ul/ol sortableListsHintWrapper
 			}
 
-			// Hint outside the oEl
-			if ( outside )
-			{
-				// Ensures display:none if hint will be next to the placeholder
-				if ( oEl.next( '#sortableListsPlaceholder' ).length )
-				{
-					hint.css( 'display', 'none' );
-					return;
-				}
-				oEl.after( hint );
-			}
 			// Hint inside the oEl
-			else
+			if ( ! outside && e.pageX - oEl.offset().left > setting.insertZone )
 			{
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
@@ -665,12 +656,26 @@
 				}
 
 			}
+			// Hint outside the oEl
+			else
+			{
+				// Ensure display:none if hint will be next to the placeholder
+				if ( oEl.next( '#sortableListsPlaceholder' ).length )
+				{
+					hint.css( 'display', 'none' );
+					return;
+				}
+				oEl.after( hint );
+			}
+
 
 			hint.css( 'display', 'block' );
 			// Ensures posible formating of elements. Second call is in the endDrag method.
 			state.isAllowed = setting.isAllowed( state.cEl.el, $( '#sortableListsHint' ), oEl );
 
 		}
+
+//////// End of show hint section ////////////////////////////////////////////////////
 
 		/**
 		 * @desc Handles opening nested lists
