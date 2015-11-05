@@ -553,9 +553,11 @@
 		 * @desc Called from showHint method. Displays or hides hint element
 		 * @param e event
 		 * @param oEl oElement
+		 * @param outside bool
 		 * @return No value
+		 * @TODO param e is unused
 		 */
-		function showHintBefore( e, oEl, outSide )
+		function showHintBefore( e, oEl, outside )
 		{
 			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
 			{
@@ -563,7 +565,7 @@
 			}
 
 			// Hint outside the oEl
-			if ( outSide )
+			if ( outside )
 			{
 				// Ensures display:none if hint will be next to the placeholder
 				if ( oEl.prev( '#sortableListsPlaceholder' ).length )
@@ -612,9 +614,11 @@
 		 * @desc Called from showHint function. Displays or hides hint element.
 		 * @param e event
 		 * @param oEl oElement
+		 * @param outside bool
 		 * @return No value
+		 * @TODO param e is unused
 		 */
-		function showHintAfter( e, oEl, outSide )
+		function showHintAfter( e, oEl, outside )
 		{
 			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
 			{
@@ -622,7 +626,7 @@
 			}
 
 			// Hint outside the oEl
-			if ( outSide )
+			if ( outside )
 			{
 				// Ensures display:none if hint will be next to the placeholder
 				if ( oEl.next( '#sortableListsPlaceholder' ).length )
