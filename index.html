@@ -144,9 +144,9 @@ $(function()
 </pre>
 
 			<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items.
-				You can define the <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
+				You can define <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
 				<strong class="c1">Insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
-				<strong class="c1">speed of autoscroll</strong> function. Available is <strong class="c1">onDragStart</strong> and <strong class="c1">complete callback</strong> and more.
+				<strong class="c1">speed of autoscroll</strong>, <strong class="c1">ignoreClass</strong>, <strong class="c1">onDragStart</strong> and <strong class="c1">complete callback</strong> and more.
 				For better understanding look at the <a id="toPictureAnch" href="#picture">picture</a> which describes all active elements in sortable lists jQuery plugin.
 			</p>
 
@@ -270,7 +270,7 @@ $(function()
 
 
 		<a name="picture" id="pictureAnch"></a>
-		<h4>This pictures shows you how it works inside. Click to show.</h4>
+		<h4>This pictures show you how it works inside. Click to show.</h4>
 		<img class="descPicture descPictureClose" src="./imgs/sortable-lists.jpg">
 		<img class="descPictureClose descPicture" src="./imgs/sortable-lists2.jpg">
 
@@ -375,7 +375,7 @@ $(function()
 
 
 			<h3 class="c2">Insert zone</h3>
-			<p>This property defines the distance which determines if item will be inserted outside(before/after) or inside of another item.
+			<p>This property defines the distance from the left, which determines if item will be inserted outside(before/after) or inside of another item.
 			</p>
 <pre>
 <code>var options = {
