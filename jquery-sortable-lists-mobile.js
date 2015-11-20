@@ -60,6 +60,7 @@
                 scroll: 20,
                 isAllowed: function(cEl, hint) { return true; }, // Params: current el., hint el.
 				onDragStart: function( e, cEl ) { return true; }, // Params: e jQ. event obj., current el.
+				onChange: function( cEl ) { return true; }, // Params: current el.
 				complete: function(cEl) { return true; } // Params: current el., hint el.
             },
 
@@ -355,6 +356,7 @@
                         {
                             state.placeholderNode.remove();
                             tidyEmptyLists();
+							setting.onChange( cEl.el );
                             setting.complete( cEl.el ); // Have to be here cause is necessary to remove placeholder before complete call.
                             state.isDragged = false;
                         });
