@@ -57,7 +57,15 @@ $(function()
 	var options = {
 		placeholderCss: {'background-color': '#ff8'},
 		hintCss: {'background-color':'#bbf'},
-		isAllowed: function(cEl, hint, target)
+        onChange: function( cEl )
+        {
+            console.log( 'onChange' );
+        },
+        complete: function( cEl )
+        {
+            console.log( 'complete' );
+        },
+		isAllowed: function( cEl, hint, target )
 		{
 			// Be carefull if you test some ul/ol elements here.
 			// Sometimes ul/ols are dynamically generated and so they have not some attributes as natural ul/ols.
@@ -146,8 +154,8 @@ $(function()
 			<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items.
 				You can define <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
 				<strong class="c1">Insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
-				<strong class="c1">speed of autoscroll</strong>, <strong class="c1">ignoreClass</strong>, <strong class="c1">onDragStart</strong> and <strong class="c1">complete callback</strong> and more.
-				For better understanding look at the <a id="toPictureAnch" href="#picture">picture</a> which describes all active elements in sortable lists jQuery plugin.
+				<strong class="c1">speed of autoscroll</strong> function. Available is <strong class="c1">onDragStart</strong>, <strong class="c1">onChange</strong> and <strong class="c1">complete callback</strong> and more.
+				For better understanding look at the <a href="#picture" id="toPictureAnch">picture</a> which describes all active elements in sortable lists plugin.
 			</p>
 
         	<h2>
@@ -475,8 +483,21 @@ $(function()
 </pre>
 
 
+			<h3 class="c2">Callback onChange</h3>
+			<p>Is called after the drop but only if the position of dragged element was changed. Takes one argument: cEl - currently dragged element.
+			</p>
+<pre>
+<code>var options = {
+	onChange: function(cEl)
+	{
+		<span class="c4">// Whatever you need to do if position was changed</span>
+	}
+}</code>
+</pre>
+
+
 			<h3 class="c2">Callback complete</h3>
-			<p>Is called after the drop. Takes one argument currEl == currently dragged element.
+			<p>Is called every time after the drop. Takes one argument: cEl - currently dragged element.
 			</p>
 <pre>
 <code>var options = {
@@ -513,6 +534,7 @@ $('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsTo
 
 	<section>
 		<p>Sortable lists is under the MIT license.</p>
+
         <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" class="dIB">
             <input type="hidden" name="cmd" value="_s-xclick">
             <input type="hidden" name="hosted_button_id" value="7TMZBBBG3HRHU">
@@ -520,6 +542,7 @@ $('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsTo
             <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" class="vAM dI">
             <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
         </form>
+
 	</section>
 </div>
 

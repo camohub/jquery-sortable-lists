@@ -60,6 +60,7 @@
                 scroll: 20,
                 isAllowed: function(cEl, hint) { return true; }, // Params: current el., hint el.
 				onDragStart: function( e, cEl ) { return true; }, // Params: e jQ. event obj., current el.
+				onChange: function( cEl ) { return true; }, // Params: current el.
 				complete: function(cEl) { return true; } // Params: current el., hint el.
             },
 
@@ -150,7 +151,6 @@
                 var target = $( e.target );
 
                 if ( state.isDragged !== false || ( setting.ignoreClass && target.hasClass( setting.ignoreClass ) ) ) return; // setting.ignoreClass is checked cause hasClass('') returns true
-
 
                 // Solves selection/range highlighting
                 e.preventDefault();
@@ -350,13 +350,14 @@
                     }
 
                     // Directly removed placeholder looks bad. It jumps up if the hint is below.
-                    if(isHintTarget)
+                    if ( isHintTarget )
                     {
-                        state.placeholderNode.slideUp(150, function()
+                        state.placeholderNode.slideUp( 150, function()
                         {
                             state.placeholderNode.remove();
                             tidyEmptyLists();
-                            setting.complete( cEl.el );
+							setting.onChange( cEl.el );
+                            setting.complete( cEl.el ); // Have to be here cause is necessary to remove placeholder before complete call.
                             state.isDragged = false;
                         });
                     }
