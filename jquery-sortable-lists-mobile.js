@@ -58,10 +58,10 @@
                 listsCss: {},
                 insertZone: 50,
                 scroll: 20,
-                isAllowed: function(cEl, hint) { return true; }, // Params: current el., hint el.
+                isAllowed: function( cEl, hint, target ) { return true; }, // Params: current el., hint el.
 				onDragStart: function( e, cEl ) { return true; }, // Params: e jQ. event obj., current el.
 				onChange: function( cEl ) { return true; }, // Params: current el.
-				complete: function(cEl) { return true; } // Params: current el., hint el.
+				complete: function( cEl ) { return true; } // Params: current el., hint el.
             },
 
             setting = $.extend(true, {}, defaults, options),
@@ -629,7 +629,7 @@
 
             hint.css('display', 'block');
             // Ensures posible formating of elements. Second call is in the endDrag method.
-            state.isAllowed = setting.isAllowed(state.cEl.el, $('#sortableListsHint'), oEl);
+            state.isAllowed = setting.isAllowed( state.cEl.el, hint , hint.parents('li').first() );
 
         }
 
@@ -689,7 +689,7 @@
 
             hint.css('display', 'block');
             // Ensures posible formating of elements. Second call is in the endDrag method.
-            state.isAllowed = setting.isAllowed(state.cEl.el, $('#sortableListsHint'), oEl);
+            state.isAllowed = setting.isAllowed(state.cEl.el, hint , hint.parents('li').first());
 
         }
 

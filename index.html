@@ -65,7 +65,7 @@ $(function()
 			// Be carefull if you test some ul/ol elements here.
 			// Sometimes ul/ols are dynamically generated and so they have not some attributes as natural ul/ols.
 			// Be careful also if the hint is not visible. It has only display none so it is at the previouse place where it was before(excluding first moves before showing).
-			if(hint.parents('li').first().data('module') === 'c' && cEl.data('module') !== 'c')
+			if( target.data('module') === 'c' && cEl.data('module') !== 'c' )
 			{
 				hint.css('background-color', '#ff9999');
 				return false;
