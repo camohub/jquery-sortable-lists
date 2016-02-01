@@ -7,6 +7,7 @@
 
 <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
 <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 <title>jQquery sortable lists</title>
 
@@ -45,7 +46,7 @@
 </style>
 
 <script src="http://code.jquery.com/jquery-git1.min.js"></script>
-<script src="jquery-sortable-lists.min.js"></script>
+<script src="jquery-sortable-lists.js"></script>
 <script type="text/javascript">
 $(function()
 {
@@ -77,20 +78,22 @@ $(function()
 			}
 		},
 		opener: {
-			 active: true,
-			 close: './imgs/Remove2.png',
-			 open: './imgs/Add2.png',
-			 openerCss: {
-				 'display': 'inline-block',
-				 'width': '18px',
-				 'height': '18px',
-				 'float': 'left',
-				 'margin-left': '-35px',
-				 'margin-right': '5px',
-				 'background-position': 'center center',
-				 'background-repeat': 'no-repeat'
-			 },
-			 openerClass: ''
+            active: true,
+            as: 'class',  // if as is not set plugin uses background image
+            close: /*'<i class="fa fa-minus c3"></i>',  // or */'fa-minus c3',  // or './imgs/Remove2.png',
+            open: /*'<i class="fa fa-plus"></i>',  // or */'fa-plus',  // or'./imgs/Add2.png',
+            openerCss: {
+                'display': 'inline-block',
+                //'width': '18px',
+                //'height': '18px',
+                'float': 'left',
+                'margin-left': '-35px',
+                'margin-right': '5px',
+                'background-position': 'center center',
+                'background-repeat': 'no-repeat',
+                'font-size': '1.1em'
+            },
+            openerClass: 'fa'
 		},
 		ignoreClass: 'clickable'
 	};
