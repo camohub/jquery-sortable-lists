@@ -19,31 +19,34 @@
 	ul.sTree2 li, ul#sortableListsBase li { padding-left:50px; margin:5px; border:1px solid #3f3f3f; background-color:#3f3f3f; }
 	li div { padding:7px; background-color:#222; Nborder:1px solid #3f3f3f; }
 	li, ul, div { border-radius: 3px; }
-	.red { background-color:#ff9999; }
-	.blue { background-color:#aaaaff;}
-	.green { background-color:#99ff99; }
-	.gree2 { background-color:#bbffbb; }
-	.yellow { background-color:#ff8; }
-	.brown { background-color:#c26b2b; }
-	.pT20 { padding-top:20px; }
-	.pV10 { padding-top:10px; padding-bottom:10px; }
+	.red { background-color: #ff9999; }
+	.blue { background-color: #aaaaff;}
+	.green { background-color: #99ff99; }
+	.gree2 { background-color: #bbffbb; }
+	.yellow { background-color: #ff8; }
+	.brown { background-color: #c26b2b; }
+	.pT20 { padding-top: 20px; }
+	.pV10 { padding-top: 10px; padding-bottom: 10px; }
+	.pV20 { padding-top: 20px; padding-bottom: 20px; }
+	.pR { position: relative; }
+    .t10 { top: 10px; }
 	.dN { display:none; }
-	.dIB { display:inline-block; }
+	.dIB { display: inline-block; }
     .vAM { vertical-align: text-bottom; }
-	.zI1000 { z-index:1000; }
-	.c1 { color:#b5e853; }
-	.c2 { color:#63c0f5; }
+	.zI1000 { z-index: 1000; }
+	.c1 { color: #b5e853; }
+	.c2 { color: #63c0f5; }
 	.c3 { color: #f77720; }
 	.c4 { color: #888; }
 	.c5 { color: #666667; }
 	.c6 { color: #888; }
-	.bgC1 { background-color:#ccc; }
-	.bgC2 { background-color:#ff8; }
-	.small1 { font-size:0.8em; }
-	.small2 { font-size:0.7em; }
-	.small3 { font-size:0.6em; }
-	.tAR { text-align:right; }
-	.clear { clear:both; }
+	.bgC1 { background-color: #ccc; }
+	.bgC2 { background-color: #ff8; }
+	.small1 { font-size: 0.8em; }
+	.small2 { font-size: 0.7em; }
+	.small3 { font-size: 0.6em; }
+	.tAR { text-align: right; }
+	.clear { clear: both; }
 	img.descPicture { display:block; width:100%; margin:0 7px 30px 0; float:left; cursor:pointer; /*transition: all 0.5s ease;*/ }
 	img.descPicture.descPictureClose { width:150px; }
 	#sTree2 { margin:10px auto; }
@@ -537,13 +540,14 @@ $('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsTo
 	<section>
 		<p>Sortable lists is under the MIT license.</p>
 
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" class="dIB">
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" class="pV20">
             <input type="hidden" name="cmd" value="_s-xclick">
-            <input type="hidden" name="hosted_button_id" value="7TMZBBBG3HRHU">
-            <span>If this plugin is usefull for you, send me 1€ &nbsp;</span>
-            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" class="vAM dI">
+            <input type="hidden" name="hosted_button_id" value="CFLW5DW6QDL4E">
+            <span>If this plugin is usefull for you, buy me a coffee &nbsp;</span>
+            <input type="image" class="pR t10" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
             <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
         </form>
+
 
 	</section>
 </div>
