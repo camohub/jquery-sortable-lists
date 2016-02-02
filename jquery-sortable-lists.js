@@ -4,7 +4,8 @@
  * @license MIT
  */
 
-(function ( $ ) {
+( function ( $ )
+{
 
 	/**
 	 * @desc jQuery plugin
@@ -97,7 +98,6 @@
 			// Is +/- ikon to open/close nested lists
 			opener = $( '<span />' )
 				.addClass( 'sortableListsOpener ' + setting.opener.openerClass )
-				.css( 'background-image', 'url(' + setting.opener.close + ')' )
 				.css( setting.opener.openerCss )
 				.on( 'mousedown', function( e )
 				{
@@ -107,43 +107,46 @@
 					else { close( li ); }
 
 					return false; // Prevent default
-				}),
+				});
 
-			// Container with all actual elements and parameters
-			state = {
-				isDragged: false,
-				isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
-				oEl: null, // overElement is element which returns elementFromPoint() method
-				rootEl: null,
-				cEl: null, // currentElement is currently dragged element
-				upScroll: false,
-				downScroll: false,
-				pX: 0,
-				pY: 0,
-				cX: 0,
-				cY: 0,
-				isAllowed: true, // The function is defined in setting
-				e: { pageX: 0, pageY:0, clientX:0, clientY:0 }, // TODO: unused??
-				doc: $( document ),
-				win: $( window )
-			};
+		if ( setting.opener.as == 'class' ) { opener.addClass( setting.opener.close ); }
+		else if ( setting.opener.as == 'html' ) { opener.html( setting.opener.close ); }
+		else { opener.css( 'background-image', 'url(' + setting.opener.close + ')' ); console.error( 'jQuerySortableLists opener as background image is deprecated. In version 2.0.0 it will be removed. Use html instead please.' ); }
+
+		// Container with all actual elements and parameters
+		var state = {
+			isDragged: false,
+			isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
+			oEl: null, // overElement is element which returns elementFromPoint() method
+			rootEl: null,
+			cEl: null, // currentElement is currently dragged element
+			upScroll: false,
+			downScroll: false,
+			pX: 0,
+			pY: 0,
+			cX: 0,
+			cY: 0,
+			isAllowed: true, // The function is defined in setting
+			e: { pageX: 0, pageY: 0, clientX: 0, clientY: 0 }, // TODO: unused??
+			doc: $( document ),
+			win: $( window )
+		};
 
 		if ( setting.opener.active )
 		{
-			if ( ! setting.opener.open ) throw 'Url for opener.open image is not defined';
-			if ( ! setting.opener.close ) throw 'Url for opener.close image is not defined';
+			if ( ! setting.opener.open ) throw 'Opener.open value is not defined. It should be valid url, html or css class.';
+			if ( ! setting.opener.close ) throw 'Opener.close value is not defined. It should be valid url, html or css class.';
 
-			$( this ).find( 'li' ).each( function() {
+			$( this ).find( 'li' ).each( function()
+			{
 				var li = $( this );
 
-				if ( li.children( 'ul,ol' ).length )
+				if ( li.children( setting.listSelector ).length )
 				{
 					opener.clone( true ).prependTo( li.children( 'div' ).first() );
-					if ( ! li.hasClass( 'sortableListsOpen' ) )
-					{
-						li.addClass( 'sortableListsClosed' );
-						close( li );
-					}
+
+					if ( ! li.hasClass( 'sortableListsOpen' ) ) { close( li ); }
+					else { open( li ); }
 				}
 			});
 		}
@@ -212,8 +215,7 @@
 				'position': 'absolute',
 				'top': elXY.top - elMT,
 				'left': elXY.left - elML
-			})
-				.prependTo( base );
+			}).prependTo( base );
 
 			placeholderNode.css({
 				'display': 'block',
@@ -677,8 +679,22 @@
 		function open( li )
 		{
 			li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );
-			li.children( 'ul, ol' ).css( 'display', 'block' );
-			li.children( 'div' ).children( '.sortableListsOpener' ).first().css( 'background-image', 'url(' + setting.opener.close + ')' );
+			li.children( setting.listSelector ).css( 'display', 'block' );
+
+			var opener = li.children( 'div' ).children( '.sortableListsOpener' ).first();
+
+			if ( setting.opener.as == 'html' )
+			{
+				opener.html( setting.opener.close );
+			}
+			else if ( setting.opener.as == 'class' )
+			{
+				opener.addClass( setting.opener.close ).removeClass( setting.opener.open );
+			}
+			else
+			{
+				opener.css( 'background-image', 'url(' + setting.opener.close + ')' );
+			}
 		}
 
 		/**
@@ -688,8 +704,23 @@
 		function close( li )
 		{
 			li.removeClass( 'sortableListsOpen' ).addClass( 'sortableListsClosed' );
-			li.children( 'ul, ol' ).css( 'display', 'none' );
-			li.children( 'div' ).children( '.sortableListsOpener' ).first().css( 'background-image', 'url(' + setting.opener.open + ')' );
+			li.children( setting.listSelector ).css( 'display', 'none' );
+
+			var opener = li.children( 'div' ).children( '.sortableListsOpener' ).first();
+
+			if ( setting.opener.as == 'html' )
+			{
+				opener.html( setting.opener.open );
+			}
+			else if ( setting.opener.as == 'class' )
+			{
+				opener.addClass( setting.opener.open ).removeClass( setting.opener.close );
+			}
+			else
+			{
+				opener.css( 'background-image', 'url(' + setting.opener.open + ')' );
+			}
+
 		}
 
 		/**

@@ -8,6 +8,7 @@
 
 <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
 <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 <title>jQquery sortable lists plugin</title>
 
@@ -82,20 +83,19 @@ $(function()
 			}
 		},
 		opener: {
-			 active: true,
-			 close: './imgs/Remove2.png',
-			 open: './imgs/Add2.png',
-			 openerCss: {
-				 'display': 'inline-block',
-				 'width': '18px',
-				 'height': '18px',
-				 'float': 'left',
-				 'margin-left': '-35px',
-				 'margin-right': '5px',
-				 'background-position': 'center center',
-				 'background-repeat': 'no-repeat'
-			 },
-			 openerClass: ''
+            active: true,
+            as: 'html',
+            close: '<i class="fa fa-minus c3">',
+            open: '<i class="fa fa-plus">',
+            openerCss: {
+                'display': 'inline-block',
+                'float': 'left',
+                'margin-left': '-35px',
+                'margin-right': '5px',
+                'background-position': 'center center',
+                'background-repeat': 'no-repeat'
+            },
+            openerClass: ''
 		},
 		ignoreClass: 'clickable'
 	};
@@ -405,27 +405,29 @@ $(function()
 			<h3 class="c2">Open/close nested lists</h3>
 			<p>This option enables you to hide/show nested lists. Plugin prepend the span element to the content div of items with nested lists.
 				You can style this element through the opener object of options. Look at the example code below.
-				At first you must activate the open/close function. Next step is setting of url for open/close image on the background of the span.
-				The last step are styles as jquery css object or class.
+				At first you must <b class="c1">activate</b> the open/close function.
+                Next step is setting of <b class="c1">open</b> and <b class="c1">close</b> image in the the span.
+                You can do it via html, css class or url(as background-image. Url is deprecated).
+				The last step are styles as jquery css object or class for span element.
 			</p>
 <pre>
 <code>var options = {
 	opener: {
 		active: true,
-		close: './imgs/Remove2.png',
-		open: './imgs/Add2.png',
+		as: 'html',  <span class="c4">// or "class" or omit this option for url</span>
+		close: '&lt;i class="fa fa-minus red"&gt;&lt;/i&gt;',  <span class="c4">// or as class "fa-minus red" or as url "./imgs/Remove.png"</span>
+		open: '&lt;i class="fa fa-plus"&gt;&lt;/i&gt;',  <span class="c4">// or class "fa-plus" or as url "./imgs/Add.png"</span>
 		css: {
 			'display': 'inline-block', <span class="c4">// Default value</span>
 			'float': 'left', <span class="c4">// Default value</span>
-			'width': '18px',
-			'height': '18px',
+			<span class="c4">//'width': '18px', 'height': '18px',  // if you need it</span>
 			'margin-left': '-35px',
 			'margin-right': '5px',
 			'background-position': 'center center', <span class="c4">// Default value</span>
 			'background-repeat': 'no-repeat' <span class="c4">// Default value</span>
 		},
 		<span class="c4">// or like a class. Note that class can not rewrite default values. To rewrite defaults you have to do it through css object.</span>
-		class: 'yourClassName'
+		class: 'yourClassName'  <span class="c4">// e.g fa if you use as: "class" option</span>
 	}
 }</code>
 </pre>
