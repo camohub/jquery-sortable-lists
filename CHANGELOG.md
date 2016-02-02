@@ -1,6 +1,9 @@
 <h1><a href="http://camohub.github.io/jquery-sortable-lists/index.html">jquery-sortable-lists</a></h1>
 <h2 style="font-size:17px">Changelog</h2>
 
+<h3>v1.2.0</h3>
+<p>Added opener.as option to opener. Now is possible to use opener.as html or class option.</p>
+
 <h3>v1.1.1</h3>
 <p>Fixed bug on target parameter of isAllowed callback.</p>
 
