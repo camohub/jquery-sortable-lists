@@ -255,3 +255,69 @@ a {
 .cf {
   zoom:1;
 }
+
+/* My addition to github theme */
+
+html, body, ul, li { margin:0; padding:0; }
+
+ul, li {
+	list-style-type:none;
+	color:#b5e853;
+	border:1px solid #3f3f3f;
+}
+
+ul, #sTree2, #sTreePlus { padding:0; background-color:#151515; }
+
+#sTree2 li, #sTreePlus li, ul#sortableListsBase li {
+	padding-left:50px;
+	margin:5px; border:1px solid #3f3f3f;
+	background-color:#3f3f3f;
+}
+
+li div {
+	padding:7px;
+	background-color:#222;
+}
+
+li, ul, div { border-radius: 3px; }
+
+.c1 { color:#b5e853; }
+.c2 { color:#63c0f5; }
+.c3 { color: #f77720; }
+.c4 { color: #888; }
+
+.bgC1, .gray { background-color:#ccc; }
+.bgC2, .yellow { background-color:#ff8; }
+.bgC3, .red { background-color:#ff9999; }
+.bgC4, .blue { background-color:#aaaaff;}
+.bgC5, .green { background-color:#99ff99; }
+.bgC6, .gree2 { background-color:#bbffbb; }
+.bgC7, .brown { background-color:#c26b2b; }
+
+.pT20 { padding-top:20px; }
+
+.pV10 { padding-top:10px; padding-bottom:10px; }
+
+.dN { display:none; }
+
+.zI1000 { z-index:1000; }
+
+.small1 { font-size:0.8em; }
+.small2 { font-size:0.7em; }
+.small3 { font-size:0.6em; }
+
+.tAR { text-align:right; }
+
+.clear { clear:both; }
+
+img.descPicture {
+	display:block;
+	width:100%;
+	margin:0 7px 30px 0;
+	float:left;
+	cursor:pointer; /*transition: all 0.5s ease;*/
+}
+
+img.descPicture.descPictureClose { width:150px; }
+
+#sTree2, #sTreePlus { margin:10px auto; }
