@@ -298,6 +298,10 @@ li, ul, div { border-radius: 3px; }
 
 .pV10 { padding-top:10px; padding-bottom:10px; }
 
+.pR { position: relative; }
+
+.t10 { top: 10px; }
+
 .dN { display:none; }
 
 .zI1000 { z-index:1000; }
