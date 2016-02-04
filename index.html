@@ -82,13 +82,29 @@ $(function()
 	$('#sTree2').sortableLists( options );
 	$('#sTreePlus').sortableLists( optionsPlus );
 
-	$('#toArrBtn').on('click', function(){ console.log($('#sTree2').sortableListsToArray()); });
-	$('#toHierBtn').on('click', function() { console.log($('#sTree2').sortableListsToHierarchy()); });
-	$('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsToString()); });
-	$('.descPicture').on('click', function(e) { $(this).toggleClass('descPictureClose'); });
+	$('#toArrBtn').on( 'click', function(){ console.log( $('#sTree2').sortableListsToArray() ); } );
+	$('#toHierBtn').on( 'click', function() { console.log( $('#sTree2').sortableListsToHierarchy() ); } );
+	$('#toStrBtn').on( 'click', function() { console.log( $('#sTree2').sortableListsToString() ); } );
+	$('.descPicture').on( 'click', function(e) { $(this).toggleClass('descPictureClose'); } );
 
-	$('.clickable').on('click', function(e)	{ alert('Click works fine!'); });
+	$('.clickable').on('click', function(e)	{ alert('Click works fine! IgnoreClass stopped onDragStart event.'); });
+
+	/* Scrolling anchors */
+	$('#toPictureAnch').on( 'click', function( e ) { scrollToAnch( 'pictureAnch' ); } );
+	$('#toBaseElementAnch').on( 'click', function( e ) { scrollToAnch( 'baseElementAnch' ); } );
+	$('#toBaseElementAnch2').on( 'click', function( e ) { scrollToAnch( 'baseElementAnch' ); } );
+	$('#toCssPatternAnch').on( 'click', function( e ) { scrollToAnch( 'cssPatternAnch' ); } );
+
+	function scrollToAnch( id )
+	{
+		$('html, body').animate({
+			scrollTop: $("#" + id).offset().top
+		}, 750);
+		return false;
+	}
+
 });
+
 </script>
 </head>
 <body>
@@ -101,6 +117,7 @@ $(function()
 			<a href="https://github.com/camohub/jquery-sortable-lists/zipball/master" class="btn">Download as .zip</a>
 			<a href="https://github.com/camohub/jquery-sortable-lists/tarball/master" class="btn">Download as .tar.gz</a>
 			<a href="https://github.com/camohub/jquery-sortable-lists" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+			<br><b><span class="small1 c6">Or you can use: </span><span class="small1 c6">$&nbsp;bower&nbsp;install&nbsp;jquery-sortable-lists</span></b>
 		</section>
 	</div>
 </header>
@@ -108,17 +125,17 @@ $(function()
 <div class="container">
 	<section id="main_content">
 		<h2>
-			How does Sortable lists plugin work?.
+			How does Sortable lists plugin work?
 		</h2>
 <pre>
 <code>$('.sortableLists').sortableLists( options );</code>
 </pre>
 
 			<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items.
-				You can define the <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
+				You can define <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
 				<strong class="c1">Insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
 				<strong class="c1">speed of autoscroll</strong> function. Available is <strong class="c1">onDragStart</strong>, <strong class="c1">onChange</strong> and <strong class="c1">complete callback</strong> and more.
-				For better understanding look at the <a href="#picture">picture</a> which describes all active elements in sortable lists plugin.
+				For better understanding look at the <a href="#picture" id="toPictureAnch">picture</a> which describes all active elements in sortable lists plugin.
 			</p>
 
         	<h2>
@@ -198,7 +215,7 @@ $(function()
 			</ul>
 
 			<section>
-				<p><strong>Sortable lists</strong> also supports export methods. Look at the console log to see the result of buttons below.</p>
+				<p><strong>JQuery sortable lists</strong> also supports export methods. Look at the console log to see the result of buttons below.</p>
 				<span id="toArrBtn" class="btn">To array</span>
 				<span id="toHierBtn" class="btn">To hierarchy</span>
 				<span id="toStrBtn" class="btn">To string</span>
@@ -222,7 +239,7 @@ $(function()
 </pre>
 
 
-		<a name="cssPattern"></a>
+		<a name="cssPattern" id="cssPatternAnch"></a>
 		<h2 class="clear">Css pattern</h2>
 		<p>If you format li elements this way</p>
 <pre>
@@ -234,16 +251,16 @@ $(function()
 </pre>
 		<p>
             Every dragged item is appended to the base element. It ensures smooth dragging and scrolling.
-            For more information about base element look at the picture below and at the <a href="#baseElement">Base element description</a>.
+            For more information about base element look at the picture below and at the <a href="#baseElement" id="toBaseElementAnch">Base element description</a>.
         </p>
 		<p>All settings are placed in object which is the only parameter of .sortableLists() function.</p>
 <pre>
 <code>$('.sortableLists').sortableLists( options );</code>
 </pre>
-		<p class="c1">That's all. Everything else is optonal.</p>
+		<p class="c1">That's all. Everything else is optional.</p>
 
 
-		<a name="picture"></a>
+		<a name="picture" id="pictureAnch"></a>
 		<h4>This pictures shows you how it works inside. Click to show.</h4>
 		<img class="descPicture descPictureClose" src="./imgs/sortable-lists.jpg">
 		<img class="descPictureClose descPicture" src="./imgs/sortable-lists2.jpg">
@@ -251,7 +268,7 @@ $(function()
 
 		<h2 class="clear">Active elements</h2>
 
-		<a name="baseElement"></a>
+		<a name="baseElement" id="baseElementAnch"></a>
 		<h3 class="c3">Base element</h3>
 		<p>
             Most important element. Every dragged element is appended to the base element while dragging. Sortable lists plugin adds this element in to the body at the background.
@@ -273,7 +290,7 @@ $(function()
 		<h3 class="c3">Currently dragged element</h3>
 		<p>
             Is dragged element of course. You can have a little problem with the formatting this element. It caused the fact that dragged element
-			is the child of the base element during the dragging. Look at the <a href="#cssPattern" id="toCssPattern">Css pattern</a> how to solve it.
+			is the child of the base element during the dragging. Look at the <a href="#cssPattern" id="toCssPatternAnch">Css pattern</a> how to solve it.
 			Current element has class - sortableListsCurrent which helps you to format the item. You can do it also through the options object by
 			currElClass or currElCss properties. Note that classes sortableListsCurrent and currElClass will be removed after the dragging but currElCss not.
 		</p>
@@ -318,7 +335,7 @@ $(function()
 
 		<h3 class="c3">Hint wrapper</h3>
 		<p>
-            Sortable lists plugin generates this element if is necessary to wrap the future position by ul/ol.
+            Plugin generates this element if is necessary to wrap the future position by ul/ol.
 			Default type of wrapper is <span class="c1">UL</span>. You can change it in settings object by <span class="c1">listSelector</span> property.
 			The hintWrapperClass is removed after the item is inserted inside the list. So the final css of the wrapper is determined by listsClass property of options object or by default.
             Look at the next paragraph.
@@ -352,8 +369,8 @@ $(function()
 
 			<h3 class="c2">ignoreClass</h3>
 			<p>
-                Cause jquery sortable lists works with dragging which fires onmousedown event with preventDefault,
-                you can have a problem with some elements inside list with onclick events.
+                Usually sorting lists is not the only functionality which your lists should provide.
+				Cause jquery sortable lists works with dragging which fires onmousedown event with preventDefault, you can have a problem with onclick events.
 				This solves the ignoreClass which ensures that onmousedown wont trigger dragging.
 			</p>
 <pre>
@@ -366,8 +383,8 @@ $(function()
 
 			<h3 class="c2">Insert zone</h3>
 			<p>
-                This property defines the distance which determines if item will be inserted outside(before/after)
-                or inside of another item.
+                This property defines the distance from the left, which determines
+                if item will be inserted outside(before/after) or inside of another item.
 			</p>
 <pre>
 <code>var options = {
@@ -440,15 +457,15 @@ $(function()
 
 			<p>
                 Default behaviour(if opener is active) is to close all nested lists on page load.
-				If you want to show some nested lists you have to add "sortableListsOpen" class to the parent li element of nested list.
+				If you want to show some nested lists you have to add <span class="c1">"sortableListsOpen"</span> class to the parent li element of nested list.
 			</p>
 <pre>
 <code>&lt;ul&gt;
    &lt;li class="sortableListsOpen"&gt;
       &lt;div&gt;Content div&lt;/div&gt;
       &lt;ul&gt;
-         &lt;li&gt;&lt;div&gt;Nested list item&lt;/div&gt;&lt;/li&gt;
-         &lt;li&gt;&lt;div&gt;Another item&lt;/div&gt;&lt;/li&gt;
+         &lt;li&gt;&lt;div&gt;This nested list&lt;/div&gt;&lt;/li&gt;
+         &lt;li&gt;&lt;div&gt;will be visible on page load&lt;/div&gt;&lt;/li&gt;
       &lt;/ul&gt;
    &lt;/li&gt;
 &lt;/ul&gt;</code>
@@ -494,7 +511,7 @@ $(function()
 
 			<h3 class="c2">Callback onChange</h3>
 			<p>
-                Is called after the drop but onlz if the position of dragged element was changed.
+                Is called after the drop but only if the position of dragged element was changed.
                 Takes one argument: cEl - currently dragged element.
 			</p>
 <pre>
@@ -521,8 +538,8 @@ $(function()
 
 			<h2>To array, to hierarchy, to string</h2>
 			<p>
-                Sortable lists also support this three function.
-                They do what they say - returns the representation of the lists as array, tree or string.
+                JQuery sortable lists also support this three function.
+                They do what they say - return representation of the list as array, tree or string.
                 Look at the first example on the page. They are implemented as plugins so you can call it this way:
 			</p>
 <pre>
@@ -535,14 +552,29 @@ $('#toStrBtn').on('click', function() { console.log($('#sTree2').sortableListsTo
 
 		<h2 class="pT20"><b>Do not do this:</b></h2>
 		<p>
-            Do not use construction where ul with margin top is direct child of body - &lt;body&gt;&lt;ul style="margin-top:XYpx"&gt;.
+            Do not use construction where ul with margin top is direct child of body<br>&lt;body&gt;&lt;ul style="margin-top:XYpx"&gt;.
             Margin-top breaks the position of dragged element.
 		</p>
+		<p>Do not use more than one level css pattern to format li. Look at the <a href="#baseElement" id="toBaseElementAnch2">base element</a> description.</p>
+
+
+
+		<h2><a href="https://github.com/camohub/jquery-sortable-lists/blob/master/CHANGELOG.md">Changelog is here</a></h2>
 
 	</section>
 
 	<section>
 		<p>Sortable lists is under the MIT license.</p>
+
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" class="pV20">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id" value="CFLW5DW6QDL4E">
+            <span>If this plugin is usefull for you, you can send me a gift. &nbsp;</span>
+            <input type="image" class="pR t10" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
+
+
 	</section>
 </div>
 
