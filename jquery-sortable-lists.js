@@ -1,6 +1,6 @@
 /**
  * @desc jQuery plugin to sort html list also the tree structures
- * @author Vladimír Čamaj
+ * @author Vladimír ?amaj
  * @license MIT
  */
 
@@ -60,6 +60,7 @@
 				insertZonePlus: false,
 				scroll: 20,
 				ignoreClass: '',
+				handle: '',
 				isAllowed: function( cEl, hint, target ) { return true; },  // Params: current el., hint el.
 				onDragStart: function( e, cEl ) { return true; },  // Params: e jQ. event obj., current el.
 				onChange: function( cEl ) { return true; },  // Params: current el.
@@ -95,7 +96,7 @@
 				.css( setting.listsCss )
 				.css( setting.hintWrapperCss ),
 
-		// Is +/- ikon to open/close nested lists
+		// Is +/- icon to open/close nested lists
 			opener = $( '<span />' )
 				.addClass( 'sortableListsOpener ' + setting.opener.openerClass )
 				.css( setting.opener.openerCss )
@@ -177,6 +178,8 @@
 		return this.on( 'mousedown', function( e )
 			{
 				var target = $( e.target );
+
+				if ( setting.handle && target.closest(setting.handle).length === 0 ) return;
 
 				if ( state.isDragged !== false || ( setting.ignoreClass && target.hasClass( setting.ignoreClass ) ) ) return; // setting.ignoreClass is checked cause hasClass('') returns true
 
@@ -1033,5 +1036,4 @@
 	};
 
 }( jQuery ));
-
 
