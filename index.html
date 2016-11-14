@@ -90,15 +90,16 @@ $(function()
 	$('.clickable').on('click', function(e)	{ alert('Click works fine! IgnoreClass stopped onDragStart event.'); });
 
 	/* Scrolling anchors */
-	$('#toPictureAnch').on( 'click', function( e ) { scrollToAnch( 'pictureAnch' ); } );
-	$('#toBaseElementAnch').on( 'click', function( e ) { scrollToAnch( 'baseElementAnch' ); } );
-	$('#toBaseElementAnch2').on( 'click', function( e ) { scrollToAnch( 'baseElementAnch' ); } );
-	$('#toCssPatternAnch').on( 'click', function( e ) { scrollToAnch( 'cssPatternAnch' ); } );
+	$('#toPictureAnch').on( 'mousedown', function( e ) { scrollToAnch( 'pictureAnch' ); return false; } );
+	$('#toBaseElementAnch').on( 'mousedown', function( e ) { scrollToAnch( 'baseElementAnch' ); return false; } );
+	$('#toBaseElementAnch2').on( 'mousedown', function( e ) { scrollToAnch( 'baseElementAnch' ); return false; } );
+	$('#toCssPatternAnch').on( 'mousedown', function( e ) { scrollToAnch( 'cssPatternAnch' ); return false; } );
 
 	function scrollToAnch( id )
 	{
+		return true;
 		$('html, body').animate({
-			scrollTop: $("#" + id).offset().top
+			scrollTop: '-=-' + $("#" + id).offset().top + 'px'
 		}, 750);
 		return false;
 	}
