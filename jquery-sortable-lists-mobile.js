@@ -68,34 +68,34 @@
 
 			setting = $.extend( true, {}, defaults, options ),
 
-		// base element from which is counted position of draged element
+			// base element from which is counted position of draged element
 			base = $( '<' + setting.listSelector + ' />' )
 				.prependTo( jQBody )
 				.attr( 'id', 'sortableListsBase' )
 				.css( setting.baseCss )
 				.addClass( setting.listsClass + ' ' + setting.baseClass ),
 
-		// placeholder != state.placeholderNode
-		// placeholder is document fragment and state.placeholderNode is document node
+			// placeholder != state.placeholderNode
+			// placeholder is document fragment and state.placeholderNode is document node
 			placeholder = $( '<li />' )
 				.attr( 'id', 'sortableListsPlaceholder' )
 				.css( setting.placeholderCss )
 				.addClass( setting.placeholderClass ),
 
-		// hint is document fragment
+			// hint is document fragment
 			hint = $( '<li />' )
 				.attr( 'id', 'sortableListsHint' )
 				.css( setting.hintCss )
 				.addClass( setting.hintClass ),
 
-		// Is document fragment used as wrapper if hint is inserted to the empty li
+			// Is document fragment used as wrapper if hint is inserted to the empty li
 			hintWrapper = $( '<' + setting.listSelector + ' />' )
 				.attr( 'id', 'sortableListsHintWrapper' )
 				.addClass( setting.listsClass + ' ' + setting.hintWrapperClass )
 				.css( setting.listsCss )
 				.css( setting.hintWrapperCss ),
 
-		// Is +/- ikon to open/close nested lists
+			// Is +/- ikon to open/close nested lists
 			opener = $( '<span />' )
 				.addClass( 'sortableListsOpener ' + setting.opener.openerClass )
 				.css( setting.opener.openerCss )
@@ -500,10 +500,10 @@
 		 */
 		function setTouchEvent( e )
 		{
-			e.pageX = e.originalEvent.touches[ 0 ].pageX;
-			e.pageY = e.originalEvent.touches[ 0 ].pageY;
-			e.screenX = e.originalEvent.touches[ 0 ].screenX;
-			e.screenY = e.originalEvent.touches[ 0 ].screenY;
+			e.pageX = e.originalEvent.changedTouches[ 0 ].pageX;
+			e.pageY = e.originalEvent.changedTouches[ 0 ].pageY;
+			e.screenX = e.originalEvent.changedTouches[ 0 ].screenX;
+			e.screenY = e.originalEvent.changedTouches[ 0 ].screenY;
 		}
 
 		/**
@@ -582,6 +582,7 @@
 
 		}
 
+		//////// End of current element handlers //////////////////////////////////////////////////////
 		//////// Show hint handlers //////////////////////////////////////////////////////
 
 		/**
