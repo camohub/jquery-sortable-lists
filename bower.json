@@ -2,7 +2,7 @@
 	"name": "jquery-sortable-lists",
 	"main": "jquery-sortable-lists.js",
 	"dependencies": {
-		"jquery": ">=1 <3.0.0"
+		"jquery": ">=1"
 	},
 	"homepage": "https://github.com/camohub/jquery-sortable-lists.git",
 	"repository": {

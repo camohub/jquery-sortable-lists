@@ -4,6 +4,10 @@
 <h3>v1.3.0</h3>
 <p>Added insertZonePlus option. Fixed bug with ol lists.</p>
 
+
+<h3>v1.3.1</h3>
+<p>Support for jquery >=1</p>
+
 <h3>v1.2.0</h3>
 <p>Added opener.as option to opener. Now is possible to use opener.as html or class option.</p>
 
