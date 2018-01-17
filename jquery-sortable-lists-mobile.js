@@ -500,10 +500,10 @@
 		 */
 		function setTouchEvent( e )
 		{
-			e.pageX = e.originalEvent.touches[ 0 ].pageX;
-			e.pageY = e.originalEvent.touches[ 0 ].pageY;
-			e.screenX = e.originalEvent.touches[ 0 ].screenX;
-			e.screenY = e.originalEvent.touches[ 0 ].screenY;
+			e.pageX = e.originalEvent.changedTouches[ 0 ].pageX;
+			e.pageY = e.originalEvent.changedTouches[ 0 ].pageY;
+			e.screenX = e.originalEvent.changedTouches[ 0 ].screenX;
+			e.screenY = e.originalEvent.changedTouches[ 0 ].screenY;
 		}
 
 		/**
