@@ -1,6 +1,9 @@
 <h1><a href="http://camohub.github.io/jquery-sortable-lists/index.html">jquery-sortable-lists</a></h1>
 <h2 style="font-size:17px">Changelog</h2>
 
+<h3>v1.3.2</h3>
+<p>Support for mobile devices in jquery-sortable-lists-mobile.js</p>
+
 <h3>v1.3.1</h3>
 <p>Support for jquery >=1</p>
 
