@@ -19,14 +19,14 @@ $(function()
 	var options = {
 		placeholderCss: {'background-color': '#ff8'},
 		hintCss: {'background-color':'#bbf'},
-        onChange: function( cEl )
-        {
-            console.log( 'onChange' );
-        },
-        complete: function( cEl )
-        {
-            console.log( 'complete' );
-        },
+		onChange: function( cEl )
+		{
+			console.log( 'onChange' );
+		},
+		complete: function( cEl )
+		{
+			console.log( 'complete' );
+		},
 		isAllowed: function( cEl, hint, target )
 		{
 			// Be carefull if you test some ul/ol elements here.
@@ -44,38 +44,40 @@ $(function()
 			}
 		},
 		opener: {
-            active: true,
-            as: 'html',  // if as is not set plugin uses background image
-            close: '<i class="fa fa-minus c3"></i>',  // or 'fa-minus c3',  // or './imgs/Remove2.png',
-            open: '<i class="fa fa-plus"></i>',  // or 'fa-plus',  // or'./imgs/Add2.png',
-            openerCss: {
-                'display': 'inline-block',
-                //'width': '18px', 'height': '18px',
-                'float': 'left',
-                'margin-left': '-35px',
-                'margin-right': '5px',
-                //'background-position': 'center center', 'background-repeat': 'no-repeat',
-                'font-size': '1.1em'
-            }
+			active: true,
+			as: 'html',  // if as is not set plugin uses background image
+			close: '<i class="fa fa-minus c3"></i>',  // or 'fa-minus c3',  // or './imgs/Remove2.png',
+			open: '<i class="fa fa-plus"></i>',  // or 'fa-plus',  // or'./imgs/Add2.png',
+			openerCss: {
+				'display': 'inline-block',
+				//'width': '18px', 'height': '18px',
+				'float': 'left',
+				'margin-left': '-35px',
+				'margin-right': '5px',
+				//'background-position': 'center center', 'background-repeat': 'no-repeat',
+				'font-size': '1.1em'
+			}
 		},
-		ignoreClass: 'clickable'
+		ignoreClass: 'clickable',
+		maxLevels: 3
 	};
+
 	var optionsPlus = {
-        insertZonePlus: true,
+		insertZonePlus: true,
 		placeholderCss: {'background-color': '#ff8'},
 		hintCss: {'background-color':'#bbf'},
 		opener: {
-            active: true,
-            as: 'html',  // if as is not set plugin uses background image
-            close: '<i class="fa fa-minus c3"></i>',
-            open: '<i class="fa fa-plus"></i>',
-            openerCss: {
-                'display': 'inline-block',
-                'float': 'left',
-                'margin-left': '-35px',
-                'margin-right': '5px',
-                'font-size': '1.1em'
-            }
+			active: true,
+			as: 'html',  // if as is not set plugin uses background image
+			close: '<i class="fa fa-minus c3"></i>',
+			open: '<i class="fa fa-plus"></i>',
+			openerCss: {
+				'display': 'inline-block',
+				'float': 'left',
+				'margin-left': '-35px',
+				'margin-right': '5px',
+				'font-size': '1.1em'
+			}
 		}
 	};
 
@@ -133,8 +135,8 @@ $(function()
 
 			<p>You can sort an items of html lists by mouse. Create <strong class="c1">tree</strong> structures. Format all active items.
 				You can define <strong class="c1">isAlowed callback</strong> which determines if dragged item can be inserted into another.
-				<strong class="c1">Insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area,
-				<strong class="c1">speed of autoscroll</strong> function. Available is <strong class="c1">onDragStart</strong>, <strong class="c1">onChange</strong> and <strong class="c1">complete callback</strong> and more.
+				<strong class="c1">Insert zone</strong> like a distance which determines if item will be inserted inside or outside of the active area, also <strong class="c1">insert zone plus</strong> feature,
+				<strong class="c1">speed of autoscroll</strong> function, <strong class="c1">max levels</strong> number... Available is <strong class="c1">onDragStart</strong>, <strong class="c1">onChange</strong> and <strong class="c1">complete callback</strong> and more.
 				For better understanding look at the <a href="#picture" id="toPictureAnch">picture</a> which describes all active elements in sortable lists plugin.
 			</p>
 
@@ -469,6 +471,18 @@ $(function()
       &lt;/ul&gt;
    &lt;/li&gt;
 &lt;/ul&gt;</code>
+</pre>
+
+
+		<h3 class="c2">maxLevels</h3>
+		<p>
+			MaxLevels is a feature which does not allow to create more levels of nested lists than the value of maxLevels option.
+			Default is false so you have to activate the feature by numeric value.
+		</p>
+<pre>
+<code>var options = {
+	maxLevels: 2
+}</code>
 </pre>
 
 
