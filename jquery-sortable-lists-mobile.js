@@ -72,39 +72,39 @@
 			// base element from which is counted position of draged element
 			base = $( '<' + setting.listSelector + ' />' )
 				.prependTo( jQBody )
-				.attr( 'id', 'sortableListsBase' )
+				.attr( 'id', 's-l-base' )
 				.css( setting.baseCss )
 				.addClass( setting.listsClass + ' ' + setting.baseClass ),
 
 			// placeholder != state.placeholderNode
 			// placeholder is document fragment and state.placeholderNode is document node
 			placeholder = $( '<li />' )
-				.attr( 'id', 'sortableListsPlaceholder' )
+				.attr( 'id', 's-l-placeholder' )
 				.css( setting.placeholderCss )
 				.addClass( setting.placeholderClass ),
 
 			// hint is document fragment
 			hint = $( '<li />' )
-				.attr( 'id', 'sortableListsHint' )
+				.attr( 'id', 's-l-hint' )
 				.css( setting.hintCss )
 				.addClass( setting.hintClass ),
 
 			// Is document fragment used as wrapper if hint is inserted to the empty li
 			hintWrapper = $( '<' + setting.listSelector + ' />' )
-				.attr( 'id', 'sortableListsHintWrapper' )
+				.attr( 'id', 's-l-hint-wrapper' )
 				.addClass( setting.listsClass + ' ' + setting.hintWrapperClass )
 				.css( setting.listsCss )
 				.css( setting.hintWrapperCss ),
 
 			// Is +/- ikon to open/close nested lists
 			opener = $( '<span />' )
-				.addClass( 'sortableListsOpener ' + setting.opener.openerClass )
+				.addClass( 's-l-opener ' + setting.opener.openerClass )
 				.css( setting.opener.openerCss )
 				.on( 'mousedown touchstart', function( e )
 				{
 					var li = $( this ).closest( 'li' );
 
-					if ( li.hasClass( 'sortableListsClosed' ) )
+					if ( li.hasClass( 's-l-closed' ) )
 					{
 						open( li );
 					}
@@ -166,7 +166,7 @@
 				{
 					opener.clone( true ).prependTo( li.children( 'div' ).first() );
 
-					if ( ! li.hasClass( 'sortableListsOpen' ) )
+					if ( ! li.hasClass( 's-l-open' ) )
 					{
 						close( li );
 					}
@@ -249,11 +249,11 @@
 			};
 
 			state.cEl.xyOffsetDiff = { X: e.pageX - state.cEl.offset.left, Y: e.pageY - state.cEl.offset.top };
-			state.cEl.el.addClass( 'sortableListsCurrent' + ' ' + setting.currElClass );
+			state.cEl.el.addClass( 's-l-current ' + setting.currElClass );
 
 			el.before( placeholder );  // Now document has node placeholder
 
-			var placeholderNode = state.placeholderNode = $( '#sortableListsPlaceholder' );  // jQuery object && document node
+			var placeholderNode = state.placeholderNode = $( '#s-l-placeholder' );  // jQuery object && document node
 
 			el.css( {
 				'width': el.width(),
@@ -272,7 +272,6 @@
 			state.doc
 				.on( 'mousemove touchmove', dragging )
 				.on( 'mouseup touchend touchcancel', endDrag );
-
 		}
 
 		/**
@@ -347,7 +346,6 @@
 				showHint( e, state );
 
 				setCElPos( e, state );
-
 			}
 		}
 
@@ -358,11 +356,11 @@
 		function endDrag( e )
 		{
 			var cEl = state.cEl,
-				hintNode = $( '#sortableListsHint', state.rootEl.el ),
+				hintNode = $( '#s-l-hint', state.rootEl.el ),
 				hintStyle = hint[0].style,
 				targetEl = null, // hintNode/placeholderNode
 				isHintTarget = false, // if cEl will be placed to the hintNode
-				hintWrapperNode = $( '#sortableListsHintWrapper' );
+				hintWrapperNode = $( '#s-l-hint-wrapper' );
 
 			if ( e.type === 'touchend' || e.type === 'touchcancel' )
 			{
@@ -440,7 +438,6 @@
 			state.doc
 				.unbind( "mousemove touchmove", dragging )
 				.unbind( "mouseup touchend touchcancel", endDrag );
-
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,7 +459,6 @@
 			{
 				state.doc.trigger( 'mousemove' );
 			}, 50 );
-
 		}
 
 		/**
@@ -478,7 +474,6 @@
 			{
 				state.doc.trigger( 'mousemove' );
 			}, 50 );
-
 		}
 
 		/**
@@ -548,8 +543,7 @@
 			cEl.el.css( {
 				'top': e.pageY - cEl.xyOffsetDiff.Y - cEl.mT,
 				'left': e.pageX - cEl.xyOffsetDiff.X - cEl.mL
-			} )
-
+			} );
 		}
 
 		/**
@@ -595,7 +589,7 @@
 			{
 				return null;
 			}
-			else if ( el.is( '#sortableListsPlaceholder' ) || el.is( '#sortableListsHint' ) ) // el is #placeholder/#hint
+			else if ( el.is( '#s-l-placeholder' ) || el.is( '#s-l-hint' ) ) // el is #placeholder/#hint
 			{
 				return null;
 			}
@@ -608,7 +602,6 @@
 			{
 				return el;
 			}
-
 		}
 
 		//////// End of current element handlers //////////////////////////////////////////////////////
@@ -662,16 +655,16 @@
 		 */
 		function showOnTop( e, oEl )
 		{
-			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
+			if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
 			{
-				hint.unwrap();  // If hint is wrapped by ul/ol #sortableListsHintWrapper
+				hint.unwrap();  // If hint is wrapped by ul/ol #s-l-hint-wrapper
 			}
 
 			// Hint outside the oEl
 			if ( e.pageX - oEl.offset().left < setting.insertZone )
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.prev( '#sortableListsPlaceholder' ).length )
+				if ( oEl.prev( '#s-l-placeholder' ).length )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -689,7 +682,7 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).first();
 
-				if ( list.children().first().is( '#sortableListsPlaceholder' ) )
+				if ( list.children().first().is( '#s-l-placeholder' ) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -733,9 +726,9 @@
 		 */
 		function showOnTopPlus( e, oEl, outside )
 		{
-			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
+			if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
 			{
-				hint.unwrap();  // If hint is wrapped by ul/ol #sortableListsHintWrapper
+				hint.unwrap();  // If hint is wrapped by ul/ol #s-l-hint-wrapper
 			}
 
 			// Hint inside the oEl
@@ -744,7 +737,7 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).first();
 
-				if ( list.children().first().is( '#sortableListsPlaceholder' ) )
+				if ( list.children().first().is( '#s-l-placeholder' ) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -775,7 +768,7 @@
 			else
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.prev( '#sortableListsPlaceholder' ).length )
+				if ( oEl.prev( '#s-l-placeholder' ).length )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -803,16 +796,16 @@
 		 */
 		function showOnBottom( e, oEl )
 		{
-			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
+			if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
 			{
-				hint.unwrap();  // If hint is wrapped by ul/ol sortableListsHintWrapper
+				hint.unwrap();  // If hint is wrapped by ul/ol s-l-hint-wrapper
 			}
 
 			// Hint outside the oEl
 			if ( e.pageX - oEl.offset().left < setting.insertZone )
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.next( '#sortableListsPlaceholder' ).length )
+				if ( oEl.next( '#s-l-placeholder' ).length )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -830,7 +823,7 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
 
-				if ( list.children().last().is( '#sortableListsPlaceholder' ) )
+				if ( list.children().last().is( '#s-l-placeholder' ) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -874,9 +867,9 @@
 		 */
 		function showOnBottomPlus( e, oEl, outside )
 		{
-			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
+			if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
 			{
-				hint.unwrap();  // If hint is wrapped by ul/ol sortableListsHintWrapper
+				hint.unwrap();  // If hint is wrapped by ul/ol s-l-hint-wrapper
 			}
 
 			// Hint inside the oEl
@@ -885,7 +878,7 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
 
-				if ( list.children().last().is( '#sortableListsPlaceholder' ) )
+				if ( list.children().last().is( '#s-l-placeholder' ) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -917,7 +910,7 @@
 			else
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.next( '#sortableListsPlaceholder' ).length )
+				if ( oEl.next( '#s-l-placeholder' ).length )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -946,10 +939,10 @@
 		 */
 		function open( li )
 		{
-			li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );
+			li.removeClass( 's-l-closed' ).addClass( 's-l-open' );
 			li.children( setting.listSelector ).css( 'display', 'block' );
 
-			var opener = li.children( 'div' ).children( '.sortableListsOpener' ).first();
+			var opener = li.children( 'div' ).children( '.s-l-opener' ).first();
 
 			if ( setting.opener.as == 'html' )
 			{
@@ -971,10 +964,10 @@
 		 */
 		function close( li )
 		{
-			li.removeClass( 'sortableListsOpen' ).addClass( 'sortableListsClosed' );
+			li.removeClass( 's-l-open' ).addClass( 's-l-closed' );
 			li.children( setting.listSelector ).css( 'display', 'none' );
 
-			var opener = li.children( 'div' ).children( '.sortableListsOpener' ).first();
+			var opener = li.children( 'div' ).children( '.s-l-opener' ).first();
 
 			if ( setting.opener.as == 'html' )
 			{
@@ -1059,6 +1052,13 @@
 			setUpperLevels( li, getUpperLevels( li ) );
 
 			var i = 0;
+			li.find( 'li' ).each( function()
+			{
+				var li = $(this);
+				setInsideLevels( li, getInsideLevels( li ) );
+				setUpperLevels( li, getUpperLevels( li ) );
+			});
+
 			while( ! parentList.is( rootEl ) && i < 50 )
 			{
 				var li = parentList.parent( 'li' );
@@ -1079,7 +1079,7 @@
 		{
 			var cElStyle = cEl.el[0].style;
 
-			cEl.el.removeClass( setting.currElClass + ' ' + 'sortableListsCurrent' );
+			cEl.el.removeClass( setting.currElClass + ' s-l-current' );
 			cElStyle.top = '0';
 			cElStyle.left = '0';
 			cElStyle.position = 'relative';
@@ -1092,13 +1092,13 @@
 		 */
 		function tidyEmptyLists()
 		{
-			// Remove every empty ul/ol from root and also with .sortableListsOpener
+			// Remove every empty ul/ol from root and also with .s-l-opener
 			// hintWrapper can not be removed before the hint
 			$( setting.listSelector, state.rootEl.el ).each( function( i )
 				{
 					if ( ! $( this ).children().length )
 					{
-						$( this ).prev( 'div' ).children( '.sortableListsOpener' ).first().remove();
+						$( this ).prev( 'div' ).children( '.s-l-opener' ).first().remove();
 						$( this ).remove();
 					}
 				}
@@ -1208,4 +1208,3 @@
 	};
 
 }( jQuery ));
-
