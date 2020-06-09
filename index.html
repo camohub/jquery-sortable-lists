@@ -437,7 +437,7 @@ $(function()
 <code>var options = {
 	opener: {
 		active: true,
-		as: 'html',  // or "class"
+		as: 'html',  <span class="c4">// or "class"</span>
 		close: '&lt;i class="fa fa-minus red"&gt;&lt;/i&gt;', <span class="c4">// or 'fa fa-minus'</span>
 		open: '&lt;i class="fa fa-plus"&gt;&lt;/i&gt;', <span class="c4">// or 'fa fa-plus'</span>
 		openerCss: {
@@ -450,7 +450,8 @@ $(function()
 			'background-position': 'center center', <span class="c4">// Default value</span>
 			'background-repeat': 'no-repeat' <span class="c4">// Default value</span>
 		},
-		<span class="c4">// or like a class. Note that class can not rewrite default values. To rewrite defaults you have to do it through css object.</span>
+		<span class="c4">// or like a class. Note that class can not rewrite default values.
+		// To rewrite defaults you have to do it through css object.</span>
 		openerClass: 'your-class-name'
 	}
 }</code>
@@ -493,19 +494,19 @@ $(function()
 		</p>
 <pre>
 <code>var options = {
-	isAllowed: function(currEl, hint, target)
-	{
-		if(hint.parents('li').first().data('module') === 'c' && currEl.data('module') !== 'c')
-		{
-			hint.css('background-color', '#ff9999');
-			return false;
-		}
-		else
-		{
-			hint.css('background-color', '#99ff99');
-			return true;
-		}
-	}
+    isAllowed: function(currEl, hint, target)
+    {
+        if ( hint.parents('li').first().data('module') === 'c' && currEl.data('module') !== 'c' )
+        {
+            hint.css('background-color', '#ff9999');
+            return false;
+        }
+        else
+        {
+            hint.css('background-color', '#99ff99');
+            return true;
+        }
+    }
 }</code>
 </pre>
 
