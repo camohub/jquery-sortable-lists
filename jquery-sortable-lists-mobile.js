@@ -141,6 +141,7 @@
 				rootElClass: $( this ).attr( 'class' )
 			},
 			cEl: null, // currentElement is currently dragged element
+			placeholderParentLi: null,
 			upScroll: false,
 			downScroll: false,
 			pX: 0,
@@ -400,16 +401,15 @@
 						hintWrapperNode.prev( 'div' ).append( opener.clone( true ) );
 					}
 
-					var placeholderNode = state.placeholderNode;
 					// Directly removed placeholder looks bad. It jumps up if the hint is below.
 					if ( isHintTarget )
 					{
-						placeholderNode.slideUp( 150, function()
+						// !!! Do not use local var cause it seems it creates a closure variables lakes in Chrome !!!
+						state.placeholderNode.slideUp( 150, function()
 						{
-							var placeholderParent = placeholderNode.parent();
-							var placeholderParentLi = ( ! placeholderParent.is( state.rootEl.el ) ) ? placeholderParent.closest( 'li' ) : null;
+							state.placeholderParentLi = ( ! state.placeholderNode.parent().is( state.rootEl.el ) ) ? state.placeholderNode.parent().closest( 'li' ) : null;
 
-							placeholderNode.remove();
+							state.placeholderNode.remove();
 							tidyEmptyLists();
 
 							setting.onChange( cEl.el );
@@ -419,7 +419,7 @@
 							if( setting.maxLevels !== false )  // Has to be after placeholder remove.
 							{
 								recountLevels( cEl.el );
-								if( placeholderParentLi ) recountLevels( placeholderParentLi );
+								if( state.placeholderParentLi ) recountLevels( state.placeholderParentLi );
 							}
 						});
 					}
@@ -664,14 +664,9 @@
 			if ( e.pageX - oEl.offset().left < setting.insertZone )
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.prev( '#s-l-placeholder' ).length )
+				if ( (oEl.prev( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
-					return;
-				}
-				if( setting.maxLevels !== false && ! checkMaxLevels( false ) )
-				{
-					hint.css('display', 'none');
 					return;
 				}
 				oEl.before( hint );
@@ -682,14 +677,9 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).first();
 
-				if ( list.children().first().is( '#s-l-placeholder' ) )
+				if ( (list.children().first().is( '#s-l-placeholder' )) || ( setting.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
-					return;
-				}
-				if( setting.maxLevels !== false && ! checkMaxLevels( true ) )
-				{
-					hint.css('display', 'none');
 					return;
 				}
 
@@ -737,14 +727,9 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).first();
 
-				if ( list.children().first().is( '#s-l-placeholder' ) )
+				if ( (list.children().first().is( '#s-l-placeholder' )) || (setting.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
-					return;
-				}
-				if( setting.maxLevels !== false && ! checkMaxLevels( true ) )
-				{
-					hint.css('display', 'none');
 					return;
 				}
 
@@ -768,14 +753,9 @@
 			else
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.prev( '#s-l-placeholder' ).length )
+				if ( (oEl.prev( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
-					return;
-				}
-				if( setting.maxLevels !== false && ! checkMaxLevels( false ) )
-				{
-					hint.css('display', 'none');
 					return;
 				}
 				oEl.before( hint );
@@ -805,14 +785,9 @@
 			if ( e.pageX - oEl.offset().left < setting.insertZone )
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.next( '#s-l-placeholder' ).length )
+				if ( (oEl.next( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
-					return;
-				}
-				if( setting.maxLevels !== false && ! checkMaxLevels( false ) )
-				{
-					hint.css('display', 'none');
 					return;
 				}
 				oEl.after( hint );
@@ -823,14 +798,9 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
 
-				if ( list.children().last().is( '#s-l-placeholder' ) )
+				if ( (list.children().last().is( '#s-l-placeholder' )) || (setting.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
-					return;
-				}
-				if( setting.maxLevels !== false && ! checkMaxLevels( true ) )
-				{
-					hint.css('display', 'none');
 					return;
 				}
 
@@ -878,14 +848,9 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
 
-				if ( list.children().last().is( '#s-l-placeholder' ) )
+				if ( (list.children().last().is( '#s-l-placeholder' )) || (setting.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
-					return;
-				}
-				if( setting.maxLevels !== false && ! checkMaxLevels( true ) )
-				{
-					hint.css('display', 'none');
 					return;
 				}
 
@@ -910,14 +875,9 @@
 			else
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.next( '#s-l-placeholder' ).length )
+				if ( (oEl.next( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
-					return;
-				}
-				if( setting.maxLevels !== false && ! checkMaxLevels( false ) )
-				{
-					hint.css('display', 'none');
 					return;
 				}
 				oEl.after( hint );
