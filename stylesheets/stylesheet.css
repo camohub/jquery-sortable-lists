@@ -268,7 +268,7 @@ ul, li {
 
 ul, #sTree2, #sTreePlus { padding:0; background-color:#151515; }
 
-#sTree2 li, #sTreePlus li, ul#sortableListsBase li {
+#sTree2 li, #sTreePlus li, ul#s-l-base li {
 	padding-left:50px;
 	margin:5px; border:1px solid #3f3f3f;
 	background-color:#3f3f3f;

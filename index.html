@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-<script src="http://code.jquery.com/jquery-git1.min.js"></script>
+<script src="https://code.jquery.com/jquery-git1.min.js"></script>
 <script src="jquery-sortable-lists.js"></script>
 <script type="text/javascript">
 $(function()
@@ -148,7 +148,7 @@ $(function()
 				<li id="item_a" data-module="a">
 					<div>Item a</div>
 				</li>
-				<li class="sortableListsOpen" id="item_b" data-module="b">
+				<li class="s-l-open" id="item_b" data-module="b">
 					<div>Item b</div>
 					<ul class="">
 						<li id="item_b1" data-module="b">
@@ -249,7 +249,7 @@ $(function()
 </pre>
 		<p>you have to add this selector to css file.</p>
 <pre>
-<code>#myList li, #sortableListsBase li { background-color:#ddf, padding-left:50px }</code>
+<code>#myList li, #s-l-base li { background-color:#ddf, padding-left:50px }</code>
 </pre>
 		<p>
             Every dragged item is appended to the base element. It ensures smooth dragging and scrolling.
@@ -285,7 +285,7 @@ $(function()
 <code><span class="c4">// Do not use this to format lists</span>
 #myList li ul li { ... }
 <span class="c4">// cause baseElement makes only one level relation</span>
-#sortableListsBase li { ... }</code>
+#s-l-base li { ... }</code>
 </pre>
 
 
@@ -293,8 +293,8 @@ $(function()
 		<p>
             Is dragged element of course. You can have a little problem with the formatting this element. It caused the fact that dragged element
 			is the child of the base element during the dragging. Look at the <a href="#cssPattern" id="toCssPatternAnch">Css pattern</a> how to solve it.
-			Current element has class - sortableListsCurrent which helps you to format the item. You can do it also through the options object by
-			currElClass or currElCss properties. Note that classes sortableListsCurrent and currElClass will be removed after the dragging but currElCss not.
+			Current element has class - s-l-current which helps you to format the item. You can do it also through the options object by
+			currElClass or currElCss properties. Note that classes s-l-current and currElClass will be removed after the dragging but currElCss not.
 		</p>
 <pre>
 <code>var options = {
@@ -310,7 +310,7 @@ $(function()
 		<p>
             Sortable lists plugin generates this li element at the background.
             Element holds the default position of dragged item while dragging.
-            Element has id - sortableListsPlaceholder. You can also set the css via placeholderClass or placeholderCss in options object.
+            Element has id - s-l-placeholder. You can also set the css via placeholderClass or placeholderCss in options object.
         </p>
 <pre>
 <code>var options = {
@@ -459,11 +459,11 @@ $(function()
 
 			<p>
                 Default behaviour(if opener is active) is to close all nested lists on page load.
-				If you want to show some nested lists you have to add <span class="c1">"sortableListsOpen"</span> class to the parent li element of nested list.
+				If you want to show some nested lists you have to add <span class="c1">"s-l-open"</span> class to the parent li element of nested list.
 			</p>
 <pre>
 <code>&lt;ul&gt;
-   &lt;li class="sortableListsOpen"&gt;
+   &lt;li class="s-l-open"&gt;
       &lt;div&gt;Content div&lt;/div&gt;
       &lt;ul&gt;
          &lt;li&gt;&lt;div&gt;This nested list&lt;/div&gt;&lt;/li&gt;
