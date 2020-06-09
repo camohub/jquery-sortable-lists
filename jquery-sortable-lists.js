@@ -53,6 +53,7 @@
 					},
 					openerClass: ''
 				},
+				maxLevels: false,
 				listSelector: 'ul',
 				listsClass: '', // Used for hintWrapper and baseElement
 				listsCss: {},
@@ -68,34 +69,34 @@
 
 			setting = $.extend( true, {}, defaults, options ),
 
-		// base element from which is counted position of draged element
+			// base element from which is counted position of draged element
 			base = $( '<' + setting.listSelector + ' />' )
 				.prependTo( jQBody )
 				.attr( 'id', 'sortableListsBase' )
 				.css( setting.baseCss )
 				.addClass( setting.listsClass + ' ' + setting.baseClass ),
 
-		// placeholder != state.placeholderNode
-		// placeholder is document fragment and state.placeholderNode is document node
+			// placeholder != state.placeholderNode
+			// placeholder is document fragment and state.placeholderNode is document node
 			placeholder = $( '<li />' )
 				.attr( 'id', 'sortableListsPlaceholder' )
 				.css( setting.placeholderCss )
 				.addClass( setting.placeholderClass ),
 
-		// hint is document fragment
+			// hint is document fragment
 			hint = $( '<li />' )
 				.attr( 'id', 'sortableListsHint' )
 				.css( setting.hintCss )
 				.addClass( setting.hintClass ),
 
-		// Is document fragment used as wrapper if hint is inserted to the empty li
+			// Is document fragment used as wrapper if hint is inserted to the empty li
 			hintWrapper = $( '<' + setting.listSelector + ' />' )
 				.attr( 'id', 'sortableListsHintWrapper' )
 				.addClass( setting.listsClass + ' ' + setting.hintWrapperClass )
 				.css( setting.listsCss )
 				.css( setting.hintWrapperCss ),
 
-		// Is +/- ikon to open/close nested lists
+			// Is +/- ikon to open/close nested lists
 			opener = $( '<span />' )
 				.addClass( 'sortableListsOpener ' + setting.opener.openerClass )
 				.css( setting.opener.openerCss )
@@ -134,7 +135,11 @@
 			isDragged: false,
 			isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
 			oEl: null, // overElement is element which returns elementFromPoint() method
-			rootEl: null,
+			rootEl: {
+				el: $( this ),
+				offset: null,
+				rootElClass: $( this ).attr( 'class' )
+			},
 			cEl: null, // currentElement is currently dragged element
 			upScroll: false,
 			downScroll: false,
@@ -173,6 +178,19 @@
 			} );
 		}
 
+		if( setting.maxLevels !== false )
+		{
+			if( isNaN( setting.maxLevels ) ) throw 'JQuery-sortable-lists maxLevels values is not a number';
+
+			$( this ).find( 'li' ).each( function()
+			{
+				var insideLevs = getInsideLevels( $(this) );
+				var upperLevs = getUpperLevels( $(this) );
+				setInsideLevels( $(this), insideLevs );
+				setUpperLevels( $(this), upperLevs );
+			});
+		}
+
 		// Return this ensures chaining
 		return this.on( 'mousedown', function( e )
 			{
@@ -188,7 +206,7 @@
 					rEl = $( this );
 
 				// Check if el is not empty
-				if ( el[ 0 ] )
+				if ( el[0] )
 				{
 					setting.onDragStart( e, el );
 					startDrag( e, el, rEl );
@@ -312,9 +330,9 @@
 				// Script needs to know old oEl
 				state.oElOld = state.oEl;
 
-				cEl.el[ 0 ].style.visibility = 'hidden';  // This is important for the next row
+				cEl.el[0].style.visibility = 'hidden';  // This is important for the next row
 				state.oEl = oEl = elFromPoint( e.pageX, e.pageY );
-				cEl.el[ 0 ].style.visibility = 'visible';
+				cEl.el[0].style.visibility = 'visible';
 
 				showHint( e, state );
 
@@ -329,9 +347,10 @@
 		 */
 		function endDrag( e )
 		{
+			console.log(1);
 			var cEl = state.cEl,
 				hintNode = $( '#sortableListsHint', state.rootEl.el ),
-				hintStyle = hint[ 0 ].style,
+				hintStyle = hint[0].style,
 				targetEl = null, // hintNode/placeholderNode
 				isHintTarget = false, // if cEl will be placed to the hintNode
 				hintWrapperNode = $( '#sortableListsHintWrapper' );
@@ -354,10 +373,10 @@
 				{
 					tidyCurrEl( cEl );
 
-					targetEl.after( cEl.el[ 0 ] );
-					targetEl[ 0 ].style.display = 'none';
+					targetEl.after( cEl.el[0] );
+					targetEl[0].style.display = 'none';
 					hintStyle.display = 'none';
-					// This have to be document node, not hint as a part of documentFragment.
+					// This has to be document node, not hint as a part of documentFragment.
 					hintNode.remove();
 
 					hintWrapperNode
@@ -369,17 +388,28 @@
 						hintWrapperNode.prev( 'div' ).append( opener.clone( true ) );
 					}
 
+					var placeholderNode = state.placeholderNode;
 					// Directly removed placeholder looks bad. It jumps up if the hint is below.
 					if ( isHintTarget )
 					{
-						state.placeholderNode.slideUp( 150, function()
+						placeholderNode.slideUp( 150, function()
 						{
-							state.placeholderNode.remove();
+							var placeholderParent = placeholderNode.parent();
+							var placeholderParentLi = ( ! placeholderParent.is( state.rootEl.el ) ) ? placeholderParent.closest( 'li' ) : null;
+
+							placeholderNode.remove();
 							tidyEmptyLists();
+
 							setting.onChange( cEl.el );
 							setting.complete( cEl.el ); // Have to be here cause is necessary to remove placeholder before complete call.
 							state.isDragged = false;
-						} );
+
+							if( setting.maxLevels !== false )  // Has to be after placeholder remove.
+							{
+								recountLevels( cEl.el );
+								if( placeholderParentLi ) recountLevels( placeholderParentLi );
+							}
+						});
 					}
 					else
 					{
@@ -396,7 +426,6 @@
 			state.doc
 				.unbind( "mousemove", dragging )
 				.unbind( "mouseup", endDrag );
-
 
 		}
 
@@ -547,7 +576,7 @@
 			else if ( ! el.is( 'li' ) ) // el is ul or div or something else in li elem.
 			{
 				el = el.closest( 'li' );
-				return el[ 0 ] ? el : null;
+				return el[0] ? el : null;
 			}
 			else if ( el.is( 'li' ) ) // el is most wanted li
 			{
@@ -621,6 +650,11 @@
 					hint.css( 'display', 'none' );
 					return;
 				}
+				if( setting.maxLevels !== false && ! checkMaxLevels( false ) )
+				{
+					hint.css('display', 'none');
+					return;
+				}
 				oEl.before( hint );
 			}
 			// Hint inside the oEl
@@ -632,6 +666,11 @@
 				if ( list.children().first().is( '#sortableListsPlaceholder' ) )
 				{
 					hint.css( 'display', 'none' );
+					return;
+				}
+				if( setting.maxLevels !== false && ! checkMaxLevels( true ) )
+				{
+					hint.css('display', 'none');
 					return;
 				}
 
@@ -684,6 +723,11 @@
 					hint.css( 'display', 'none' );
 					return;
 				}
+				if( setting.maxLevels !== false && ! checkMaxLevels( true ) )
+				{
+					hint.css('display', 'none');
+					return;
+				}
 
 				// Find out if is necessary to wrap hint by hintWrapper
 				if ( ! list.length )
@@ -708,6 +752,11 @@
 				if ( oEl.prev( '#sortableListsPlaceholder' ).length )
 				{
 					hint.css( 'display', 'none' );
+					return;
+				}
+				if( setting.maxLevels !== false && ! checkMaxLevels( false ) )
+				{
+					hint.css('display', 'none');
 					return;
 				}
 				oEl.before( hint );
@@ -742,6 +791,11 @@
 					hint.css( 'display', 'none' );
 					return;
 				}
+				if( setting.maxLevels !== false && ! checkMaxLevels( false ) )
+				{
+					hint.css('display', 'none');
+					return;
+				}
 				oEl.after( hint );
 			}
 			// Hint inside the oEl
@@ -753,6 +807,11 @@
 				if ( list.children().last().is( '#sortableListsPlaceholder' ) )
 				{
 					hint.css( 'display', 'none' );
+					return;
+				}
+				if( setting.maxLevels !== false && ! checkMaxLevels( true ) )
+				{
+					hint.css('display', 'none');
 					return;
 				}
 
@@ -805,6 +864,11 @@
 					hint.css( 'display', 'none' );
 					return;
 				}
+				if( setting.maxLevels !== false && ! checkMaxLevels( true ) )
+				{
+					hint.css('display', 'none');
+					return;
+				}
 
 				// Find out if is necessary to wrap hint by hintWrapper
 				if ( list.length )
@@ -830,6 +894,11 @@
 				if ( oEl.next( '#sortableListsPlaceholder' ).length )
 				{
 					hint.css( 'display', 'none' );
+					return;
+				}
+				if( setting.maxLevels !== false && ! checkMaxLevels( false ) )
+				{
+					hint.css('display', 'none');
 					return;
 				}
 				oEl.after( hint );
@@ -897,6 +966,84 @@
 		}
 
 		/////// Enf of open/close handlers //////////////////////////////////////////////
+		/////// Levels handlers /////////////////////////////////////////////////////////
+
+		function getInsideLevels( li )
+		{
+			var levs = 0;
+
+			var list = li.children( setting.listSelector );
+
+			if( list.length )
+			{
+				levs++;
+				var maxNestedLevs = 0;
+				var currLiLevs = 0;
+				list.find( 'li' ).each( function( i )
+				{
+					currLiLevs = getInsideLevels($(this));
+					if( maxNestedLevs < currLiLevs ) maxNestedLevs = currLiLevs;
+				});
+
+				if( maxNestedLevs ) levs = levs + maxNestedLevs;
+			}
+
+			return levs;
+		}
+
+		function setInsideLevels( li, levs )
+		{
+			li.data('insideLevels', levs);
+		}
+
+		function getUpperLevels( li )
+		{
+			var levs = 0;
+			var rootEl = state.rootEl.el;
+			var parentList = li.closest( setting.listSelector );
+
+			while( ! parentList.is( rootEl ) )
+			{
+				levs++;
+				parentList = parentList.parent().closest( setting.listSelector );
+			}
+
+			return levs;
+		}
+
+		function setUpperLevels( li, levs )
+		{
+			li.data('upperLevels', levs);
+		}
+
+		function checkMaxLevels( inside )
+		{
+			var insideLevs = state.cEl.el.data( 'insideLevels' );
+			var upperLevs = state.oEl.data( 'upperLevels' );
+
+			return setting.maxLevels > upperLevs + insideLevs + (inside ? 1 : 0);
+		}
+
+		function recountLevels( li )
+		{
+			var rootEl = state.rootEl.el;
+			var parentList = li.parent( setting.listSelector );
+
+			setInsideLevels( li, getInsideLevels( li ) );
+			setUpperLevels( li, getUpperLevels( li ) );
+
+			var i = 0;
+			while( ! parentList.is( rootEl ) && i < 50 )
+			{
+				var li = parentList.parent( 'li' );
+				setInsideLevels( li, getInsideLevels( li ) ); // No need to set upper levels
+				parentList = li.parent( setting.listSelector );
+				i++;
+			}
+		}
+
+		/////// End of levels handlers //////////////////////////////////////////////////
+		/////// Tidy handlers ///////////////////////////////////////////////////////////
 
 		/**
 		 * @desc Places the currEl to the target place
@@ -904,7 +1051,7 @@
 		 */
 		function tidyCurrEl( cEl )
 		{
-			var cElStyle = cEl.el[ 0 ].style;
+			var cElStyle = cEl.el[0].style;
 
 			cEl.el.removeClass( setting.currElClass + ' ' + 'sortableListsCurrent' );
 			cElStyle.top = '0';
@@ -1025,8 +1172,8 @@
 				throw 'Previous item in console.log has no id or id is not in required format xx_yy, xx-yy or xx=yy. It is necessary to create valid string.';
 			}
 
-			arr.push( matches[ 1 ] + '[' + matches[ 2 ] + ']=' + parentId );
-			$( this ).children( 'ul,ol' ).sortableListsToString( arr, matches[ 2 ] );
+			arr.push( matches[1] + '[' + matches[2] + ']=' + parentId );
+			$( this ).children( 'ul,ol' ).sortableListsToString( arr, matches[2] );
 
 		} );
 
