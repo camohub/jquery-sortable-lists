@@ -53,6 +53,7 @@
 					},
 					openerClass: ''
 				},
+				maxLevels: false,
 				listSelector: 'ul',
 				listsClass: '', // Used for hintWrapper and baseElement
 				listsCss: {},
@@ -68,42 +69,42 @@
 
 			setting = $.extend( true, {}, defaults, options ),
 
-		// base element from which is counted position of draged element
+			// base element from which is counted position of draged element
 			base = $( '<' + setting.listSelector + ' />' )
 				.prependTo( jQBody )
-				.attr( 'id', 'sortableListsBase' )
+				.attr( 'id', 's-l-base' )
 				.css( setting.baseCss )
 				.addClass( setting.listsClass + ' ' + setting.baseClass ),
 
-		// placeholder != state.placeholderNode
-		// placeholder is document fragment and state.placeholderNode is document node
+			// placeholder != state.placeholderNode
+			// placeholder is document fragment and state.placeholderNode is document node
 			placeholder = $( '<li />' )
-				.attr( 'id', 'sortableListsPlaceholder' )
+				.attr( 'id', 's-l-placeholder' )
 				.css( setting.placeholderCss )
 				.addClass( setting.placeholderClass ),
 
-		// hint is document fragment
+			// hint is document fragment
 			hint = $( '<li />' )
-				.attr( 'id', 'sortableListsHint' )
+				.attr( 'id', 's-l-hint' )
 				.css( setting.hintCss )
 				.addClass( setting.hintClass ),
 
-		// Is document fragment used as wrapper if hint is inserted to the empty li
+			// Is document fragment used as wrapper if hint is inserted to the empty li
 			hintWrapper = $( '<' + setting.listSelector + ' />' )
-				.attr( 'id', 'sortableListsHintWrapper' )
+				.attr( 'id', 's-l-hint-wrapper' )
 				.addClass( setting.listsClass + ' ' + setting.hintWrapperClass )
 				.css( setting.listsCss )
 				.css( setting.hintWrapperCss ),
 
-		// Is +/- ikon to open/close nested lists
+			// Is +/- ikon to open/close nested lists
 			opener = $( '<span />' )
-				.addClass( 'sortableListsOpener ' + setting.opener.openerClass )
+				.addClass( 's-l-opener ' + setting.opener.openerClass )
 				.css( setting.opener.openerCss )
 				.on( 'mousedown', function( e )
 				{
 					var li = $( this ).closest( 'li' );
 
-					if ( li.hasClass( 'sortableListsClosed' ) )
+					if ( li.hasClass( 's-l-closed' ) )
 					{
 						open( li );
 					}
@@ -134,8 +135,13 @@
 			isDragged: false,
 			isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
 			oEl: null, // overElement is element which returns elementFromPoint() method
-			rootEl: null,
+			rootEl: {
+				el: $( this ),
+				offset: null,
+				rootElClass: $( this ).attr( 'class' )
+			},
 			cEl: null, // currentElement is currently dragged element
+			placeholderParentLi: null,
 			upScroll: false,
 			downScroll: false,
 			pX: 0,
@@ -161,7 +167,7 @@
 				{
 					opener.clone( true ).prependTo( li.children( 'div' ).first() );
 
-					if ( ! li.hasClass( 'sortableListsOpen' ) )
+					if ( ! li.hasClass( 's-l-open' ) )
 					{
 						close( li );
 					}
@@ -171,6 +177,19 @@
 					}
 				}
 			} );
+		}
+
+		if( setting.maxLevels !== false )
+		{
+			if( isNaN( setting.maxLevels ) ) throw 'JQuery-sortable-lists maxLevels values is not a number';
+
+			$( this ).find( 'li' ).each( function()
+			{
+				var insideLevs = getInsideLevels( $(this) );
+				var upperLevs = getUpperLevels( $(this) );
+				setInsideLevels( $(this), insideLevs );
+				setUpperLevels( $(this), upperLevs );
+			});
 		}
 
 		// Return this ensures chaining
@@ -188,7 +207,7 @@
 					rEl = $( this );
 
 				// Check if el is not empty
-				if ( el[ 0 ] )
+				if ( el[0] )
 				{
 					setting.onDragStart( e, el );
 					startDrag( e, el, rEl );
@@ -226,11 +245,11 @@
 			};
 
 			state.cEl.xyOffsetDiff = { X: e.pageX - state.cEl.offset.left, Y: e.pageY - state.cEl.offset.top };
-			state.cEl.el.addClass( 'sortableListsCurrent' + ' ' + setting.currElClass );
+			state.cEl.el.addClass( 's-l-current ' + setting.currElClass );
 
 			el.before( placeholder );  // Now document has node placeholder
 
-			var placeholderNode = state.placeholderNode = $( '#sortableListsPlaceholder' );  // jQuery object && document node
+			var placeholderNode = state.placeholderNode = $( '#s-l-placeholder' );  // jQuery object && document node
 
 			el.css( {
 				'width': el.width(),
@@ -249,7 +268,6 @@
 			state.doc
 				.on( 'mousemove', dragging )
 				.on( 'mouseup', endDrag );
-
 		}
 
 		/**
@@ -312,14 +330,13 @@
 				// Script needs to know old oEl
 				state.oElOld = state.oEl;
 
-				cEl.el[ 0 ].style.visibility = 'hidden';  // This is important for the next row
+				cEl.el[0].style.visibility = 'hidden';  // This is important for the next row
 				state.oEl = oEl = elFromPoint( e.pageX, e.pageY );
-				cEl.el[ 0 ].style.visibility = 'visible';
+				cEl.el[0].style.visibility = 'visible';
 
 				showHint( e, state );
 
 				setCElPos( e, state );
-
 			}
 		}
 
@@ -330,11 +347,11 @@
 		function endDrag( e )
 		{
 			var cEl = state.cEl,
-				hintNode = $( '#sortableListsHint', state.rootEl.el ),
-				hintStyle = hint[ 0 ].style,
+				hintNode = $( '#s-l-hint', state.rootEl.el ),
+				hintStyle = hint[0].style,
 				targetEl = null, // hintNode/placeholderNode
 				isHintTarget = false, // if cEl will be placed to the hintNode
-				hintWrapperNode = $( '#sortableListsHintWrapper' );
+				hintWrapperNode = $( '#s-l-hint-wrapper' );
 
 			if ( hintStyle.display == 'block' && hintNode.length && state.isAllowed )
 			{
@@ -354,10 +371,10 @@
 				{
 					tidyCurrEl( cEl );
 
-					targetEl.after( cEl.el[ 0 ] );
-					targetEl[ 0 ].style.display = 'none';
+					targetEl.after( cEl.el[0] );
+					targetEl[0].style.display = 'none';
 					hintStyle.display = 'none';
-					// This have to be document node, not hint as a part of documentFragment.
+					// This has to be document node, not hint as a part of documentFragment.
 					hintNode.remove();
 
 					hintWrapperNode
@@ -372,14 +389,24 @@
 					// Directly removed placeholder looks bad. It jumps up if the hint is below.
 					if ( isHintTarget )
 					{
+						// !!! Do not use local var cause it seems it creates a closure variables lakes in Chrome !!!
 						state.placeholderNode.slideUp( 150, function()
 						{
+							state.placeholderParentLi = ( ! state.placeholderNode.parent().is( state.rootEl.el ) ) ? state.placeholderNode.parent().closest( 'li' ) : null;
+
 							state.placeholderNode.remove();
 							tidyEmptyLists();
+
 							setting.onChange( cEl.el );
 							setting.complete( cEl.el ); // Have to be here cause is necessary to remove placeholder before complete call.
 							state.isDragged = false;
-						} );
+
+							if( setting.maxLevels !== false )  // Has to be after placeholder remove.
+							{
+								recountLevels( cEl.el );
+								if( state.placeholderParentLi ) recountLevels( state.placeholderParentLi );
+							}
+						});
 					}
 					else
 					{
@@ -396,8 +423,6 @@
 			state.doc
 				.unbind( "mousemove", dragging )
 				.unbind( "mouseup", endDrag );
-
-
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -419,7 +444,6 @@
 			{
 				state.doc.trigger( 'mousemove' );
 			}, 50 );
-
 		}
 
 		/**
@@ -435,7 +459,6 @@
 			{
 				state.doc.trigger( 'mousemove' );
 			}, 50 );
-
 		}
 
 		/**
@@ -462,6 +485,7 @@
 			e.pageX = state.pX;
 			e.clientY = state.cY;
 			e.clientX = state.cX;
+
 		}
 
 		/**
@@ -478,6 +502,7 @@
 		}
 
 		/////// End of Scroll handlers //////////////////////////////////////////////////////////////
+		/////// Current element handlers //////////////////////////////////////////////////////////////
 
 		/**
 		 * @desc Sets the position of dragged element
@@ -492,8 +517,7 @@
 			cEl.el.css( {
 				'top': e.pageY - cEl.xyOffsetDiff.Y - cEl.mT,
 				'left': e.pageX - cEl.xyOffsetDiff.X - cEl.mL
-			} )
-
+			} );
 		}
 
 		/**
@@ -539,22 +563,22 @@
 			{
 				return null;
 			}
-			else if ( el.is( '#sortableListsPlaceholder' ) || el.is( '#sortableListsHint' ) ) // el is #placeholder/#hint
+			else if ( el.is( '#s-l-placeholder' ) || el.is( '#s-l-hint' ) ) // el is #placeholder/#hint
 			{
 				return null;
 			}
 			else if ( ! el.is( 'li' ) ) // el is ul or div or something else in li elem.
 			{
 				el = el.closest( 'li' );
-				return el[ 0 ] ? el : null;
+				return el[0] ? el : null;
 			}
 			else if ( el.is( 'li' ) ) // el is most wanted li
 			{
 				return el;
 			}
-
 		}
 
+		//////// End of current element handlers //////////////////////////////////////////////////////
 		//////// Show hint handlers //////////////////////////////////////////////////////
 
 		/**
@@ -605,16 +629,16 @@
 		 */
 		function showOnTop( e, oEl )
 		{
-			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
+			if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
 			{
-				hint.unwrap();  // If hint is wrapped by ul/ol #sortableListsHintWrapper
+				hint.unwrap();  // If hint is wrapped by ul/ol #s-l-hint-wrapper
 			}
 
 			// Hint outside the oEl
 			if ( e.pageX - oEl.offset().left < setting.insertZone )
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.prev( '#sortableListsPlaceholder' ).length )
+				if ( (oEl.prev( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -627,7 +651,7 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).first();
 
-				if ( list.children().first().is( '#sortableListsPlaceholder' ) )
+				if ( (list.children().first().is( '#s-l-placeholder' )) || ( setting.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -666,9 +690,9 @@
 		 */
 		function showOnTopPlus( e, oEl, outside )
 		{
-			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
+			if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
 			{
-				hint.unwrap();  // If hint is wrapped by ul/ol #sortableListsHintWrapper
+				hint.unwrap();  // If hint is wrapped by ul/ol #s-l-hint-wrapper
 			}
 
 			// Hint inside the oEl
@@ -677,7 +701,7 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).first();
 
-				if ( list.children().first().is( '#sortableListsPlaceholder' ) )
+				if ( (list.children().first().is( '#s-l-placeholder' )) || (setting.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -703,7 +727,7 @@
 			else
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.prev( '#sortableListsPlaceholder' ).length )
+				if ( (oEl.prev( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -726,16 +750,16 @@
 		 */
 		function showOnBottom( e, oEl )
 		{
-			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
+			if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
 			{
-				hint.unwrap();  // If hint is wrapped by ul/ol sortableListsHintWrapper
+				hint.unwrap();  // If hint is wrapped by ul/ol s-l-hint-wrapper
 			}
 
 			// Hint outside the oEl
 			if ( e.pageX - oEl.offset().left < setting.insertZone )
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.next( '#sortableListsPlaceholder' ).length )
+				if ( (oEl.next( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -748,7 +772,7 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
 
-				if ( list.children().last().is( '#sortableListsPlaceholder' ) )
+				if ( (list.children().last().is( '#s-l-placeholder' )) || (setting.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -787,9 +811,9 @@
 		 */
 		function showOnBottomPlus( e, oEl, outside )
 		{
-			if ( $( '#sortableListsHintWrapper', state.rootEl.el ).length )
+			if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
 			{
-				hint.unwrap();  // If hint is wrapped by ul/ol sortableListsHintWrapper
+				hint.unwrap();  // If hint is wrapped by ul/ol s-l-hint-wrapper
 			}
 
 			// Hint inside the oEl
@@ -798,7 +822,7 @@
 				var children = oEl.children(),
 					list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
 
-				if ( list.children().last().is( '#sortableListsPlaceholder' ) )
+				if ( (list.children().last().is( '#s-l-placeholder' )) || (setting.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -825,7 +849,7 @@
 			else
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( oEl.next( '#sortableListsPlaceholder' ).length )
+				if ( (oEl.next( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -849,10 +873,10 @@
 		 */
 		function open( li )
 		{
-			li.removeClass( 'sortableListsClosed' ).addClass( 'sortableListsOpen' );
+			li.removeClass( 's-l-closed' ).addClass( 's-l-open' );
 			li.children( setting.listSelector ).css( 'display', 'block' );
 
-			var opener = li.children( 'div' ).children( '.sortableListsOpener' ).first();
+			var opener = li.children( 'div' ).children( '.s-l-opener' ).first();
 
 			if ( setting.opener.as == 'html' )
 			{
@@ -874,10 +898,10 @@
 		 */
 		function close( li )
 		{
-			li.removeClass( 'sortableListsOpen' ).addClass( 'sortableListsClosed' );
+			li.removeClass( 's-l-open' ).addClass( 's-l-closed' );
 			li.children( setting.listSelector ).css( 'display', 'none' );
 
-			var opener = li.children( 'div' ).children( '.sortableListsOpener' ).first();
+			var opener = li.children( 'div' ).children( '.s-l-opener' ).first();
 
 			if ( setting.opener.as == 'html' )
 			{
@@ -895,6 +919,91 @@
 		}
 
 		/////// Enf of open/close handlers //////////////////////////////////////////////
+		/////// Levels handlers /////////////////////////////////////////////////////////
+
+		function getInsideLevels( li )
+		{
+			var levs = 0;
+
+			var list = li.children( setting.listSelector );
+
+			if( list.length )
+			{
+				levs++;
+				var maxNestedLevs = 0;
+				var currLiLevs = 0;
+				list.find( 'li' ).each( function( i )
+				{
+					currLiLevs = getInsideLevels($(this));
+					if( maxNestedLevs < currLiLevs ) maxNestedLevs = currLiLevs;
+				});
+
+				if( maxNestedLevs ) levs = levs + maxNestedLevs;
+			}
+
+			return levs;
+		}
+
+		function setInsideLevels( li, levs )
+		{
+			li.data('insideLevels', levs);
+		}
+
+		function getUpperLevels( li )
+		{
+			var levs = 0;
+			var rootEl = state.rootEl.el;
+			var parentList = li.closest( setting.listSelector );
+
+			while( ! parentList.is( rootEl ) )
+			{
+				levs++;
+				parentList = parentList.parent().closest( setting.listSelector );
+			}
+
+			return levs;
+		}
+
+		function setUpperLevels( li, levs )
+		{
+			li.data('upperLevels', levs);
+		}
+
+		function checkMaxLevels( inside )
+		{
+			var insideLevs = state.cEl.el.data( 'insideLevels' );
+			var upperLevs = state.oEl.data( 'upperLevels' );
+
+			return setting.maxLevels > upperLevs + insideLevs + (inside ? 1 : 0);
+		}
+
+		function recountLevels( li )
+		{
+			var rootEl = state.rootEl.el;
+			var parentList = li.parent( setting.listSelector );
+
+			setInsideLevels( li, getInsideLevels( li ) );
+			setUpperLevels( li, getUpperLevels( li ) );
+
+			var i = 0;
+			li.find( 'li' ).each( function()
+			{
+				var li = $(this);
+				setInsideLevels( li, getInsideLevels( li ) );
+				setUpperLevels( li, getUpperLevels( li ) );
+			});
+
+			while( ! parentList.is( rootEl ) && i < 50 )
+			{
+				var li = parentList.parent( 'li' );
+				setInsideLevels( li, getInsideLevels( li ) ); // No need to set upper levels
+				parentList = li.parent( setting.listSelector );
+				i++;
+			}
+		}
+
+		/////// End of levels handlers //////////////////////////////////////////////////
+		/////// Tidy handlers ///////////////////////////////////////////////////////////
 
 		/**
 		 * @desc Places the currEl to the target place
@@ -902,9 +1011,9 @@
 		 */
 		function tidyCurrEl( cEl )
 		{
-			var cElStyle = cEl.el[ 0 ].style;
+			var cElStyle = cEl.el[0].style;
 
-			cEl.el.removeClass( setting.currElClass + ' ' + 'sortableListsCurrent' );
+			cEl.el.removeClass( setting.currElClass + ' s-l-current' );
 			cElStyle.top = '0';
 			cElStyle.left = '0';
 			cElStyle.position = 'relative';
@@ -917,13 +1026,13 @@
 		 */
 		function tidyEmptyLists()
 		{
-			// Remove every empty ul/ol from root and also with .sortableListsOpener
+			// Remove every empty ul/ol from root and also with .s-l-opener
 			// hintWrapper can not be removed before the hint
 			$( setting.listSelector, state.rootEl.el ).each( function( i )
 				{
 					if ( ! $( this ).children().length )
 					{
-						$( this ).prev( 'div' ).children( '.sortableListsOpener' ).first().remove();
+						$( this ).prev( 'div' ).children( '.s-l-opener' ).first().remove();
 						$( this ).remove();
 					}
 				}
@@ -1023,8 +1132,8 @@
 				throw 'Previous item in console.log has no id or id is not in required format xx_yy, xx-yy or xx=yy. It is necessary to create valid string.';
 			}
 
-			arr.push( matches[ 1 ] + '[' + matches[ 2 ] + ']=' + parentId );
-			$( this ).children( 'ul,ol' ).sortableListsToString( arr, matches[ 2 ] );
+			arr.push( matches[1] + '[' + matches[2] + ']=' + parentId );
+			$( this ).children( 'ul,ol' ).sortableListsToString( arr, matches[2] );
 
 		} );
 
@@ -1033,5 +1142,3 @@
 	};
 
 }( jQuery ));
-
-
