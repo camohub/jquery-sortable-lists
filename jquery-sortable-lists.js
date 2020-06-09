@@ -126,8 +126,7 @@
 		}
 		else
 		{
-			opener.css( 'background-image', 'url(' + setting.opener.close + ')' );
-			console.error( 'jQuerySortableLists opener as background image is deprecated. In version 2.0.0 it will be removed. Use html instead please.' );
+			console.error( 'jQuerySortableLists opener as background image has been removed with release 2.0.0. Use html instead please.' );
 		}
 
 		// Container with all actual elements and parameters
@@ -886,10 +885,6 @@
 			{
 				opener.addClass( setting.opener.close ).removeClass( setting.opener.open );
 			}
-			else
-			{
-				opener.css( 'background-image', 'url(' + setting.opener.close + ')' );
-			}
 		}
 
 		/**
@@ -910,10 +905,6 @@
 			else if ( setting.opener.as == 'class' )
 			{
 				opener.addClass( setting.opener.open ).removeClass( setting.opener.close );
-			}
-			else
-			{
-				opener.css( 'background-image', 'url(' + setting.opener.open + ')' );
 			}
 
 		}
