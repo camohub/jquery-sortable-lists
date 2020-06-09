@@ -448,8 +448,8 @@ $(function()
 			<p>
                 This option enables you to hide/show nested lists. Plugin prepends span element to the content div of items with nested lists.
 				You can set this element through the opener object of options.
-				At first you must <span class="c1">activate</span> the open/close function.
-                Next step is setting of <span class="c1">open</span> and <span class="c1">close</span> property as html or css class or background-image url(deprecated) of the span.
+				At first you have to <span class="c1">activate</span> the open/close function.
+                Next step is setting of <span class="c1">open</span> and <span class="c1">close</span> property as html or css class of the span.
 				If you are using html or css class you have to set <span class="c1">as</span> property to "html" or "class".
                 You can style opener vie jq. css object or css class. Look at the example code below.
 			</p>
@@ -457,9 +457,9 @@ $(function()
 <code>var options = {
 	opener: {
 		active: true,
-		as: 'html',  // or "class" or skip if using background-image url
-		close: '&lt;i class="fa fa-minus red"&gt;&lt;/i&gt;', <span class="c4">// or 'fa fa-minus' or './imgs/Remove2.png'</span>
-		open: '&lt;i class="fa fa-plus"&gt;&lt;/i&gt;', <span class="c4">// or 'fa fa-plus' or './imgs/Add2.png'</span>
+		as: 'html',  // or "class"
+		close: '&lt;i class="fa fa-minus red"&gt;&lt;/i&gt;', <span class="c4">// or 'fa fa-minus'</span>
+		open: '&lt;i class="fa fa-plus"&gt;&lt;/i&gt;', <span class="c4">// or 'fa fa-plus'</span>
 		openerCss: {
 			'display': 'inline-block', <span class="c4">// Default value</span>
 			'float': 'left', <span class="c4">// Default value</span>
@@ -471,7 +471,7 @@ $(function()
 			'background-repeat': 'no-repeat' <span class="c4">// Default value</span>
 		},
 		<span class="c4">// or like a class. Note that class can not rewrite default values. To rewrite defaults you have to do it through css object.</span>
-		openerClass: 'yourClassName'
+		openerClass: 'your-class-name'
 	}
 }</code>
 </pre>
