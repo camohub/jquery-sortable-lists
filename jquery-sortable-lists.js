@@ -60,11 +60,6 @@
 				insertZonePlus: false,
 				scroll: 20,
 				ignoreClass: '',
-				addClass: '',
-				remover: {
-					removerClass: '',
-					callback: function( cEl ) { return false; }
-				},
 				isAllowed: function( cEl, hint, target ) { return true; },  // Params: current el., hint el.
 				onDragStart: function( e, cEl ) { return true; },  // Params: e jQ. event obj., current el.
 				onChange: function( cEl ) { return true; },  // Params: current el.
@@ -154,11 +149,7 @@
 			isAllowed: true, // The function is defined in setting
 			e: { pageX: 0, pageY: 0, clientX: 0, clientY: 0 }, // TODO: unused??
 			doc: $( document ),
-			win: $( window ),
-			removingItem: {  // Used when item is removed
-				li: null,
-				parentLi: null
-			}
+			win: $( window )
 		};
 
 		if ( settings.opener.active )
@@ -185,37 +176,6 @@
 					}
 				}
 			} );
-		}
-
-		if( settings.maxLevels !== false )
-		{
-			if( isNaN( settings.maxLevels ) ) throw 'JQuery-sortable-lists maxLevels values is not a number';
-
-			$( this ).find( 'li' ).each( function()
-			{
-				setInsideLevels( $(this), getInsideLevels( $(this) ) );
-				setUpperLevels( $(this), getUpperLevels( $(this) ) );
-			});
-		}
-
-		if( settings.remover.removerClass )
-		{
-			$( '.' + settings.remover.removerClass ).on('click', function( e )
-			{
-				state.removingItem.li = $(this).closest('li');
-				state.removingItem.parentLi = ( ! state.removingItem.li.parent().is( state.rootEl.el ) ) ? state.removingItem.li.parent().closest('li') : null;
-
-				if( settings.remover.callback( $(this) ) )
-				{
-					state.removingItem.li.remove();
-					tidyEmptyLists();
-					settings.onChange(null);
-					if( settings.maxLevels && state.removingItem.parentLi )
-					{
-						recountLevels( state.removingItem.parentLi );
-					}
-				}
-			});
 		}
 
 		// Return this ensures chaining
@@ -267,7 +227,8 @@
 			state.cEl = {
 				el: el,
 				mT: elMT, mL: elML, mB: elMB, mR: elMR,
-				offset: elXY
+				offset: elXY,
+				insideLevels: getInsideLevels(el)
 			};
 
 			state.cEl.xyOffsetDiff = { X: e.pageX - state.cEl.offset.left, Y: e.pageY - state.cEl.offset.top };
@@ -315,7 +276,7 @@
 				}
 
 				// Scrolling up
-				if ( doc.scrollTop() > state.rootEl.offset.top - 10 && e.clientY < 50 )
+				if ( e.clientY < 50 && doc.scrollTop() > state.rootEl.offset.top - 10 )
 				{
 					if ( ! state.upScroll ) // Has to be here after cond. e.clientY < 50 cause else unsets the interval
 					{
@@ -426,12 +387,6 @@
 							settings.onChange( cEl.el );
 							settings.complete( cEl.el ); // Have to be here cause is necessary to remove placeholder before complete call.
 							state.isDragged = false;
-
-							if( settings.maxLevels !== false )  // Has to be after placeholder remove.
-							{
-								recountLevels( cEl.el );
-								if( state.placeholderParentLi ) recountLevels( state.placeholderParentLi );
-							}
 						});
 					}
 					else
@@ -452,7 +407,7 @@
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		////////Helpers///////////////////////////////////////////////////////////////////////////////////////
+		//////// Helpers /////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		//////// Scroll handlers /////////////////////////////////////////////////////////////////////////////
@@ -511,7 +466,6 @@
 			e.pageX = state.pX;
 			e.clientY = state.cY;
 			e.clientX = state.cX;
-
 		}
 
 		/**
@@ -951,11 +905,6 @@
 			return levs;
 		}
 
-		function setInsideLevels( li, levs )
-		{
-			li.data('insideLevels', levs);
-		}
-
 		function getUpperLevels( li )
 		{
 			var levs = 0;
@@ -971,44 +920,9 @@
 			return levs;
 		}
 
-		function setUpperLevels( li, levs )
-		{
-			li.data('upperLevels', levs);
-		}
-
 		function checkMaxLevels( inside )
 		{
-			var insideLevs = state.cEl.el.data( 'insideLevels' );
-			var upperLevs = state.oEl.data( 'upperLevels' );
-
-			return settings.maxLevels > upperLevs + insideLevs + (inside ? 1 : 0);
-		}
-
-		function recountLevels( li )
-		{
-			var rootEl = state.rootEl.el;
-			var parentList = li.parent( settings.listSelector );
-
-			setInsideLevels( li, getInsideLevels( li ) );
-			setUpperLevels( li, getUpperLevels( li ) );
-
-			var nestLi = null;  // Do not use var in each closure!!!
-			li.find( 'li' ).each( function()
-			{
-				nestLi = $(this);
-				setInsideLevels( nestLi, getInsideLevels( nestLi ) );
-				setUpperLevels( nestLi, getUpperLevels( nestLi ) );
-			});
-
-			var i = 0;
-			var parLi = null;
-			while( ! parentList.is( rootEl ) && i < 50 )
-			{
-				parLi = parentList.parent( 'li' );
-				setInsideLevels( parLi, getInsideLevels( parLi ) ); // No need to set upper levels
-				parentList = parLi.parent( settings.listSelector );
-				i++;
-			}
+			return settings.maxLevels > state.cEl.insideLevels + getUpperLevels(state.oEl) + (inside ? 1 : 0);
 		}
 
 		/////// End of levels handlers //////////////////////////////////////////////////
