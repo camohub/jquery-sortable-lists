@@ -148,6 +148,8 @@
 			cY: 0,
 			isAllowed: true, // The function is defined in setting
 			e: { pageX: 0, pageY: 0, clientX: 0, clientY: 0 }, // TODO: unused??
+			scrollAncestors: [],
+			scrollingEl: $( document.scrollingElement || document.documentElement ),
 			doc: $( document ),
 			win: $( window )
 		};
@@ -224,6 +226,11 @@
 				rootElClass: rEl.attr( 'class' )
 			};
 
+			// Get every ancestor of rEl which has a scroll bar
+			state.scrollAncestors = $(rEl.parents(':not(html, body)').filter(function() {
+					return $(this).get(0).scrollHeight > $(this).get(0).clientHeight;
+			} ).get());
+
 			state.cEl = {
 				el: el,
 				mT: elMT, mL: elML, mB: elMB, mR: elMR,
@@ -265,7 +272,11 @@
 		{
 			if ( state.isDragged )
 			{
-				var cEl = state.cEl,
+				var rootEl = state.rootEl.el,
+					rootElOffset = state.rootEl.offset,
+					scrollAncestors = state.scrollAncestors,
+					scrollingEl = state.scrollingEl,
+					cEl = state.cEl,
 					doc = state.doc,
 					win = state.win;
 
@@ -275,8 +286,36 @@
 					setEventPos( e );
 				}
 
+				var maxTopOffset    = rootEl.offset().top + parseInt(rootEl.css('margin-top'));
+				var minBottomOffset = rootEl.offset().top + parseInt(rootEl.css('margin-top')) + rootEl.outerHeight(false);
+
+				// Check which ones should be scroling up
+				var $scrollUpAncestors = scrollAncestors.filter(function() {
+					var currentTopOffset = $(this).offset().top + parseInt($(this).css('margin-top'));
+					var canScroll        = currentTopOffset > maxTopOffset
+					maxTopOffset         = currentTopOffset > maxTopOffset ? currentTopOffset : maxTopOffset;
+					return e.pageY - maxTopOffset < 50 && canScroll;
+				});
+
+				// Check which ones should be scroling down
+				var $scrollDownAncestors = scrollAncestors.filter(function() {
+					var currentBottomOffset = $(this).offset().top + parseInt($(this).css('margin-top')) + $(this).outerHeight(false);
+					var canScroll           = currentBottomOffset < minBottomOffset
+					minBottomOffset         = currentBottomOffset < minBottomOffset ? currentBottomOffset : minBottomOffset;
+					return minBottomOffset - e.pageY < 50 && canScroll;
+				});
+
+				// Finally, check if scrollingElement (html or body, deppending
+				// on the browser), should be scrolling up or down
+				if ( e.clientY < 50 && scrollingEl.scrollTop() > maxTopOffset - 10 ) {
+					$scrollUpAncestors = $scrollUpAncestors.add(scrollingEl);
+				}
+				if ( win.height() - e.clientY < 50 && scrollingEl.scrollTop() + win.height() < minBottomOffset + 10 ) {
+					$scrollDownAncestors = $scrollDownAncestors.add(scrollingEl);
+				}
+
 				// Scrolling up
-				if ( e.clientY < 50 && doc.scrollTop() > state.rootEl.offset.top - 10 )
+				if ( $scrollUpAncestors.length )
 				{
 					if ( ! state.upScroll ) // Has to be here after cond. e.clientY < 50 cause else unsets the interval
 					{
@@ -285,7 +324,7 @@
 					else
 					{
 						e.pageY = e.pageY - settings.scroll;
-						$( 'html, body' ).each( function( i )
+						$scrollUpAncestors.each( function( i )
 						{
 							$( this ).scrollTop( $( this ).scrollTop() - settings.scroll );
 						} );
@@ -293,7 +332,7 @@
 					}
 				}
 				// Scrolling down
-				else if ( win.height() - e.clientY < 50 && doc.scrollTop() + win.height() < state.rootEl.offset.top + state.rootEl.el.outerHeight( false ) + 10 )
+				else if ( $scrollDownAncestors.length )
 				{
 					if ( ! state.downScroll )
 					{
@@ -302,7 +341,7 @@
 					else
 					{
 						e.pageY = e.pageY + settings.scroll;
-						$( 'html, body' ).each( function( i )
+						$scrollDownAncestors.each( function( i )
 						{
 							$( this ).scrollTop( $( this ).scrollTop() + settings.scroll );
 						} );
