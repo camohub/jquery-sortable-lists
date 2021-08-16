@@ -183,7 +183,7 @@
 			{
 				var target = $( e.target );
 
-				if ( state.isDragged !== false || ( settings.ignoreClass && target.hasClass( settings.ignoreClass ) ) ) return; // settings.ignoreClass is checked cause hasClass('') returns true
+				if ( state.isDragged !== false || ( settings.ignoreClass && target.closest( '.' + settings.ignoreClass ).length ) ) return; // settings.ignoreClass is checked cause hasClass('') returns true
 
 				// Solves selection/range highlighting
 				e.preventDefault();
