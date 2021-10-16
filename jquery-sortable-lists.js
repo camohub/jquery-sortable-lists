@@ -937,7 +937,7 @@
 
 		function setInsideLevels( li, levs )
 		{
-			li.data('insideLevels', levs);
+			li.data('inside-levels', levs);
 		}
 
 		function getUpperLevels( li )
@@ -957,13 +957,13 @@
 
 		function setUpperLevels( li, levs )
 		{
-			li.data('upperLevels', levs);
+			li.data('upper-levels', levs);
 		}
 
 		function checkMaxLevels( inside )
 		{
-			var insideLevs = state.cEl.el.data( 'insideLevels' );
-			var upperLevs = state.oEl.data( 'upperLevels' );
+			var insideLevs = state.cEl.el.data( 'inside-levels' );
+			var upperLevs = state.oEl.data( 'upper-levels' );
 
 			return setting.maxLevels > upperLevs + insideLevs + (inside ? 1 : 0);
 		}
