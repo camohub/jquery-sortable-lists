@@ -6,6 +6,7 @@
 
 ( function( $ )
 {
+
 	/**
 	 * @desc jQuery plugin
 	 * @param options
@@ -146,7 +147,7 @@
 			pY: 0,
 			cX: 0,
 			cY: 0,
-			isAllowed: true, // The function is defined in setting
+			isAllowed: true, // The function is defined in settings
 			e: { pageX: 0, pageY: 0, clientX: 0, clientY: 0 }, // TODO: unused??
 			scrollAncestors: [],
 			scrollingEl: $( document.scrollingElement || document.documentElement ),
@@ -159,25 +160,37 @@
 			if ( ! settings.opener.open ) throw 'Opener.open value is not defined. It should be valid url, html or css class.';
 			if ( ! settings.opener.close ) throw 'Opener.close value is not defined. It should be valid url, html or css class.';
 
-			var nestLi = null;  // Do not use declaration in anonymous function
 			$( this ).find( 'li' ).each( function()
 			{
-				nestLi = $( this );
+				var li = $( this );
 
-				if ( nestLi.children( settings.listSelector ).length )
+				if ( li.children( settings.listSelector ).length )
 				{
-					opener.clone( true ).prependTo( nestLi.children( 'div' ).first() );
+					opener.clone( true ).prependTo( li.children( 'div' ).first() );
 
-					if ( ! nestLi.hasClass( 's-l-open' ) )
+					if ( ! li.hasClass( 's-l-open' ) )
 					{
-						close( nestLi );
+						close( li );
 					}
 					else
 					{
-						open( nestLi );
+						open( li );
 					}
 				}
 			} );
+		}
+
+		if( settings.maxLevels !== false )
+		{
+			if( isNaN( settings.maxLevels ) ) throw 'JQuery-sortable-lists maxLevels values is not a number';
+
+			$( this ).find( 'li' ).each( function()
+			{
+				var insideLevs = getInsideLevels( $(this) );
+				var upperLevs = getUpperLevels( $(this) );
+				setInsideLevels( $(this), insideLevs );
+				setUpperLevels( $(this), upperLevs );
+			});
 		}
 
 		// Return this ensures chaining
@@ -185,7 +198,7 @@
 			{
 				var target = $( e.target );
 
-				if ( state.isDragged !== false || ( settings.ignoreClass && target.hasClass( settings.ignoreClass ) ) ) return; // settings.ignoreClass is checked cause hasClass('') returns true
+				if ( state.isDragged !== false || ( settings.ignoreClass && target.closest( '.' + settings.ignoreClass ).length ) ) return; // settings.ignoreClass is checked cause hasClass('') returns true
 
 				// Solves selection/range highlighting
 				e.preventDefault();
@@ -213,7 +226,7 @@
 		{
 			state.isDragged = true;
 
-			var elMT = parseInt( el.css( 'margin-top' ) ), // parseInt is necessary cause value has px at the end
+			var elMT = parseInt( el.css( 'margin-top' ) ), // parseInt is necesary cause value has px at the end
 				elMB = parseInt( el.css( 'margin-bottom' ) ),
 				elML = parseInt( el.css( 'margin-left' ) ),
 				elMR = parseInt( el.css( 'margin-right' ) ),
@@ -234,8 +247,7 @@
 			state.cEl = {
 				el: el,
 				mT: elMT, mL: elML, mB: elMB, mR: elMR,
-				offset: elXY,
-				insideLevels: getInsideLevels(el)
+				offset: elXY
 			};
 
 			state.cEl.xyOffsetDiff = { X: e.pageX - state.cEl.offset.left, Y: e.pageY - state.cEl.offset.top };
@@ -426,6 +438,12 @@
 							settings.onChange( cEl.el );
 							settings.complete( cEl.el ); // Have to be here cause is necessary to remove placeholder before complete call.
 							state.isDragged = false;
+
+							if( settings.maxLevels !== false )  // Has to be after placeholder remove.
+							{
+								recountLevels( cEl.el );
+								if( state.placeholderParentLi ) recountLevels( state.placeholderParentLi );
+							}
 						});
 					}
 					else
@@ -446,7 +464,7 @@
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		//////// Helpers /////////////////////////////////////////////////////////////////////////////////////
+		////////Helpers///////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		//////// Scroll handlers /////////////////////////////////////////////////////////////////////////////
@@ -505,6 +523,7 @@
 			e.pageX = state.pX;
 			e.clientY = state.cY;
 			e.clientX = state.cX;
+
 		}
 
 		/**
@@ -616,17 +635,27 @@
 			var oElH = oEl.outerHeight( false ),
 				relY = e.pageY - oEl.offset().top;
 
-			if ( 14 > relY )
+			if ( settings.insertZonePlus )
 			{
-				settings.insertZonePlus
-					? showOnTopPlus( e, oEl, 7 > relY )  // Last bool param express if hint insert outside/inside : ;
-					: showOnTop( e, oEl );
+				if ( 14 > relY )  // Inserting on top
+				{
+					showOnTopPlus( e, oEl, 7 > relY );  // Last bool param express if hint insert outside/inside
+				}
+				else if ( oElH - 14 < relY )  // Inserting on bottom
+				{
+					showOnBottomPlus( e, oEl, oElH - 7 < relY );
+				}
 			}
-			else if ( oElH - 14 < relY )
+			else
 			{
-				settings.insertZonePlus
-					? showOnBottomPlus( e, oEl, oElH - 7 < relY )
-					: showOnBottom( e, oEl );
+				if ( 5 > relY )  // Inserting on top
+				{
+					showOnTop( e, oEl );
+				}
+				else if ( oElH - 5 < relY )  // Inserting on bottom
+				{
+					showOnBottom( e, oEl );
+				}
 			}
 		}
 
@@ -647,7 +676,7 @@
 			if ( e.pageX - oEl.offset().left < settings.insertZone )
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( (settings.maxLevels !== false && ! checkMaxLevels( false )) || (oEl.prev( '#s-l-placeholder' ).length) )
+				if ( (oEl.prev( '#s-l-placeholder' ).length) || (settings.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -660,7 +689,7 @@
 				var children = oEl.children(),
 					list = oEl.children( settings.listSelector ).first();
 
-				if ( (settings.maxLevels !== false && ! checkMaxLevels( true )) || (list.children().first().is( '#s-l-placeholder' )) )
+				if ( (list.children().first().is( '#s-l-placeholder' )) || ( settings.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -710,7 +739,7 @@
 				var children = oEl.children(),
 					list = oEl.children( settings.listSelector ).first();
 
-				if ( (settings.maxLevels !== false && ! checkMaxLevels( true )) || (list.children().first().is( '#s-l-placeholder' )) )
+				if ( (list.children().first().is( '#s-l-placeholder' )) || (settings.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -736,7 +765,7 @@
 			else
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( (settings.maxLevels !== false && ! checkMaxLevels( false )) || (oEl.prev( '#s-l-placeholder' ).length) )
+				if ( (oEl.prev( '#s-l-placeholder' ).length) || (settings.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -768,7 +797,7 @@
 			if ( e.pageX - oEl.offset().left < settings.insertZone )
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( (settings.maxLevels !== false && ! checkMaxLevels( false )) || (oEl.next( '#s-l-placeholder' ).length) )
+				if ( (oEl.next( '#s-l-placeholder' ).length) || (settings.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -781,7 +810,7 @@
 				var children = oEl.children(),
 					list = oEl.children( settings.listSelector ).last();  // ul/ol || empty jQuery obj
 
-				if ( (settings.maxLevels !== false && ! checkMaxLevels( true )) || (list.children().last().is( '#s-l-placeholder' )) )
+				if ( (list.children().last().is( '#s-l-placeholder' )) || (settings.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -831,7 +860,7 @@
 				var children = oEl.children(),
 					list = oEl.children( settings.listSelector ).last();  // ul/ol || empty jQuery obj
 
-				if ( (settings.maxLevels !== false && ! checkMaxLevels( true )) || (list.children().last().is( '#s-l-placeholder' )) )
+				if ( (list.children().last().is( '#s-l-placeholder' )) || (settings.maxLevels !== false && ! checkMaxLevels( true )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -858,7 +887,7 @@
 			else
 			{
 				// Ensure display:none if hint will be next to the placeholder
-				if ( (settings.maxLevels !== false && ! checkMaxLevels( false )) || (oEl.next( '#s-l-placeholder' ).length) )
+				if ( (oEl.next( '#s-l-placeholder' ).length) || (settings.maxLevels !== false && ! checkMaxLevels( false )) )
 				{
 					hint.css( 'display', 'none' );
 					return;
@@ -925,6 +954,7 @@
 		function getInsideLevels( li )
 		{
 			var levs = 0;
+
 			var list = li.children( settings.listSelector );
 
 			if( list.length )
@@ -944,6 +974,11 @@
 			return levs;
 		}
 
+		function setInsideLevels( li, levs )
+		{
+			li.data('inside-levels', levs);
+		}
+
 		function getUpperLevels( li )
 		{
 			var levs = 0;
@@ -959,9 +994,42 @@
 			return levs;
 		}
 
+		function setUpperLevels( li, levs )
+		{
+			li.data('upper-levels', levs);
+		}
+
 		function checkMaxLevels( inside )
 		{
-			return settings.maxLevels > state.cEl.insideLevels + getUpperLevels(state.oEl) + (inside ? 1 : 0);
+			var insideLevs = state.cEl.el.data( 'inside-levels' );
+			var upperLevs = state.oEl.data( 'upper-levels' );
+
+			return settings.maxLevels > upperLevs + insideLevs + (inside ? 1 : 0);
+		}
+
+		function recountLevels( li )
+		{
+			var rootEl = state.rootEl.el;
+			var parentList = li.parent( settings.listSelector );
+
+			setInsideLevels( li, getInsideLevels( li ) );
+			setUpperLevels( li, getUpperLevels( li ) );
+
+			var i = 0;
+			li.find( 'li' ).each( function()
+			{
+				var li = $(this);
+				setInsideLevels( li, getInsideLevels( li ) );
+				setUpperLevels( li, getUpperLevels( li ) );
+			});
+
+			while( ! parentList.is( rootEl ) && i < 50 )
+			{
+				var li = parentList.parent( 'li' );
+				setInsideLevels( li, getInsideLevels( li ) ); // No need to set upper levels
+				parentList = li.parent( settings.listSelector );
+				i++;
+			}
 		}
 
 		/////// End of levels handlers //////////////////////////////////////////////////
